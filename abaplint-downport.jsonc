@@ -1,10 +1,15 @@
 {
   "global": {
-    "files": "/../downport/**/*.*"
+    "files": "/src/**/*.*"
   },
   "dependencies": [
     {
       "url": "https://github.com/open-abap/open-abap-core",
+      "folder": "/deps",
+      "files": "/src/**/*.*"
+    },
+    {
+      "url": "https://github.com/abap2UI5/abap2UI5",
       "folder": "/deps",
       "files": "/src/**/*.*"
     }

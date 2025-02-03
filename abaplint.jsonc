@@ -1,16 +1,16 @@
 {
   "global": {
-    "files": "/../downport/**/*.*"
+    "files": "/src/**/*.*"
   },
   "dependencies": [
     {
-      "url": "https://github.com/abapedia/steampunk-2305-api",
+      "url": "https://github.com/open-abap/open-abap-core",
       "folder": "/deps",
       "files": "/src/**/*.*"
     },
     {
-      "url": "https://github.com/abap2UI5/abap2UI5-downport",
-      "folder": "/abap2UI5",
+      "url": "https://github.com/abap2UI5/abap2UI5/tree/702",
+      "folder": "/deps",
       "files": "/src/**/*.*"
     }
   ],
