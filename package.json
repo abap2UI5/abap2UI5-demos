@@ -5,10 +5,8 @@
   "description": "Developing UI5 Apps purely in ABAP.",
   "scripts": {
     "syfixes": "find . -type f -name '*.abap' -exec sed -i -e 's/ RAISE EXCEPTION TYPE cx_sy_itab_line_not_found/ ASSERT 1 = 0/g' {} + ",
-    "downport": "git clone https://github.com/abap2UI5/samples.git && rm -rf src/* && cp -r samples/src/* src && abaplint --fix && npm run syfixes && rm -rf samples && abaplint",
-    "cleanup": "rm -rf input && rm -rf output",
-    "test": "abaplint "
-
+    "downport": "git clone https://github.com/abap2UI5/samples.git && rm -rf src/* && cp -r samples/src/* src && abaplint --fix ./abaplint-downport.jsonc && npm run syfixes && rm -rf samples && abaplint",
+    "cleanup": "rm -rf input && rm -rf output"
   },
   "repository": {
     "type": "git",
