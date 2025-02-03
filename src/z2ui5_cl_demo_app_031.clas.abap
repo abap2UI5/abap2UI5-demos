@@ -76,9 +76,11 @@ CLASS z2ui5_cl_demo_app_031 IMPLEMENTATION.
 
   METHOD z2ui5_on_render_main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(lv_xml) = `<mvc:View ` && |\n| &&
+    DATA lv_xml TYPE string.
+    lv_xml = `<mvc:View ` && |\n| &&
                         `xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"` && |\n| &&
                         `       xmlns:form="sap.ui.layout.form">` && |\n| &&
                         `       <form:SimpleForm editable="true" width="40rem">` && |\n| &&
@@ -167,7 +169,8 @@ CLASS z2ui5_cl_demo_app_031 IMPLEMENTATION.
   METHOD z2ui5_on_render_popup.
 
     IF app-popup = `TEST`.
-      DATA(lv_xml) = `<core:FragmentDefinition` && |\n| &&
+      DATA lv_xml TYPE string.
+      lv_xml = `<core:FragmentDefinition` && |\n| &&
                            `  xmlns="sap.m"` && |\n| &&
                            `  xmlns:core="sap.ui.core">` && |\n| &&
                            `  <ViewSettingsDialog` && |\n| &&

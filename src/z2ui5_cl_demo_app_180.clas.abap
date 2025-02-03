@@ -32,7 +32,10 @@ CLASS Z2UI5_CL_DEMO_APP_180 IMPLEMENTATION.
       WHEN 'CALL_EF'.
         mv_url = `https://www.google.com`.
         client->view_model_update( ).
-        client->follow_up_action( val = client->_event_client( val = client->cs_event-open_new_tab t_arg = VALUE #( ( mv_url ) ) ) ).
+        DATA temp1 TYPE string_table.
+        CLEAR temp1.
+        INSERT mv_url INTO TABLE temp1.
+        client->follow_up_action( val = client->_event_client( val = client->cs_event-open_new_tab t_arg = temp1 ) ).
 
       WHEN 'BACK'.
         client->nav_app_leave( ).
@@ -45,12 +48,16 @@ CLASS Z2UI5_CL_DEMO_APP_180 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell( )->page(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page(
         title          = `Client->FOLLOW_UP_ACTION use cases`
         class          = `sapUiContentPadding`
         navbuttonpress = client->_event( 'BACK' )
-        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+        shownavbutton  = temp1 ).
     page = page->vbox( ).
     page->button( text  = `call frontend event from backend event`
                   press = client->_event( `CALL_EF` ) ).

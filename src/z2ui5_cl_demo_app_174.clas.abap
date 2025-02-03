@@ -11,7 +11,7 @@ CLASS z2ui5_cl_demo_app_174 DEFINITION PUBLIC.
         value   TYPE string,
         descr   TYPE string,
       END OF ty_row.
-    TYPES ty_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    TYPES ty_tab TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
 
     DATA mt_tab TYPE ty_tab.
     DATA mv_multiselect TYPE abap_bool.
@@ -29,7 +29,7 @@ CLASS z2ui5_cl_demo_app_174 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
 
       client->view_display(
         z2ui5_cl_xml_view=>factory( )->shell(
@@ -59,12 +59,31 @@ CLASS z2ui5_cl_demo_app_174 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'POPUP'.
-        mt_tab = VALUE #( descr = 'this is a description'
-             ( zzselkz = mv_preselect title = 'title_01'  value = 'value_01' )
-             ( zzselkz = mv_preselect title = 'title_02'  value = 'value_02' )
-             ( zzselkz = mv_preselect title = 'title_03'  value = 'value_03' )
-             ( zzselkz = mv_preselect title = 'title_04'  value = 'value_04' )
-             ( zzselkz = mv_preselect title = 'title_05'  value = 'value_05' ) ).
+        DATA temp1 TYPE z2ui5_cl_demo_app_174=>ty_tab.
+        CLEAR temp1.
+        DATA temp2 LIKE LINE OF temp1.
+        temp2-descr = 'this is a description'.
+        temp2-zzselkz = mv_preselect.
+        temp2-title = 'title_01'.
+        temp2-value = 'value_01'.
+        INSERT temp2 INTO TABLE temp1.
+        temp2-zzselkz = mv_preselect.
+        temp2-title = 'title_02'.
+        temp2-value = 'value_02'.
+        INSERT temp2 INTO TABLE temp1.
+        temp2-zzselkz = mv_preselect.
+        temp2-title = 'title_03'.
+        temp2-value = 'value_03'.
+        INSERT temp2 INTO TABLE temp1.
+        temp2-zzselkz = mv_preselect.
+        temp2-title = 'title_04'.
+        temp2-value = 'value_04'.
+        INSERT temp2 INTO TABLE temp1.
+        temp2-zzselkz = mv_preselect.
+        temp2-title = 'title_05'.
+        temp2-value = 'value_05'.
+        INSERT temp2 INTO TABLE temp1.
+        mt_tab = temp1.
 
         client->nav_app_call( z2ui5_cl_pop_to_select=>factory(
                            i_tab             = mt_tab
@@ -77,20 +96,37 @@ CLASS z2ui5_cl_demo_app_174 IMPLEMENTATION.
         client->message_box_display( `Popup was cancelled` ).
 
       WHEN 'POPUP_CONFIRMED'.
-        DATA(lr) = client->get( )-r_event_data.
-        ASSIGN lr->* TO FIELD-SYMBOL(<t>).
-        DATA(lt3) = CONV ty_tab( <t> ).
+        DATA lr TYPE REF TO data.
+        lr = client->get( )-r_event_data.
+        FIELD-SYMBOLS <t> TYPE data.
+        ASSIGN lr->* TO <t>.
+        DATA temp3 TYPE ty_tab.
+        temp3 = <t>.
+        DATA lt3 LIKE temp3.
+        lt3 = temp3.
         IF mv_multiselect = abap_false.
-          client->message_box_display( `callback after popup to select: ` && lt3[ 1 ]-title ).
+          DATA temp4 LIKE LINE OF lt3.
+          DATA temp5 LIKE sy-tabix.
+          temp5 = sy-tabix.
+          READ TABLE lt3 INDEX 1 INTO temp4.
+          sy-tabix = temp5.
+          IF sy-subrc <> 0.
+            ASSERT 1 = 0.
+          ENDIF.
+          client->message_box_display( `callback after popup to select: ` && temp4-title ).
         ELSE.
           client->nav_app_call( z2ui5_cl_pop_table=>factory( i_tab   = lt3
                                                              i_title = 'Selected rows' ) ).
         ENDIF.
 
       WHEN 'MULTISELECT_TOGGLE'.
-        mv_preselect = COND #( WHEN mv_multiselect = abap_false
-                               THEN abap_false
-                               ELSE mv_preselect ).
+        DATA temp6 TYPE abap_bool.
+        IF mv_multiselect = abap_false.
+          temp6 = abap_false.
+        ELSE.
+          temp6 = mv_preselect.
+        ENDIF.
+        mv_preselect = temp6.
         client->view_model_update( ).
 
       WHEN 'BACK'.

@@ -36,14 +36,19 @@ CLASS z2ui5_cl_demo_app_005 IMPLEMENTATION.
 
     ENDCASE.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
                 title          = 'abap2UI5 - Range Slider Example'
                 navbuttonpress = client->_event( 'BACK' )
-                 shownavbutton = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                 shownavbutton = temp1 ).
 
-    DATA(grid) = page->grid( 'L12 M12 S12' )->content( 'layout' ).
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L12 M12 S12' )->content( 'layout' ).
 
     grid->simple_form( title    = 'More Controls'
                        editable = abap_true )->content( 'form'

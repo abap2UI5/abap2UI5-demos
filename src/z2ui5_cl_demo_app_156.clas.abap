@@ -22,8 +22,12 @@ CLASS Z2UI5_CL_DEMO_APP_156 IMPLEMENTATION.
   METHOD ui5_callback.
 
     TRY.
-        DATA(lo_prev) = client->get_app( client->get( )-s_draft-id_prev_app ).
-        DATA(lv_text) = CAST z2ui5_cl_pop_input_val( lo_prev )->result( )-value.
+        DATA lo_prev TYPE REF TO z2ui5_if_app.
+        lo_prev = client->get_app( client->get( )-s_draft-id_prev_app ).
+        DATA temp1 TYPE REF TO z2ui5_cl_pop_input_val.
+        temp1 ?= lo_prev.
+        DATA lv_text TYPE z2ui5_cl_pop_input_val=>ty_s_result-value.
+        lv_text = temp1->result( )-value.
         client->message_box_display( `the input is ` && lv_text ).
       CATCH cx_root.
     ENDTRY.
@@ -33,12 +37,15 @@ CLASS Z2UI5_CL_DEMO_APP_156 IMPLEMENTATION.
 
   METHOD ui5_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
         )->page(
                 title          = 'abap2UI5 - Popup Input Value'
                 navbuttonpress = client->_event( val = 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                shownavbutton  = temp1
            )->button(
             text  = 'Open Popup...'
             press = client->_event( 'POPUP' ) ).
@@ -53,7 +60,8 @@ CLASS Z2UI5_CL_DEMO_APP_156 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'POPUP'.
-        DATA(lo_app) = z2ui5_cl_pop_input_val=>factory( text = `Amount of products:` ).
+        DATA lo_app TYPE REF TO z2ui5_cl_pop_input_val.
+        lo_app = z2ui5_cl_pop_input_val=>factory( text = `Amount of products:` ).
         client->nav_app_call( lo_app ).
 
       WHEN 'BACK'.

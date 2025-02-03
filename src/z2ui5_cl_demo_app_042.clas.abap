@@ -25,7 +25,8 @@ CLASS Z2UI5_CL_DEMO_APP_042 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'BUTTON_ROUNDTRIP'.
-        DATA(lv_dummy) = 'user pressed a button, your custom implementation can be called here'.
+        DATA lv_dummy TYPE c LENGTH 68.
+        lv_dummy = 'user pressed a button, your custom implementation can be called here'.
 
       WHEN 'BUTTON_MSG_BOX'.
         client->message_box_display(
@@ -37,16 +38,19 @@ CLASS Z2UI5_CL_DEMO_APP_042 IMPLEMENTATION.
 
     ENDCASE.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
 
-    DATA(page) = view->object_page_layout(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->object_page_layout(
              showtitleinheadercontent = abap_true
              showeditheaderbutton     = abap_true
              editheaderbuttonpress    = client->_event( 'EDIT_HEADER_PRESS' )
              uppercaseanchorbar       = abap_false ).
 
-    DATA(header_title) = page->header_title( )->object_page_dyn_header_title( ).
+    DATA header_title TYPE REF TO z2ui5_cl_xml_view.
+    header_title = page->header_title( )->object_page_dyn_header_title( ).
 
     header_title->expanded_heading(
                 )->hbox(
@@ -84,7 +88,8 @@ CLASS Z2UI5_CL_DEMO_APP_042 IMPLEMENTATION.
                  text  = 'Go Back'
                  press = client->_event( 'BACK' ) ).
 
-    DATA(header_content) = page->header_content( ns = 'uxap' ).
+    DATA header_content TYPE REF TO z2ui5_cl_xml_view.
+    header_content = page->header_content( ns = 'uxap' ).
 
     header_content->flex_box( wrap = 'Wrap'
            )->avatar( src         = lcl_help=>get_avatar( )
@@ -110,7 +115,8 @@ CLASS Z2UI5_CL_DEMO_APP_042 IMPLEMENTATION.
             )->get_parent( ).
 
 
-    DATA(sections) = page->sections( ).
+    DATA sections TYPE REF TO z2ui5_cl_xml_view.
+    sections = page->sections( ).
 
     sections->object_page_section( titleuppercase = abap_false
                                    id             = 'goalsSectionSS1'

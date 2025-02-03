@@ -14,10 +14,12 @@ CLASS z2ui5_cl_demo_app_201 DEFINITION
         currencyshortname TYPE string,
       END OF ty_s_currency .
 
-    DATA
-      mt_suggestion_out TYPE STANDARD TABLE OF ty_s_currency .
-    DATA
-      mt_suggestion TYPE STANDARD TABLE OF ty_s_currency .
+    TYPES temp1_6794b3f377 TYPE STANDARD TABLE OF ty_s_currency.
+DATA
+      mt_suggestion_out TYPE temp1_6794b3f377 .
+    TYPES temp2_6794b3f377 TYPE STANDARD TABLE OF ty_s_currency.
+DATA
+      mt_suggestion TYPE temp2_6794b3f377 .
     DATA input TYPE string .
   PROTECTED SECTION.
 
@@ -50,216 +52,1055 @@ CLASS Z2UI5_CL_DEMO_APP_201 IMPLEMENTATION.
         currencyshortname TYPE string,
       END OF ty_s_currency.
 
-    mt_suggestion = VALUE #(
-      ( language = 'E' currency = 'ADP' currencyname = 'Andorran Peseta --> (Old --> EUR)' currencyshortname = 'Peseta' )
-      ( language = 'E' currency = 'AED' currencyname = 'United Arab Emirates Dirham' currencyshortname = 'Dirham' )
-      ( language = 'E' currency = 'AFA' currencyname = 'Afghani (Old)' currencyshortname = 'Afghani' )
-      ( language = 'E' currency = 'AFN' currencyname = 'Afghani' currencyshortname = 'Afghani' )
-      ( language = 'E' currency = 'ALL' currencyname = 'Albanian Lek' currencyshortname = 'Lek' )
-      ( language = 'E' currency = 'AMD' currencyname = 'Armenian Dram' currencyshortname = 'Dram' )
-      ( language = 'E' currency = 'ANG' currencyname = 'West Indian Guilder' currencyshortname = 'W.Ind.Guilder' )
-      ( language = 'E' currency = 'AOA' currencyname = 'Angolanische Kwanza' currencyshortname = 'Kwansa' )
-      ( language = 'E' currency = 'AON' currencyname = 'Angolan New Kwanza (Old)' currencyshortname = 'New Kwanza' )
-      ( language = 'E' currency = 'AOR' currencyname = 'Angolan Kwanza Reajustado (Old)' currencyshortname = 'Kwanza Reajust.' )
-      ( language = 'E' currency = 'ARS' currencyname = 'Argentine Peso' currencyshortname = 'Arg. Peso' )
-      ( language = 'E' currency = 'ATS' currencyname = 'Austrian Schilling (Old --> EUR)' currencyshortname = 'Shilling' )
-      ( language = 'E' currency = 'AUD' currencyname = 'Australian Dollar' currencyshortname = 'Austr. Dollar' )
-      ( language = 'E' currency = 'AWG' currencyname = 'Aruban Florin' currencyshortname = 'Aruban Florin' )
-      ( language = 'E' currency = 'AZM' currencyname = 'Azerbaijani Manat (Old)' currencyshortname = 'Manat' )
-      ( language = 'E' currency = 'AZN' currencyname = 'Azerbaijani Manat' currencyshortname = 'Manat' )
-      ( language = 'E' currency = 'BAM' currencyname = 'Bosnia and Herzegovina Convertible Mark' currencyshortname = 'Convert. Mark' )
-      ( language = 'E' currency = 'BBD' currencyname = 'Barbados Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'BDT' currencyname = 'Bangladesh Taka' currencyshortname = 'Taka' )
-      ( language = 'E' currency = 'BEF' currencyname = 'Belgian Franc (Old --> EUR)' currencyshortname = 'Belgian Franc' )
-      ( language = 'E' currency = 'BGN' currencyname = 'Bulgarian Lev' currencyshortname = 'Lev' )
-      ( language = 'E' currency = 'BHD' currencyname = 'Bahraini Dinar' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'BIF' currencyname = 'Burundi Franc' currencyshortname = 'Burundi Franc' )
-      ( language = 'E' currency = 'BMD' currencyname = 'Bermudan Dollar' currencyshortname = 'Bermudan Dollar' )
-      ( language = 'E' currency = 'BND' currencyname = 'Brunei Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'BOB' currencyname = 'Boliviano' currencyshortname = 'Boliviano' )
-      ( language = 'E' currency = 'BRL' currencyname = 'Brazilian Real' currencyshortname = 'Real' )
-      ( language = 'E' currency = 'BSD' currencyname = 'Bahaman Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'BTN' currencyname = 'Bhutan Ngultrum' currencyshortname = 'Ngultrum' )
-      ( language = 'E' currency = 'BWP' currencyname = 'Botswana Pula' currencyshortname = 'Pula' )
-      ( language = 'E' currency = 'BYB' currencyname = 'Belarusian Ruble (Old)' currencyshortname = 'Belarus. Ruble' )
-      ( language = 'E' currency = 'BYN' currencyname = 'Belarusian Ruble (New)' currencyshortname = 'Bela. Ruble N.' )
-      ( language = 'E' currency = 'BYR' currencyname = 'Belarusian Ruble' currencyshortname = 'Ruble' )
-      ( language = 'E' currency = 'BZD' currencyname = 'Belize Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'CAD' currencyname = 'Canadian Dollar' currencyshortname = 'Canadian Dollar' )
-      ( language = 'E' currency = 'CDF' currencyname = 'Congolese Franc' currencyshortname = 'test data' )
-      ( language = 'E' currency = 'CFP' currencyname = 'French Franc (Pacific Islands)' currencyshortname = 'Fr. Franc (Pac)' )
-      ( language = 'E' currency = 'CHF' currencyname = 'Swiss Franc' currencyshortname = 'Swiss Franc' )
-      ( language = 'E' currency = 'CLP' currencyname = 'Chilean Peso' currencyshortname = 'Peso' )
-      ( language = 'E' currency = 'CNY' currencyname = 'Chinese Renminbi' currencyshortname = 'Renminbi' )
-      ( language = 'E' currency = 'COP' currencyname = 'Colombian Peso' currencyshortname = 'Peso' )
-      ( language = 'E' currency = 'CRC' currencyname = 'Costa Rica Colon' currencyshortname = 'Cost.Rica Colon' )
-      ( language = 'E' currency = 'CSD' currencyname = 'Serbian Dinar (Old)' currencyshortname = 'Serbian Dinar' )
-      ( language = 'E' currency = 'CUC' currencyname = 'Peso Convertible' currencyshortname = 'Peso Convertib.' )
-      ( language = 'E' currency = 'CUP' currencyname = 'Cuban Peso' currencyshortname = 'Cuban Peso' )
-      ( language = 'E' currency = 'CVE' currencyname = 'Cape Verde Escudo' currencyshortname = 'Escudo' )
-      ( language = 'E' currency = 'CYP' currencyname = 'Cyprus Pound  (Old --> EUR)' currencyshortname = 'Cyprus Pound' )
-      ( language = 'E' currency = 'CZK' currencyname = 'Czech Krona' currencyshortname = 'Krona' )
-      ( language = 'E' currency = 'DEM' currencyname = 'German Mark    (Old --> EUR)' currencyshortname = 'German Mark' )
-      ( language = 'E' currency = 'DEM3' currencyname = '(Internal) German Mark (3 dec.places)' currencyshortname = '(Int.) DEM 3 DP' )
-      ( language = 'E' currency = 'DJF' currencyname = 'Djibouti Franc' currencyshortname = 'Djibouti Franc' )
-      ( language = 'E' currency = 'DKK' currencyname = 'Danish Krone' currencyshortname = 'Danish Krone' )
-      ( language = 'E' currency = 'DOP' currencyname = 'Dominican Peso' currencyshortname = 'Dominican Peso' )
-      ( language = 'E' currency = 'DZD' currencyname = 'Algerian Dinar' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'ECS' currencyname = 'Ecuadorian Sucre (Old --> USD)' currencyshortname = 'Sucre' )
-      ( language = 'E' currency = 'EEK' currencyname = 'Estonian Krone (Old --> EUR)' currencyshortname = 'Krona' )
-      ( language = 'E' currency = 'EGP' currencyname = 'Egyptian Pound' currencyshortname = 'Pound' )
-      ( language = 'E' currency = 'ERN' currencyname = 'Eritrean Nafka' currencyshortname = 'Nakfa' )
-      ( language = 'E' currency = 'ESP' currencyname = 'Spanish Peseta (Old --> EUR)' currencyshortname = 'Peseta' )
-      ( language = 'E' currency = 'ETB' currencyname = 'Ethiopian Birr' currencyshortname = 'Birr' )
-      ( language = 'E' currency = 'EUR' currencyname = 'European Euro' currencyshortname = 'Euro' )
-      ( language = 'E' currency = 'FIM' currencyname = 'Finnish Markka (Old --> EUR)' currencyshortname = 'Finnish markka' )
-      ( language = 'E' currency = 'FJD' currencyname = 'Fiji Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'FKP' currencyname = 'Falkland Pound' currencyshortname = 'Falkland Pound' )
-      ( language = 'E' currency = 'FRF' currencyname = 'French Franc (Old --> EUR)' currencyshortname = 'French Franc' )
-      ( language = 'E' currency = 'GBP' currencyname = 'British Pound' currencyshortname = 'Pound sterling' )
-      ( language = 'E' currency = 'GEL' currencyname = 'Georgian Lari' currencyshortname = 'Lari' )
-      ( language = 'E' currency = 'GHC' currencyname = 'Ghanaian Cedi (Old)' currencyshortname = 'Cedi' )
-      ( language = 'E' currency = 'GHS' currencyname = 'Ghanian Cedi' currencyshortname = 'Cedi' )
-      ( language = 'E' currency = 'GIP' currencyname = 'Gibraltar Pound' currencyshortname = 'Gibraltar Pound' )
-      ( language = 'E' currency = 'GMD' currencyname = 'Gambian Dalasi' currencyshortname = 'Dalasi' )
-      ( language = 'E' currency = 'GNF' currencyname = 'Guinean Franc' currencyshortname = 'Franc' )
-      ( language = 'E' currency = 'GRD' currencyname = 'Greek Drachma (Old --> EUR)' currencyshortname = 'Drachma' )
-      ( language = 'E' currency = 'GTQ' currencyname = 'Guatemalan Quetzal' currencyshortname = 'Quetzal' )
-      ( language = 'E' currency = 'GWP' currencyname = 'Guinea Peso (Old --> SHP)' currencyshortname = 'Guinea Peso' )
-      ( language = 'E' currency = 'GYD' currencyname = 'Guyana Dollar' currencyshortname = 'Guyana Dollar' )
-      ( language = 'E' currency = 'HKD' currencyname = 'Hong Kong Dollar' currencyshortname = 'H.K.Dollar' )
-      ( language = 'E' currency = 'HNL' currencyname = 'Honduran Lempira' currencyshortname = 'Lempira' )
-      ( language = 'E' currency = 'HRK' currencyname = 'Croatian Kuna' currencyshortname = 'Kuna' )
-      ( language = 'E' currency = 'HTG' currencyname = 'Haitian Gourde' currencyshortname = 'Gourde' )
-      ( language = 'E' currency = 'HUF' currencyname = 'Hungarian Forint' currencyshortname = 'Forint' )
-      ( language = 'E' currency = 'IDR' currencyname = 'Indonesian Rupiah' currencyshortname = 'Rupiah' )
-      ( language = 'E' currency = 'IEP' currencyname = 'Irish Punt (Old --> EUR)' currencyshortname = 'Irish Punt' )
-      ( language = 'E' currency = 'ILS' currencyname = 'Israeli Scheckel' currencyshortname = 'Scheckel' )
-      ( language = 'E' currency = 'INR' currencyname = 'Indian Rupee' currencyshortname = 'Rupee' )
-      ( language = 'E' currency = 'IQD' currencyname = 'Iraqui Dinar' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'IRR' currencyname = 'Iranian Rial' currencyshortname = 'Rial' )
-      ( language = 'E' currency = 'ISK' currencyname = 'Iceland Krona' currencyshortname = 'Krona' )
-      ( language = 'E' currency = 'ITL' currencyname = 'Italian Lira (Old --> EUR)' currencyshortname = 'Lire' )
-      ( language = 'E' currency = 'JMD' currencyname = 'Jamaican Dollar' currencyshortname = 'Jamaican Dollar' )
-      ( language = 'E' currency = 'JOD' currencyname = 'Jordanian Dinar' currencyshortname = 'Jordanian Dinar' )
-      ( language = 'E' currency = 'JPY' currencyname = 'Japanese Yen' currencyshortname = 'Yen' )
-      ( language = 'E' currency = 'KES' currencyname = 'Kenyan Shilling' currencyshortname = 'Shilling' )
-      ( language = 'E' currency = 'KGS' currencyname = 'Kyrgyzstan Som' currencyshortname = 'Som' )
-      ( language = 'E' currency = 'KHR' currencyname = 'Cambodian Riel' currencyshortname = 'Riel' )
-      ( language = 'E' currency = 'KMF' currencyname = 'Comoros Franc' currencyshortname = 'Comoros Franc' )
-      ( language = 'E' currency = 'KPW' currencyname = 'North Korean Won' currencyshortname = 'N. Korean Won' )
-      ( language = 'E' currency = 'KRW' currencyname = 'South Korean Won' currencyshortname = 'S.Korean Won' )
-      ( language = 'E' currency = 'KWD' currencyname = 'Kuwaiti Dinar' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'KYD' currencyname = 'Cayman Dollar' currencyshortname = 'Cayman Dollar' )
-      ( language = 'E' currency = 'KZT' currencyname = 'Kazakstanian Tenge' currencyshortname = 'Tenge' )
-      ( language = 'E' currency = 'LAK' currencyname = 'Laotian Kip' currencyshortname = 'Kip' )
-      ( language = 'E' currency = 'LBP' currencyname = 'Lebanese Pound' currencyshortname = 'Lebanese Pound' )
-      ( language = 'E' currency = 'LKR' currencyname = 'Sri Lankan Rupee' currencyshortname = 'Sri Lanka Rupee' )
-      ( language = 'E' currency = 'LRD' currencyname = 'Liberian Dollar' currencyshortname = 'Liberian Dollar' )
-      ( language = 'E' currency = 'LSL' currencyname = 'Lesotho Loti' currencyshortname = 'Loti' )
-      ( language = 'E' currency = 'LTL' currencyname = 'Lithuanian Lita' currencyshortname = 'Lita' )
-      ( language = 'E' currency = 'LUF' currencyname = 'Luxembourg Franc (Old --> EUR)' currencyshortname = 'Lux. Franc' )
-      ( language = 'E' currency = 'LVL' currencyname = 'Latvian Lat' currencyshortname = 'Lat' )
-      ( language = 'E' currency = 'LYD' currencyname = 'Libyan Dinar' currencyshortname = 'Libyan Dinar' )
-      ( language = 'E' currency = 'MAD' currencyname = 'Moroccan Dirham' currencyshortname = 'Dirham' )
-      ( language = 'E' currency = 'MDL' currencyname = 'Moldavian Leu' currencyshortname = 'Leu' )
-      ( language = 'E' currency = 'MGA' currencyname = 'Madagascan Ariary' currencyshortname = 'Madagasc.Ariary' )
-      ( language = 'E' currency = 'MGF' currencyname = 'Madagascan Franc (Old' currencyshortname = 'Madagascan Fr.' )
-      ( language = 'E' currency = 'MKD' currencyname = 'Macedonian Denar' currencyshortname = 'Maced. Denar' )
-      ( language = 'E' currency = 'MMK' currencyname = 'Myanmar Kyat' currencyshortname = 'Kyat' )
-      ( language = 'E' currency = 'MNT' currencyname = 'Mongolian Tugrik' currencyshortname = 'Tugrik' )
-      ( language = 'E' currency = 'MOP' currencyname = 'Macao Pataca' currencyshortname = 'Pataca' )
-      ( language = 'E' currency = 'MRO' currencyname = 'Mauritanian Ouguiya' currencyshortname = 'Ouguiya' )
-      ( language = 'E' currency = 'MTL' currencyname = 'Maltese Lira (Old --> EUR)' currencyshortname = 'Lira' )
-      ( language = 'E' currency = 'MUR' currencyname = 'Mauritian Rupee' currencyshortname = 'Rupee' )
-      ( language = 'E' currency = 'MVR' currencyname = 'Maldive Rufiyaa' currencyshortname = 'Rufiyaa' )
-      ( language = 'E' currency = 'MWK' currencyname = 'Malawi Kwacha' currencyshortname = 'Malawi Kwacha' )
-      ( language = 'E' currency = 'MXN' currencyname = 'Mexican Pesos' currencyshortname = 'Peso' )
-      ( language = 'E' currency = 'MYR' currencyname = 'Malaysian Ringgit' currencyshortname = 'Ringgit' )
-      ( language = 'E' currency = 'MZM' currencyname = 'Mozambique Metical (Old)' currencyshortname = 'Metical' )
-      ( language = 'E' currency = 'MZN' currencyname = 'Mozambique Metical' currencyshortname = 'Metical' )
-      ( language = 'E' currency = 'NAD' currencyname = 'Namibian Dollar' currencyshortname = 'Namibian Dollar' )
-      ( language = 'E' currency = 'NGN' currencyname = 'Nigerian Naira' currencyshortname = 'Naira' )
-      ( language = 'E' currency = 'NIO' currencyname = 'Nicaraguan Cordoba Oro' currencyshortname = 'Cordoba Oro' )
-      ( language = 'E' currency = 'NLG' currencyname = 'Dutch Guilder (Old --> EUR)' currencyshortname = 'Guilder' )
-      ( language = 'E' currency = 'NOK' currencyname = 'Norwegian Krone' currencyshortname = 'Norwegian Krone' )
-      ( language = 'E' currency = 'NPR' currencyname = 'Nepalese Rupee' currencyshortname = 'Rupee' )
-      ( language = 'E' currency = 'NZD' currencyname = 'New Zealand Dollars' currencyshortname = 'N.Zeal.Dollars' )
-      ( language = 'E' currency = 'OMR' currencyname = 'Omani Rial' currencyshortname = 'Omani Rial' )
-      ( language = 'E' currency = 'PAB' currencyname = 'Panamanian Balboa' currencyshortname = 'Balboa' )
-      ( language = 'E' currency = 'PEN' currencyname = 'Peruvian New Sol' currencyshortname = 'New Sol' )
-      ( language = 'E' currency = 'PGK' currencyname = 'Papua New Guinea Kina' currencyshortname = 'Kina' )
-      ( language = 'E' currency = 'PHP' currencyname = 'Philippine Peso' currencyshortname = 'Peso' )
-      ( language = 'E' currency = 'PKR' currencyname = 'Pakistani Rupee' currencyshortname = 'Rupee' )
-      ( language = 'E' currency = 'PLN' currencyname = 'Polish Zloty (new)' currencyshortname = 'Zloty' )
-      ( language = 'E' currency = 'PTE' currencyname = 'Portuguese Escudo (Old --> EUR)' currencyshortname = 'Escudo' )
-      ( language = 'E' currency = 'PYG' currencyname = 'Paraguayan Guarani' currencyshortname = 'Guarani' )
-      ( language = 'E' currency = 'QAR' currencyname = 'Qatar Rial' currencyshortname = 'Rial' )
-      ( language = 'E' currency = 'RMB' currencyname = 'Chinese Yuan Renminbi' currencyshortname = 'Yuan Renminbi' )
-      ( language = 'E' currency = 'ROL' currencyname = 'Romanian Leu (Old)' currencyshortname = 'Leu (Old)' )
-      ( language = 'E' currency = 'RON' currencyname = 'Romanian Leu' currencyshortname = 'Leu' )
-      ( language = 'E' currency = 'RSD' currencyname = 'Serbian Dinar' currencyshortname = 'Serbian Dinar' )
-      ( language = 'E' currency = 'RUB' currencyname = 'Russian Ruble' currencyshortname = 'Ruble' )
-      ( language = 'E' currency = 'RWF' currencyname = 'Rwandan Franc' currencyshortname = 'Franc' )
-      ( language = 'E' currency = 'SAR' currencyname = 'Saudi Riyal' currencyshortname = 'Rial' )
-      ( language = 'E' currency = 'SBD' currencyname = 'Solomon Islands Dollar' currencyshortname = 'Sol.Isl.Dollar' )
-      ( language = 'E' currency = 'SCR' currencyname = 'Seychelles Rupee' currencyshortname = 'Rupee' )
-      ( language = 'E' currency = 'SDD' currencyname = 'Sudanese Dinar (Old)' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'SDG' currencyname = 'Sudanese Pound' currencyshortname = 'Pound' )
-      ( language = 'E' currency = 'SDP' currencyname = 'Sudanese Pound (until 1992)' currencyshortname = 'Pound' )
-      ( language = 'E' currency = 'SEK' currencyname = 'Swedish Krona' currencyshortname = 'Swedish Krona' )
-      ( language = 'E' currency = 'SGD' currencyname = 'Singapore Dollar' currencyshortname = 'Sing.Dollar' )
-      ( language = 'E' currency = 'SHP' currencyname = 'St.Helena Pound' currencyshortname = 'St.Helena Pound' )
-      ( language = 'E' currency = 'SIT' currencyname = 'Slovenian Tolar (Old --> EUR)' currencyshortname = 'Tolar' )
-      ( language = 'E' currency = 'SKK' currencyname = 'Slovakian Krona (Old --> EUR)' currencyshortname = 'Krona' )
-      ( language = 'E' currency = 'SLL' currencyname = 'Sierra Leone Leone' currencyshortname = 'Leone' )
-      ( language = 'E' currency = 'SOS' currencyname = 'Somalian Shilling' currencyshortname = 'Shilling' )
-      ( language = 'E' currency = 'SRD' currencyname = 'Surinam Dollar' currencyshortname = 'Surinam Doillar' )
-      ( language = 'E' currency = 'SRG' currencyname = 'Surinam Guilder (Old)' currencyshortname = 'Surinam Guilder' )
-      ( language = 'E' currency = 'SSP' currencyname = 'South Sudanese Pound' currencyshortname = 'Pound' )
-      ( language = 'E' currency = 'STD' currencyname = 'Sao Tome / Principe Dobra' currencyshortname = 'Dobra' )
-      ( language = 'E' currency = 'SVC' currencyname = 'El Salvador Colon' currencyshortname = 'Colon' )
-      ( language = 'E' currency = 'SYP' currencyname = 'Syrian Pound' currencyshortname = 'Syrian Pound' )
-      ( language = 'E' currency = 'SZL' currencyname = 'Swaziland Lilangeni' currencyshortname = 'Lilangeni' )
-      ( language = 'E' currency = 'THB' currencyname = 'Thailand Baht' currencyshortname = 'Baht' )
-      ( language = 'E' currency = 'TJR' currencyname = 'Tajikistani Ruble (Old)' currencyshortname = 'Ruble' )
-      ( language = 'E' currency = 'TJS' currencyname = 'Tajikistani Somoni' currencyshortname = 'Somoni' )
-      ( language = 'E' currency = 'TMM' currencyname = 'Turkmenistani Manat (Old)' currencyshortname = 'Manat (Old)' )
-      ( language = 'E' currency = 'TMT' currencyname = 'Turkmenistani Manat' currencyshortname = 'Manat' )
-      ( language = 'E' currency = 'TND' currencyname = 'Tunisian Dinar' currencyshortname = 'Dinar' )
-      ( language = 'E' currency = 'TOP' currencyname = 'Tongan Pa''anga' currencyshortname = 'Pa''anga' )
-      ( language = 'E' currency = 'TPE' currencyname = 'Timor Escudo --> USD' currencyshortname = 'Timor Escudo' )
-      ( language = 'E' currency = 'TRL' currencyname = 'Turkish Lira (Old)' currencyshortname = 'Lira (Old)' )
-      ( language = 'E' currency = 'TRY' currencyname = 'Turkish Lira' currencyshortname = 'Lira' )
-      ( language = 'E' currency = 'TTD' currencyname = 'Trinidad and Tobago Dollar' currencyshortname = 'T.+ T. Dollar' )
-      ( language = 'E' currency = 'TWD' currencyname = 'New Taiwan Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'TZS' currencyname = 'Tanzanian Shilling' currencyshortname = 'Shilling' )
-      ( language = 'E' currency = 'UAH' currencyname = 'Ukraine Hryvnia' currencyshortname = 'Hryvnia' )
-      ( language = 'E' currency = 'UGX' currencyname = 'Ugandan Shilling' currencyshortname = 'Shilling' )
-      ( language = 'E' currency = 'USD' currencyname = 'United States Dollar' currencyshortname = 'US Dollar' )
-      ( language = 'E' currency = 'USDN' currencyname = '(Internal) United States Dollar (5 Dec.)' currencyshortname = 'US Dollar' )
-      ( language = 'E' currency = 'UYU' currencyname = 'Uruguayan Peso' currencyshortname = 'Peso' )
-      ( language = 'E' currency = 'UZS' currencyname = 'Uzbekistan Som' currencyshortname = 'Total' )
-      ( language = 'E' currency = 'VEB' currencyname = 'Venezuelan Bolivar (Old)' currencyshortname = 'Bolivar (Old)' )
-      ( language = 'E' currency = 'VEF' currencyname = 'Venezuelan Bolivar' currencyshortname = 'Bolivar' )
-      ( language = 'E' currency = 'VND' currencyname = 'Vietnamese Dong' currencyshortname = 'Dong' )
-      ( language = 'E' currency = 'VUV' currencyname = 'Vanuatu Vatu' currencyshortname = 'Vatu' )
-      ( language = 'E' currency = 'WST' currencyname = 'Samoan Tala' currencyshortname = 'Tala' )
-      ( language = 'E' currency = 'XAF' currencyname = 'Gabon CFA Franc BEAC' currencyshortname = 'CFA Franc BEAC' )
-      ( language = 'E' currency = 'XCD' currencyname = 'East Carribean Dollar' currencyshortname = 'Dollar' )
-      ( language = 'E' currency = 'XEU' currencyname = 'European Currency Unit (E.C.U.)' currencyshortname = 'E.C.U.' )
-      ( language = 'E' currency = 'XOF' currencyname = 'Benin CFA Franc BCEAO' currencyshortname = 'CFA Franc BCEAO' )
-      ( language = 'E' currency = 'XPF' currencyname = 'CFP Franc' currencyshortname = 'Franc' )
-      ( language = 'E' currency = 'YER' currencyname = 'Yemeni Ryal' currencyshortname = 'Yemeni Ryal' )
-      ( language = 'E' currency = 'YUM' currencyname = 'New Yugoslavian Dinar (Old)' currencyshortname = 'New Dinar' )
-      ( language = 'E' currency = 'ZAR' currencyname = 'South African Rand' currencyshortname = 'Rand' )
-      ( language = 'E' currency = 'ZMK' currencyname = 'Zambian Kwacha (Old)' currencyshortname = 'Kwacha' )
-      ( language = 'E' currency = 'ZMW' currencyname = 'Zambian Kwacha (New)' currencyshortname = 'Kwacha' )
-      ( language = 'E' currency = 'ZRN' currencyname = 'Zaire (Old)' currencyshortname = 'Zaire' )
-      ( language = 'E' currency = 'ZWD' currencyname = 'Zimbabwean Dollar (Old)' currencyshortname = 'Zimbabwe Dollar' )
-      ( language = 'E' currency = 'ZWL' currencyname = 'Zimbabwean Dollar (New)' currencyshortname = 'Zimbabwe Dollar' )
-      ( language = 'E' currency = 'ZWN' currencyname = 'Zimbabwean Dollar (Old)' currencyshortname = 'Zimbabwe Dollar' )
-      ( language = 'E' currency = 'ZWR' currencyname = 'Zimbabwean Dollar (Old)' currencyshortname = 'Zimbabwe Dollar' ) ).
+    DATA temp1 LIKE mt_suggestion.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ADP'.
+    temp2-currencyname = 'Andorran Peseta --> (Old --> EUR)'.
+    temp2-currencyshortname = 'Peseta'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AED'.
+    temp2-currencyname = 'United Arab Emirates Dirham'.
+    temp2-currencyshortname = 'Dirham'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AFA'.
+    temp2-currencyname = 'Afghani (Old)'.
+    temp2-currencyshortname = 'Afghani'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AFN'.
+    temp2-currencyname = 'Afghani'.
+    temp2-currencyshortname = 'Afghani'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ALL'.
+    temp2-currencyname = 'Albanian Lek'.
+    temp2-currencyshortname = 'Lek'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AMD'.
+    temp2-currencyname = 'Armenian Dram'.
+    temp2-currencyshortname = 'Dram'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ANG'.
+    temp2-currencyname = 'West Indian Guilder'.
+    temp2-currencyshortname = 'W.Ind.Guilder'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AOA'.
+    temp2-currencyname = 'Angolanische Kwanza'.
+    temp2-currencyshortname = 'Kwansa'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AON'.
+    temp2-currencyname = 'Angolan New Kwanza (Old)'.
+    temp2-currencyshortname = 'New Kwanza'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AOR'.
+    temp2-currencyname = 'Angolan Kwanza Reajustado (Old)'.
+    temp2-currencyshortname = 'Kwanza Reajust.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ARS'.
+    temp2-currencyname = 'Argentine Peso'.
+    temp2-currencyshortname = 'Arg. Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ATS'.
+    temp2-currencyname = 'Austrian Schilling (Old --> EUR)'.
+    temp2-currencyshortname = 'Shilling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AUD'.
+    temp2-currencyname = 'Australian Dollar'.
+    temp2-currencyshortname = 'Austr. Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AWG'.
+    temp2-currencyname = 'Aruban Florin'.
+    temp2-currencyshortname = 'Aruban Florin'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AZM'.
+    temp2-currencyname = 'Azerbaijani Manat (Old)'.
+    temp2-currencyshortname = 'Manat'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'AZN'.
+    temp2-currencyname = 'Azerbaijani Manat'.
+    temp2-currencyshortname = 'Manat'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BAM'.
+    temp2-currencyname = 'Bosnia and Herzegovina Convertible Mark'.
+    temp2-currencyshortname = 'Convert. Mark'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BBD'.
+    temp2-currencyname = 'Barbados Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BDT'.
+    temp2-currencyname = 'Bangladesh Taka'.
+    temp2-currencyshortname = 'Taka'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BEF'.
+    temp2-currencyname = 'Belgian Franc (Old --> EUR)'.
+    temp2-currencyshortname = 'Belgian Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BGN'.
+    temp2-currencyname = 'Bulgarian Lev'.
+    temp2-currencyshortname = 'Lev'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BHD'.
+    temp2-currencyname = 'Bahraini Dinar'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BIF'.
+    temp2-currencyname = 'Burundi Franc'.
+    temp2-currencyshortname = 'Burundi Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BMD'.
+    temp2-currencyname = 'Bermudan Dollar'.
+    temp2-currencyshortname = 'Bermudan Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BND'.
+    temp2-currencyname = 'Brunei Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BOB'.
+    temp2-currencyname = 'Boliviano'.
+    temp2-currencyshortname = 'Boliviano'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BRL'.
+    temp2-currencyname = 'Brazilian Real'.
+    temp2-currencyshortname = 'Real'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BSD'.
+    temp2-currencyname = 'Bahaman Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BTN'.
+    temp2-currencyname = 'Bhutan Ngultrum'.
+    temp2-currencyshortname = 'Ngultrum'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BWP'.
+    temp2-currencyname = 'Botswana Pula'.
+    temp2-currencyshortname = 'Pula'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BYB'.
+    temp2-currencyname = 'Belarusian Ruble (Old)'.
+    temp2-currencyshortname = 'Belarus. Ruble'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BYN'.
+    temp2-currencyname = 'Belarusian Ruble (New)'.
+    temp2-currencyshortname = 'Bela. Ruble N.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BYR'.
+    temp2-currencyname = 'Belarusian Ruble'.
+    temp2-currencyshortname = 'Ruble'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'BZD'.
+    temp2-currencyname = 'Belize Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CAD'.
+    temp2-currencyname = 'Canadian Dollar'.
+    temp2-currencyshortname = 'Canadian Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CDF'.
+    temp2-currencyname = 'Congolese Franc'.
+    temp2-currencyshortname = 'test data'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CFP'.
+    temp2-currencyname = 'French Franc (Pacific Islands)'.
+    temp2-currencyshortname = 'Fr. Franc (Pac)'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CHF'.
+    temp2-currencyname = 'Swiss Franc'.
+    temp2-currencyshortname = 'Swiss Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CLP'.
+    temp2-currencyname = 'Chilean Peso'.
+    temp2-currencyshortname = 'Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CNY'.
+    temp2-currencyname = 'Chinese Renminbi'.
+    temp2-currencyshortname = 'Renminbi'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'COP'.
+    temp2-currencyname = 'Colombian Peso'.
+    temp2-currencyshortname = 'Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CRC'.
+    temp2-currencyname = 'Costa Rica Colon'.
+    temp2-currencyshortname = 'Cost.Rica Colon'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CSD'.
+    temp2-currencyname = 'Serbian Dinar (Old)'.
+    temp2-currencyshortname = 'Serbian Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CUC'.
+    temp2-currencyname = 'Peso Convertible'.
+    temp2-currencyshortname = 'Peso Convertib.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CUP'.
+    temp2-currencyname = 'Cuban Peso'.
+    temp2-currencyshortname = 'Cuban Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CVE'.
+    temp2-currencyname = 'Cape Verde Escudo'.
+    temp2-currencyshortname = 'Escudo'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CYP'.
+    temp2-currencyname = 'Cyprus Pound  (Old --> EUR)'.
+    temp2-currencyshortname = 'Cyprus Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'CZK'.
+    temp2-currencyname = 'Czech Krona'.
+    temp2-currencyshortname = 'Krona'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DEM'.
+    temp2-currencyname = 'German Mark    (Old --> EUR)'.
+    temp2-currencyshortname = 'German Mark'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DEM3'.
+    temp2-currencyname = '(Internal) German Mark (3 dec.places)'.
+    temp2-currencyshortname = '(Int.) DEM 3 DP'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DJF'.
+    temp2-currencyname = 'Djibouti Franc'.
+    temp2-currencyshortname = 'Djibouti Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DKK'.
+    temp2-currencyname = 'Danish Krone'.
+    temp2-currencyshortname = 'Danish Krone'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DOP'.
+    temp2-currencyname = 'Dominican Peso'.
+    temp2-currencyshortname = 'Dominican Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'DZD'.
+    temp2-currencyname = 'Algerian Dinar'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ECS'.
+    temp2-currencyname = 'Ecuadorian Sucre (Old --> USD)'.
+    temp2-currencyshortname = 'Sucre'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'EEK'.
+    temp2-currencyname = 'Estonian Krone (Old --> EUR)'.
+    temp2-currencyshortname = 'Krona'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'EGP'.
+    temp2-currencyname = 'Egyptian Pound'.
+    temp2-currencyshortname = 'Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ERN'.
+    temp2-currencyname = 'Eritrean Nafka'.
+    temp2-currencyshortname = 'Nakfa'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ESP'.
+    temp2-currencyname = 'Spanish Peseta (Old --> EUR)'.
+    temp2-currencyshortname = 'Peseta'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ETB'.
+    temp2-currencyname = 'Ethiopian Birr'.
+    temp2-currencyshortname = 'Birr'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'EUR'.
+    temp2-currencyname = 'European Euro'.
+    temp2-currencyshortname = 'Euro'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'FIM'.
+    temp2-currencyname = 'Finnish Markka (Old --> EUR)'.
+    temp2-currencyshortname = 'Finnish markka'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'FJD'.
+    temp2-currencyname = 'Fiji Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'FKP'.
+    temp2-currencyname = 'Falkland Pound'.
+    temp2-currencyshortname = 'Falkland Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'FRF'.
+    temp2-currencyname = 'French Franc (Old --> EUR)'.
+    temp2-currencyshortname = 'French Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GBP'.
+    temp2-currencyname = 'British Pound'.
+    temp2-currencyshortname = 'Pound sterling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GEL'.
+    temp2-currencyname = 'Georgian Lari'.
+    temp2-currencyshortname = 'Lari'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GHC'.
+    temp2-currencyname = 'Ghanaian Cedi (Old)'.
+    temp2-currencyshortname = 'Cedi'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GHS'.
+    temp2-currencyname = 'Ghanian Cedi'.
+    temp2-currencyshortname = 'Cedi'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GIP'.
+    temp2-currencyname = 'Gibraltar Pound'.
+    temp2-currencyshortname = 'Gibraltar Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GMD'.
+    temp2-currencyname = 'Gambian Dalasi'.
+    temp2-currencyshortname = 'Dalasi'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GNF'.
+    temp2-currencyname = 'Guinean Franc'.
+    temp2-currencyshortname = 'Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GRD'.
+    temp2-currencyname = 'Greek Drachma (Old --> EUR)'.
+    temp2-currencyshortname = 'Drachma'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GTQ'.
+    temp2-currencyname = 'Guatemalan Quetzal'.
+    temp2-currencyshortname = 'Quetzal'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GWP'.
+    temp2-currencyname = 'Guinea Peso (Old --> SHP)'.
+    temp2-currencyshortname = 'Guinea Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'GYD'.
+    temp2-currencyname = 'Guyana Dollar'.
+    temp2-currencyshortname = 'Guyana Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'HKD'.
+    temp2-currencyname = 'Hong Kong Dollar'.
+    temp2-currencyshortname = 'H.K.Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'HNL'.
+    temp2-currencyname = 'Honduran Lempira'.
+    temp2-currencyshortname = 'Lempira'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'HRK'.
+    temp2-currencyname = 'Croatian Kuna'.
+    temp2-currencyshortname = 'Kuna'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'HTG'.
+    temp2-currencyname = 'Haitian Gourde'.
+    temp2-currencyshortname = 'Gourde'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'HUF'.
+    temp2-currencyname = 'Hungarian Forint'.
+    temp2-currencyshortname = 'Forint'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'IDR'.
+    temp2-currencyname = 'Indonesian Rupiah'.
+    temp2-currencyshortname = 'Rupiah'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'IEP'.
+    temp2-currencyname = 'Irish Punt (Old --> EUR)'.
+    temp2-currencyshortname = 'Irish Punt'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ILS'.
+    temp2-currencyname = 'Israeli Scheckel'.
+    temp2-currencyshortname = 'Scheckel'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'INR'.
+    temp2-currencyname = 'Indian Rupee'.
+    temp2-currencyshortname = 'Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'IQD'.
+    temp2-currencyname = 'Iraqui Dinar'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'IRR'.
+    temp2-currencyname = 'Iranian Rial'.
+    temp2-currencyshortname = 'Rial'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ISK'.
+    temp2-currencyname = 'Iceland Krona'.
+    temp2-currencyshortname = 'Krona'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ITL'.
+    temp2-currencyname = 'Italian Lira (Old --> EUR)'.
+    temp2-currencyshortname = 'Lire'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'JMD'.
+    temp2-currencyname = 'Jamaican Dollar'.
+    temp2-currencyshortname = 'Jamaican Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'JOD'.
+    temp2-currencyname = 'Jordanian Dinar'.
+    temp2-currencyshortname = 'Jordanian Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'JPY'.
+    temp2-currencyname = 'Japanese Yen'.
+    temp2-currencyshortname = 'Yen'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KES'.
+    temp2-currencyname = 'Kenyan Shilling'.
+    temp2-currencyshortname = 'Shilling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KGS'.
+    temp2-currencyname = 'Kyrgyzstan Som'.
+    temp2-currencyshortname = 'Som'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KHR'.
+    temp2-currencyname = 'Cambodian Riel'.
+    temp2-currencyshortname = 'Riel'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KMF'.
+    temp2-currencyname = 'Comoros Franc'.
+    temp2-currencyshortname = 'Comoros Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KPW'.
+    temp2-currencyname = 'North Korean Won'.
+    temp2-currencyshortname = 'N. Korean Won'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KRW'.
+    temp2-currencyname = 'South Korean Won'.
+    temp2-currencyshortname = 'S.Korean Won'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KWD'.
+    temp2-currencyname = 'Kuwaiti Dinar'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KYD'.
+    temp2-currencyname = 'Cayman Dollar'.
+    temp2-currencyshortname = 'Cayman Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'KZT'.
+    temp2-currencyname = 'Kazakstanian Tenge'.
+    temp2-currencyshortname = 'Tenge'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LAK'.
+    temp2-currencyname = 'Laotian Kip'.
+    temp2-currencyshortname = 'Kip'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LBP'.
+    temp2-currencyname = 'Lebanese Pound'.
+    temp2-currencyshortname = 'Lebanese Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LKR'.
+    temp2-currencyname = 'Sri Lankan Rupee'.
+    temp2-currencyshortname = 'Sri Lanka Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LRD'.
+    temp2-currencyname = 'Liberian Dollar'.
+    temp2-currencyshortname = 'Liberian Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LSL'.
+    temp2-currencyname = 'Lesotho Loti'.
+    temp2-currencyshortname = 'Loti'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LTL'.
+    temp2-currencyname = 'Lithuanian Lita'.
+    temp2-currencyshortname = 'Lita'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LUF'.
+    temp2-currencyname = 'Luxembourg Franc (Old --> EUR)'.
+    temp2-currencyshortname = 'Lux. Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LVL'.
+    temp2-currencyname = 'Latvian Lat'.
+    temp2-currencyshortname = 'Lat'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'LYD'.
+    temp2-currencyname = 'Libyan Dinar'.
+    temp2-currencyshortname = 'Libyan Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MAD'.
+    temp2-currencyname = 'Moroccan Dirham'.
+    temp2-currencyshortname = 'Dirham'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MDL'.
+    temp2-currencyname = 'Moldavian Leu'.
+    temp2-currencyshortname = 'Leu'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MGA'.
+    temp2-currencyname = 'Madagascan Ariary'.
+    temp2-currencyshortname = 'Madagasc.Ariary'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MGF'.
+    temp2-currencyname = 'Madagascan Franc (Old'.
+    temp2-currencyshortname = 'Madagascan Fr.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MKD'.
+    temp2-currencyname = 'Macedonian Denar'.
+    temp2-currencyshortname = 'Maced. Denar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MMK'.
+    temp2-currencyname = 'Myanmar Kyat'.
+    temp2-currencyshortname = 'Kyat'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MNT'.
+    temp2-currencyname = 'Mongolian Tugrik'.
+    temp2-currencyshortname = 'Tugrik'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MOP'.
+    temp2-currencyname = 'Macao Pataca'.
+    temp2-currencyshortname = 'Pataca'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MRO'.
+    temp2-currencyname = 'Mauritanian Ouguiya'.
+    temp2-currencyshortname = 'Ouguiya'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MTL'.
+    temp2-currencyname = 'Maltese Lira (Old --> EUR)'.
+    temp2-currencyshortname = 'Lira'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MUR'.
+    temp2-currencyname = 'Mauritian Rupee'.
+    temp2-currencyshortname = 'Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MVR'.
+    temp2-currencyname = 'Maldive Rufiyaa'.
+    temp2-currencyshortname = 'Rufiyaa'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MWK'.
+    temp2-currencyname = 'Malawi Kwacha'.
+    temp2-currencyshortname = 'Malawi Kwacha'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MXN'.
+    temp2-currencyname = 'Mexican Pesos'.
+    temp2-currencyshortname = 'Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MYR'.
+    temp2-currencyname = 'Malaysian Ringgit'.
+    temp2-currencyshortname = 'Ringgit'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MZM'.
+    temp2-currencyname = 'Mozambique Metical (Old)'.
+    temp2-currencyshortname = 'Metical'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'MZN'.
+    temp2-currencyname = 'Mozambique Metical'.
+    temp2-currencyshortname = 'Metical'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NAD'.
+    temp2-currencyname = 'Namibian Dollar'.
+    temp2-currencyshortname = 'Namibian Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NGN'.
+    temp2-currencyname = 'Nigerian Naira'.
+    temp2-currencyshortname = 'Naira'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NIO'.
+    temp2-currencyname = 'Nicaraguan Cordoba Oro'.
+    temp2-currencyshortname = 'Cordoba Oro'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NLG'.
+    temp2-currencyname = 'Dutch Guilder (Old --> EUR)'.
+    temp2-currencyshortname = 'Guilder'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NOK'.
+    temp2-currencyname = 'Norwegian Krone'.
+    temp2-currencyshortname = 'Norwegian Krone'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NPR'.
+    temp2-currencyname = 'Nepalese Rupee'.
+    temp2-currencyshortname = 'Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'NZD'.
+    temp2-currencyname = 'New Zealand Dollars'.
+    temp2-currencyshortname = 'N.Zeal.Dollars'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'OMR'.
+    temp2-currencyname = 'Omani Rial'.
+    temp2-currencyshortname = 'Omani Rial'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PAB'.
+    temp2-currencyname = 'Panamanian Balboa'.
+    temp2-currencyshortname = 'Balboa'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PEN'.
+    temp2-currencyname = 'Peruvian New Sol'.
+    temp2-currencyshortname = 'New Sol'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PGK'.
+    temp2-currencyname = 'Papua New Guinea Kina'.
+    temp2-currencyshortname = 'Kina'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PHP'.
+    temp2-currencyname = 'Philippine Peso'.
+    temp2-currencyshortname = 'Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PKR'.
+    temp2-currencyname = 'Pakistani Rupee'.
+    temp2-currencyshortname = 'Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PLN'.
+    temp2-currencyname = 'Polish Zloty (new)'.
+    temp2-currencyshortname = 'Zloty'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PTE'.
+    temp2-currencyname = 'Portuguese Escudo (Old --> EUR)'.
+    temp2-currencyshortname = 'Escudo'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'PYG'.
+    temp2-currencyname = 'Paraguayan Guarani'.
+    temp2-currencyshortname = 'Guarani'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'QAR'.
+    temp2-currencyname = 'Qatar Rial'.
+    temp2-currencyshortname = 'Rial'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'RMB'.
+    temp2-currencyname = 'Chinese Yuan Renminbi'.
+    temp2-currencyshortname = 'Yuan Renminbi'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ROL'.
+    temp2-currencyname = 'Romanian Leu (Old)'.
+    temp2-currencyshortname = 'Leu (Old)'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'RON'.
+    temp2-currencyname = 'Romanian Leu'.
+    temp2-currencyshortname = 'Leu'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'RSD'.
+    temp2-currencyname = 'Serbian Dinar'.
+    temp2-currencyshortname = 'Serbian Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'RUB'.
+    temp2-currencyname = 'Russian Ruble'.
+    temp2-currencyshortname = 'Ruble'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'RWF'.
+    temp2-currencyname = 'Rwandan Franc'.
+    temp2-currencyshortname = 'Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SAR'.
+    temp2-currencyname = 'Saudi Riyal'.
+    temp2-currencyshortname = 'Rial'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SBD'.
+    temp2-currencyname = 'Solomon Islands Dollar'.
+    temp2-currencyshortname = 'Sol.Isl.Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SCR'.
+    temp2-currencyname = 'Seychelles Rupee'.
+    temp2-currencyshortname = 'Rupee'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SDD'.
+    temp2-currencyname = 'Sudanese Dinar (Old)'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SDG'.
+    temp2-currencyname = 'Sudanese Pound'.
+    temp2-currencyshortname = 'Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SDP'.
+    temp2-currencyname = 'Sudanese Pound (until 1992)'.
+    temp2-currencyshortname = 'Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SEK'.
+    temp2-currencyname = 'Swedish Krona'.
+    temp2-currencyshortname = 'Swedish Krona'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SGD'.
+    temp2-currencyname = 'Singapore Dollar'.
+    temp2-currencyshortname = 'Sing.Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SHP'.
+    temp2-currencyname = 'St.Helena Pound'.
+    temp2-currencyshortname = 'St.Helena Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SIT'.
+    temp2-currencyname = 'Slovenian Tolar (Old --> EUR)'.
+    temp2-currencyshortname = 'Tolar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SKK'.
+    temp2-currencyname = 'Slovakian Krona (Old --> EUR)'.
+    temp2-currencyshortname = 'Krona'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SLL'.
+    temp2-currencyname = 'Sierra Leone Leone'.
+    temp2-currencyshortname = 'Leone'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SOS'.
+    temp2-currencyname = 'Somalian Shilling'.
+    temp2-currencyshortname = 'Shilling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SRD'.
+    temp2-currencyname = 'Surinam Dollar'.
+    temp2-currencyshortname = 'Surinam Doillar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SRG'.
+    temp2-currencyname = 'Surinam Guilder (Old)'.
+    temp2-currencyshortname = 'Surinam Guilder'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SSP'.
+    temp2-currencyname = 'South Sudanese Pound'.
+    temp2-currencyshortname = 'Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'STD'.
+    temp2-currencyname = 'Sao Tome / Principe Dobra'.
+    temp2-currencyshortname = 'Dobra'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SVC'.
+    temp2-currencyname = 'El Salvador Colon'.
+    temp2-currencyshortname = 'Colon'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SYP'.
+    temp2-currencyname = 'Syrian Pound'.
+    temp2-currencyshortname = 'Syrian Pound'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'SZL'.
+    temp2-currencyname = 'Swaziland Lilangeni'.
+    temp2-currencyshortname = 'Lilangeni'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'THB'.
+    temp2-currencyname = 'Thailand Baht'.
+    temp2-currencyshortname = 'Baht'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TJR'.
+    temp2-currencyname = 'Tajikistani Ruble (Old)'.
+    temp2-currencyshortname = 'Ruble'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TJS'.
+    temp2-currencyname = 'Tajikistani Somoni'.
+    temp2-currencyshortname = 'Somoni'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TMM'.
+    temp2-currencyname = 'Turkmenistani Manat (Old)'.
+    temp2-currencyshortname = 'Manat (Old)'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TMT'.
+    temp2-currencyname = 'Turkmenistani Manat'.
+    temp2-currencyshortname = 'Manat'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TND'.
+    temp2-currencyname = 'Tunisian Dinar'.
+    temp2-currencyshortname = 'Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TOP'.
+    temp2-currencyname = 'Tongan Pa''anga'.
+    temp2-currencyshortname = 'Pa''anga'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TPE'.
+    temp2-currencyname = 'Timor Escudo --> USD'.
+    temp2-currencyshortname = 'Timor Escudo'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TRL'.
+    temp2-currencyname = 'Turkish Lira (Old)'.
+    temp2-currencyshortname = 'Lira (Old)'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TRY'.
+    temp2-currencyname = 'Turkish Lira'.
+    temp2-currencyshortname = 'Lira'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TTD'.
+    temp2-currencyname = 'Trinidad and Tobago Dollar'.
+    temp2-currencyshortname = 'T.+ T. Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TWD'.
+    temp2-currencyname = 'New Taiwan Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'TZS'.
+    temp2-currencyname = 'Tanzanian Shilling'.
+    temp2-currencyshortname = 'Shilling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'UAH'.
+    temp2-currencyname = 'Ukraine Hryvnia'.
+    temp2-currencyshortname = 'Hryvnia'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'UGX'.
+    temp2-currencyname = 'Ugandan Shilling'.
+    temp2-currencyshortname = 'Shilling'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'USD'.
+    temp2-currencyname = 'United States Dollar'.
+    temp2-currencyshortname = 'US Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'USDN'.
+    temp2-currencyname = '(Internal) United States Dollar (5 Dec.)'.
+    temp2-currencyshortname = 'US Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'UYU'.
+    temp2-currencyname = 'Uruguayan Peso'.
+    temp2-currencyshortname = 'Peso'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'UZS'.
+    temp2-currencyname = 'Uzbekistan Som'.
+    temp2-currencyshortname = 'Total'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'VEB'.
+    temp2-currencyname = 'Venezuelan Bolivar (Old)'.
+    temp2-currencyshortname = 'Bolivar (Old)'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'VEF'.
+    temp2-currencyname = 'Venezuelan Bolivar'.
+    temp2-currencyshortname = 'Bolivar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'VND'.
+    temp2-currencyname = 'Vietnamese Dong'.
+    temp2-currencyshortname = 'Dong'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'VUV'.
+    temp2-currencyname = 'Vanuatu Vatu'.
+    temp2-currencyshortname = 'Vatu'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'WST'.
+    temp2-currencyname = 'Samoan Tala'.
+    temp2-currencyshortname = 'Tala'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'XAF'.
+    temp2-currencyname = 'Gabon CFA Franc BEAC'.
+    temp2-currencyshortname = 'CFA Franc BEAC'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'XCD'.
+    temp2-currencyname = 'East Carribean Dollar'.
+    temp2-currencyshortname = 'Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'XEU'.
+    temp2-currencyname = 'European Currency Unit (E.C.U.)'.
+    temp2-currencyshortname = 'E.C.U.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'XOF'.
+    temp2-currencyname = 'Benin CFA Franc BCEAO'.
+    temp2-currencyshortname = 'CFA Franc BCEAO'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'XPF'.
+    temp2-currencyname = 'CFP Franc'.
+    temp2-currencyshortname = 'Franc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'YER'.
+    temp2-currencyname = 'Yemeni Ryal'.
+    temp2-currencyshortname = 'Yemeni Ryal'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'YUM'.
+    temp2-currencyname = 'New Yugoslavian Dinar (Old)'.
+    temp2-currencyshortname = 'New Dinar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZAR'.
+    temp2-currencyname = 'South African Rand'.
+    temp2-currencyshortname = 'Rand'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZMK'.
+    temp2-currencyname = 'Zambian Kwacha (Old)'.
+    temp2-currencyshortname = 'Kwacha'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZMW'.
+    temp2-currencyname = 'Zambian Kwacha (New)'.
+    temp2-currencyshortname = 'Kwacha'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZRN'.
+    temp2-currencyname = 'Zaire (Old)'.
+    temp2-currencyshortname = 'Zaire'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZWD'.
+    temp2-currencyname = 'Zimbabwean Dollar (Old)'.
+    temp2-currencyshortname = 'Zimbabwe Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZWL'.
+    temp2-currencyname = 'Zimbabwean Dollar (New)'.
+    temp2-currencyshortname = 'Zimbabwe Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZWN'.
+    temp2-currencyname = 'Zimbabwean Dollar (Old)'.
+    temp2-currencyshortname = 'Zimbabwe Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-language = 'E'.
+    temp2-currency = 'ZWR'.
+    temp2-currencyname = 'Zimbabwean Dollar (Old)'.
+    temp2-currencyshortname = 'Zimbabwe Dollar'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_suggestion = temp1.
 
   ENDMETHOD.
 
@@ -276,7 +1117,8 @@ CLASS Z2UI5_CL_DEMO_APP_201 IMPLEMENTATION.
     IF check_initialized = abap_false.
 
 * ---------- This script will skip the frontend suggestion filtering ------------------------------
-      DATA(lv_script) = `   debugger;` && |\n| &&
+      DATA lv_script TYPE string.
+      lv_script = `   debugger;` && |\n| &&
                   `function setInputFIlter(){` && |\n| &&
                   ` var inp = sap.z2ui5.oView.byId('suggInput');` && |\n| &&
                   ` inp.setFilterFunction(function(sValue, oItem){` && |\n| &&
@@ -308,7 +1150,8 @@ CLASS Z2UI5_CL_DEMO_APP_201 IMPLEMENTATION.
 * +-------------------------------------------------------------------------------------------------+
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD z2ui5_on_event.
-    DATA lt_range TYPE RANGE OF string.
+    TYPES temp5 TYPE RANGE OF string.
+DATA lt_range TYPE temp5.
 
     CASE client->get( )-event.
       WHEN 'START'.
@@ -316,10 +1159,18 @@ CLASS Z2UI5_CL_DEMO_APP_201 IMPLEMENTATION.
       WHEN 'ON_SUGGEST'.
 
 
-        lt_range = VALUE #( (  sign = 'I' option = 'CP' low = `*` && input && `*` ) ).
+        DATA temp3 LIKE lt_range.
+        CLEAR temp3.
+        DATA temp4 LIKE LINE OF temp3.
+        temp4-sign = 'I'.
+        temp4-option = 'CP'.
+        temp4-low = `*` && input && `*`.
+        INSERT temp4 INTO TABLE temp3.
+        lt_range = temp3.
 
         CLEAR mt_suggestion_out.
-        LOOP AT mt_suggestion INTO DATA(ls_sugg)
+        DATA ls_sugg LIKE LINE OF mt_suggestion.
+        LOOP AT mt_suggestion INTO ls_sugg
             WHERE currencyname IN lt_range.
           INSERT ls_sugg INTO TABLE mt_suggestion_out.
         ENDLOOP.
@@ -342,16 +1193,21 @@ CLASS Z2UI5_CL_DEMO_APP_201 IMPLEMENTATION.
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD z2ui5_view_display.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell( )->page(
        title          = 'abap2UI5 - Live Suggestion Event'
        navbuttonpress = client->_event( 'BACK' )
-       shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+       shownavbutton  = temp1 ).
 
 
-    DATA(grid) = page->grid( 'L6 M12 S12'
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L6 M12 S12'
         )->content( 'layout' ).
 
-    DATA(input) = grid->simple_form( 'Input'
+    DATA input TYPE REF TO z2ui5_cl_xml_view.
+    input = grid->simple_form( 'Input'
         )->content( 'form'
             )->label( 'Input with value help'
             )->input(

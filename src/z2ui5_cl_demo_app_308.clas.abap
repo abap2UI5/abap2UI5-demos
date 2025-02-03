@@ -16,13 +16,17 @@ CLASS z2ui5_cl_demo_app_308 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
-      DATA(page) = view->shell(
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      DATA temp1 TYPE xsdboolean.
+      temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+      page = view->shell(
           )->page( title          = 'Harvey Chart'
                    navbuttonpress = client->_event( 'BACK' )
-                   shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                   shownavbutton  = temp1 ).
 
       page->harvey_ball_micro_chart(
 *                                   colorpalette  =

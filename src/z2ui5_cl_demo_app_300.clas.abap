@@ -32,11 +32,14 @@ CLASS z2ui5_cl_demo_app_300 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page_01) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page_01 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page_01 = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = `abap2UI5 - Sample: Object Status`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page_01->header_content(
        )->button( id = `button_hint_id`
@@ -390,10 +393,13 @@ CLASS z2ui5_cl_demo_app_300 IMPLEMENTATION.
       WHEN 'CLICK_HINT_ICON'.
         z2ui5_display_popover( `button_hint_id` ).
       WHEN 'handleStatusPressed'.
+        DATA temp1 TYPE string_table.
+        CLEAR temp1.
+        INSERT `OK ` INTO TABLE temp1.
         client->message_box_display( title   = `Error description`
                                      type    = ``  "Keep this empty to use the custom title instead of the default message type as title
                                      text    = `Product was damaged along transportation.`
-                                     actions = VALUE string_table( ( `OK ` ) ) ). "Add space after 'OK' to prevent the button type from being 'Emphasized'
+                                     actions = temp1 ). "Add space after 'OK' to prevent the button type from being 'Emphasized'
     ENDCASE.
 
   ENDMETHOD.
@@ -401,7 +407,8 @@ CLASS z2ui5_cl_demo_app_300 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

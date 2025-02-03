@@ -23,9 +23,9 @@ CLASS z2ui5_cl_demo_app_104 DEFINITION
       END OF ty_row .
 
     DATA
-      t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY .
+      t_tab TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY .
     DATA
-      t_tab2 TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY .
+      t_tab2 TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY .
     DATA mv_layout TYPE string .
     DATA mv_title TYPE string .
     DATA check_initialized TYPE abap_bool .
@@ -56,7 +56,8 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
 
     IF mo_app_sub IS BOUND.
 
-      ASSIGN mo_app_sub->('MO_VIEW_PARENT') TO FIELD-SYMBOL(<fs>).
+      FIELD-SYMBOLS <fs> TYPE any.
+      ASSIGN mo_app_sub->('MO_VIEW_PARENT') TO <fs>.
       <fs> = mo_grid_sub.
       CALL METHOD mo_app_sub->('Z2UI5_IF_APP~MAIN') EXPORTING client = client.
 
@@ -69,7 +70,8 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
     classname = to_upper( classname ).
     CREATE OBJECT mo_app_sub TYPE (classname).
 
-    ASSIGN mo_app_sub->('MO_VIEW_PARENT') TO FIELD-SYMBOL(<fs>).
+    FIELD-SYMBOLS <fs> TYPE any.
+    ASSIGN mo_app_sub->('MO_VIEW_PARENT') TO <fs>.
     <fs> = mo_grid_sub.
     CALL METHOD mo_app_sub->('Z2UI5_IF_APP~MAIN') EXPORTING client = client.
 
@@ -79,7 +81,8 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
   METHOD view_display_detail.
 
     lo_view_nested = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = lo_view_nested->page( title = `Nested View` ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = lo_view_nested->page( title = `Nested View` ).
     mo_grid_sub = page->grid( 'L12 M12 S12'
         )->content( 'layout' ).
 
@@ -88,7 +91,8 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
 
   METHOD view_display_master.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = z2ui5_cl_xml_view=>factory(
        )->page(
           title           = 'abap2UI5 - Master Detail Page with Nested View'
           navbuttonpress  = client->_event( 'BACK' )
@@ -101,12 +105,15 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
              )->link(
          )->get_parent( ).
 
-    DATA(col_layout) = page->flexible_column_layout( layout = client->_bind_edit( mv_layout )
+    DATA col_layout TYPE REF TO z2ui5_cl_xml_view.
+    col_layout = page->flexible_column_layout( layout = client->_bind_edit( mv_layout )
                                                      id     ='test' ).
 
-    DATA(lr_master) = col_layout->begin_column_pages( ).
+    DATA lr_master TYPE REF TO z2ui5_cl_xml_view.
+    lr_master = col_layout->begin_column_pages( ).
 
-    DATA(lr_list) = lr_master->list(
+    DATA lr_list TYPE REF TO z2ui5_cl_xml_view.
+    lr_list = lr_master->list(
           headertext      = 'List Ouput'
           items           = client->_bind_edit( val = t_tab view = client->cs_view-main )
           mode            = `SingleSelectMaster`
@@ -131,9 +138,20 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      t_tab = VALUE #(
-        ( title = 'Class 1'  info = 'z2ui5_cl_demo_app_105'   descr = 'this is a description' icon = 'sap-icon://account' )
-        ( title = 'Class 2'  info = 'z2ui5_cl_demo_app_112' descr = 'this is a description' icon = 'sap-icon://account' ) ).
+      DATA temp1 LIKE t_tab.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-title = 'Class 1'.
+      temp2-info = 'z2ui5_cl_demo_app_105'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Class 2'.
+      temp2-info = 'z2ui5_cl_demo_app_112'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      t_tab = temp1.
 
       mv_layout = `OneColumn`.
       view_display_master( ).
@@ -145,10 +163,12 @@ CLASS z2ui5_cl_demo_app_104 IMPLEMENTATION.
 
       WHEN `SELCHANGE`.
 
-        DATA(lt_sel) = t_tab.
+        DATA lt_sel LIKE t_tab.
+        lt_sel = t_tab.
         DELETE lt_sel WHERE selected = abap_false.
 
-        READ TABLE lt_sel INTO DATA(ls_sel) INDEX 1.
+        DATA ls_sel TYPE z2ui5_cl_demo_app_104=>ty_row.
+        READ TABLE lt_sel INTO ls_sel INDEX 1.
         APPEND ls_sel TO t_tab2.
 
         IF classname IS NOT INITIAL.

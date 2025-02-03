@@ -90,36 +90,145 @@ CLASS Z2UI5_CL_DEMO_APP_091 IMPLEMENTATION.
 
   METHOD z2ui5_set_data.
 
-    mt_nodes = VALUE #( ( id = `1` lane = `0` title = `Sales Order 1` titleabbreviation = `SO 1` children = VALUE #( ( 10 ) ( 11 ) ( 12 ) ) state = `Positive` statetext = `OK status` focused = abap_true
-                          highlighted = abap_false texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) )
-                        ( id = `10` lane = `1` title = `Outbound Delivery 40` titleabbreviation = `OD 40` state = `Positive` statetext = `OK status` focused = abap_true highlighted = abap_false
-                        texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) )
-                        ( id = `11` lane = `1` title = `Outbound Delivery 43` titleabbreviation = `OD 43` children = VALUE #( ( 21 ) ) state = `Neutral` statetext = `OK status` focused = abap_true highlighted = abap_false
-                        texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) )
-                        ( id = `12` lane = `1` title = `Outbound Delivery 45` titleabbreviation = `OD 45` children = VALUE #( ( 20 ) ) state = `Neutral` focused = abap_false highlighted = abap_false
-                         texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) )
-                        ( id = `20` lane = `2` title = `Invoice 9` titleabbreviation = `I 9` state = `Positive` statetext = `OK status` focused = abap_false highlighted = abap_false
-                        texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) )
-                        ( id = `21` lane = `2` title = `Invoice Planned` titleabbreviation = `IP` state = `PlannedNegative` focused = abap_false highlighted = abap_false
-                        texts = VALUE #( ( `Sales Order Document Overdue long text for the wrap up all the aspects` ) ( `Not cleared` ) ) ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_091=>tt_nodes2.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-id = `1`.
+    temp2-lane = `0`.
+    temp2-title = `Sales Order 1`.
+    temp2-titleabbreviation = `SO 1`.
+    DATA temp5 TYPE z2ui5_cl_demo_app_091=>children_array.
+    CLEAR temp5.
+    INSERT 10 INTO TABLE temp5.
+    INSERT 11 INTO TABLE temp5.
+    INSERT 12 INTO TABLE temp5.
+    temp2-children = temp5.
+    temp2-state = `Positive`.
+    temp2-statetext = `OK status`.
+    temp2-focused = abap_true.
+    temp2-highlighted = abap_false.
+    DATA temp7 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp7.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp7.
+    INSERT `Not cleared` INTO TABLE temp7.
+    temp2-texts = temp7.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = `10`.
+    temp2-lane = `1`.
+    temp2-title = `Outbound Delivery 40`.
+    temp2-titleabbreviation = `OD 40`.
+    temp2-state = `Positive`.
+    temp2-statetext = `OK status`.
+    temp2-focused = abap_true.
+    temp2-highlighted = abap_false.
+    DATA temp9 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp9.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp9.
+    INSERT `Not cleared` INTO TABLE temp9.
+    temp2-texts = temp9.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = `11`.
+    temp2-lane = `1`.
+    temp2-title = `Outbound Delivery 43`.
+    temp2-titleabbreviation = `OD 43`.
+    DATA temp11 TYPE z2ui5_cl_demo_app_091=>children_array.
+    CLEAR temp11.
+    INSERT 21 INTO TABLE temp11.
+    temp2-children = temp11.
+    temp2-state = `Neutral`.
+    temp2-statetext = `OK status`.
+    temp2-focused = abap_true.
+    temp2-highlighted = abap_false.
+    DATA temp13 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp13.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp13.
+    INSERT `Not cleared` INTO TABLE temp13.
+    temp2-texts = temp13.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = `12`.
+    temp2-lane = `1`.
+    temp2-title = `Outbound Delivery 45`.
+    temp2-titleabbreviation = `OD 45`.
+    DATA temp15 TYPE z2ui5_cl_demo_app_091=>children_array.
+    CLEAR temp15.
+    INSERT 20 INTO TABLE temp15.
+    temp2-children = temp15.
+    temp2-state = `Neutral`.
+    temp2-focused = abap_false.
+    temp2-highlighted = abap_false.
+    DATA temp17 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp17.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp17.
+    INSERT `Not cleared` INTO TABLE temp17.
+    temp2-texts = temp17.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = `20`.
+    temp2-lane = `2`.
+    temp2-title = `Invoice 9`.
+    temp2-titleabbreviation = `I 9`.
+    temp2-state = `Positive`.
+    temp2-statetext = `OK status`.
+    temp2-focused = abap_false.
+    temp2-highlighted = abap_false.
+    DATA temp19 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp19.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp19.
+    INSERT `Not cleared` INTO TABLE temp19.
+    temp2-texts = temp19.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = `21`.
+    temp2-lane = `2`.
+    temp2-title = `Invoice Planned`.
+    temp2-titleabbreviation = `IP`.
+    temp2-state = `PlannedNegative`.
+    temp2-focused = abap_false.
+    temp2-highlighted = abap_false.
+    DATA temp21 TYPE z2ui5_cl_demo_app_091=>texts_array.
+    CLEAR temp21.
+    INSERT `Sales Order Document Overdue long text for the wrap up all the aspects` INTO TABLE temp21.
+    INSERT `Not cleared` INTO TABLE temp21.
+    temp2-texts = temp21.
+    INSERT temp2 INTO TABLE temp1.
+    mt_nodes = temp1.
 
-    mt_lanes = VALUE #( ( id = `0` icon = `sap-icon://order-status` label = `Order Processing` position = 0 )
-                        ( id = `1` icon = `sap-icon://monitor-payments` label = `Delivery Processing` position = 1 )
-                        ( id = `2` icon = `sap-icon://payment-approval` label = `Invoicing` position = 2 ) ).
+    DATA temp3 TYPE z2ui5_cl_demo_app_091=>tt_lanes5.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-id = `0`.
+    temp4-icon = `sap-icon://order-status`.
+    temp4-label = `Order Processing`.
+    temp4-position = 0.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-id = `1`.
+    temp4-icon = `sap-icon://monitor-payments`.
+    temp4-label = `Delivery Processing`.
+    temp4-position = 1.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-id = `2`.
+    temp4-icon = `sap-icon://payment-approval`.
+    temp4-label = `Invoicing`.
+    temp4-position = 2.
+    INSERT temp4 INTO TABLE temp3.
+    mt_lanes = temp3.
   ENDMETHOD.
 
 
   METHOD z2ui5_view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page(
         title          = 'abap2UI5 - Process Flow'
         navbuttonpress = client->_event( 'BACK' )
-        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+        shownavbutton  = temp1
         class          = 'sapUiContentPadding' ).
 
-    DATA(process_flow) = page->process_flow(
+    DATA process_flow TYPE REF TO z2ui5_cl_xml_view.
+    process_flow = page->process_flow(
         id            = `processflow1`
         scrollable    = abap_true
         wheelzoomable = abap_false

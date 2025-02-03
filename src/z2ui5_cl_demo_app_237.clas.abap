@@ -31,11 +31,14 @@ CLASS z2ui5_cl_demo_app_237 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Slider'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton  = temp1
                                      )->header_content(
                              )->button( id      = `hint_icon`
                                         icon    = `sap-icon://hint`
@@ -43,7 +46,8 @@ CLASS z2ui5_cl_demo_app_237 IMPLEMENTATION.
                                         press   = client->_event( 'POPOVER' )
                              )->get_parent( ).
 
-    DATA(layout) = page->vertical_layout( class = `sapUiContentPadding`
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->vertical_layout( class = `sapUiContentPadding`
                                           width = `100%`
                           )->text( text  = `Slider without text field`
                                    class = `sapUiSmallMarginBottom`
@@ -134,7 +138,8 @@ CLASS z2ui5_cl_demo_app_237 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
               )->quick_view_page( pageid      = `sampleInformationId`
                                   header      = `Sample information`

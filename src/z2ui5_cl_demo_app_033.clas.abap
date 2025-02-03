@@ -20,9 +20,11 @@ CLASS z2ui5_cl_demo_app_033 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->shell(
         )->page(
             title          = 'abap2UI5 - Illustrated Messages'
             navbuttonpress = client->_event( val = 'BACK'  )

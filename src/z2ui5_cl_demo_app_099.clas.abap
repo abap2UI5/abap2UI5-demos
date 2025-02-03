@@ -24,13 +24,13 @@ CLASS z2ui5_cl_demo_app_099 DEFINITION
       END OF ty_sort .
 
     DATA
-      t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY .
+      t_tab TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY .
     DATA
-      t_tab_sort TYPE STANDARD TABLE OF ty_sort WITH EMPTY KEY .
+      t_tab_sort TYPE STANDARD TABLE OF ty_sort WITH DEFAULT KEY .
     DATA
-      t_tab_group TYPE STANDARD TABLE OF ty_sort WITH EMPTY KEY .
+      t_tab_group TYPE STANDARD TABLE OF ty_sort WITH DEFAULT KEY .
     DATA
-      t_tab_filter TYPE STANDARD TABLE OF ty_sort WITH EMPTY KEY .
+      t_tab_filter TYPE STANDARD TABLE OF ty_sort WITH DEFAULT KEY .
     DATA mv_sorter_group TYPE string .
     DATA mv_filter TYPE string .
     DATA mv_sort_descending TYPE abap_bool .
@@ -90,11 +90,21 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
       WHEN 'GROUP'.
         z2ui5_view_group_popup( ).
       WHEN 'CONFIRM_SORT'.
-        DATA(lt_arg) = client->get( )-t_event_arg.
+        DATA lt_arg TYPE string_table.
+        lt_arg = client->get( )-t_event_arg.
 
         IF lt_arg IS NOT INITIAL.
 
-          DATA(sort_field) = lt_arg[ 1 ].
+          DATA sort_field LIKE LINE OF lt_arg.
+          DATA temp1 LIKE LINE OF lt_arg.
+          DATA temp2 LIKE sy-tabix.
+          temp2 = sy-tabix.
+          READ TABLE lt_arg INDEX 1 INTO temp1.
+          sy-tabix = temp2.
+          IF sy-subrc <> 0.
+            ASSERT 1 = 0.
+          ENDIF.
+          sort_field = temp1.
 
           IF mv_sort_descending = abap_true.
             SORT t_tab BY (sort_field) DESCENDING.
@@ -113,20 +123,36 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
         IF lt_arg IS NOT INITIAL.
 
-          DATA(filter_string) = lt_arg[ 1 ].
-          SPLIT filter_string AT ':' INTO DATA(lv_dummy) filter_string.
+          DATA filter_string LIKE LINE OF lt_arg.
+          DATA temp3 LIKE LINE OF lt_arg.
+          DATA temp4 LIKE sy-tabix.
+          temp4 = sy-tabix.
+          READ TABLE lt_arg INDEX 1 INTO temp3.
+          sy-tabix = temp4.
+          IF sy-subrc <> 0.
+            ASSERT 1 = 0.
+          ENDIF.
+          filter_string = temp3.
+          DATA lv_dummy TYPE string.
+          SPLIT filter_string AT ':' INTO lv_dummy filter_string.
           CONDENSE filter_string NO-GAPS.
-          SPLIT filter_string AT `(` INTO DATA(lv_field) DATA(lv_values).
+          DATA lv_field TYPE string.
+          DATA lv_values TYPE string.
+          SPLIT filter_string AT `(` INTO lv_field lv_values.
           TRANSLATE lv_field TO UPPER CASE.
-          DATA(lv_values_len) = strlen( lv_values ) - 1.
+          DATA lv_values_len TYPE i.
+          lv_values_len = strlen( lv_values ) - 1.
           lv_values = lv_values+0(lv_values_len).
-          SPLIT lv_values AT ',' INTO TABLE DATA(lt_values) IN CHARACTER MODE.
+          DATA lt_values TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
+          SPLIT lv_values AT ',' INTO TABLE lt_values IN CHARACTER MODE.
           IF sy-subrc = 0.
-            LOOP AT lt_values INTO DATA(lv_val).
+            DATA lv_val LIKE LINE OF lt_values.
+            LOOP AT lt_values INTO lv_val.
               mv_filter = mv_filter && `{path:'` && lv_field && `',operator: 'EQ',value1:'` && lv_val && `'},`.
             ENDLOOP.
           ENDIF.
-          DATA(mv_filter_len) = strlen( mv_filter ) - 1.
+          DATA mv_filter_len TYPE i.
+          mv_filter_len = strlen( mv_filter ) - 1.
           mv_filter = mv_filter+0(mv_filter_len).
 
 
@@ -139,7 +165,16 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
         IF lt_arg IS NOT INITIAL.
 
-          DATA(group_field) = lt_arg[ 1 ].
+          DATA group_field LIKE LINE OF lt_arg.
+          DATA temp5 LIKE LINE OF lt_arg.
+          DATA temp6 LIKE sy-tabix.
+          temp6 = sy-tabix.
+          READ TABLE lt_arg INDEX 1 INTO temp5.
+          sy-tabix = temp6.
+          IF sy-subrc <> 0.
+            ASSERT 1 = 0.
+          ENDIF.
+          group_field = temp5.
 
           IF group_field IS NOT INITIAL.
 
@@ -175,28 +210,82 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
   METHOD z2ui5_set_data.
 
-    t_tab = VALUE #(
-      ( title = 'row_01'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-      ( title = 'row_02'  info = 'incompleted' descr = 'this is a description' icon = 'sap-icon://account' )
-      ( title = 'row_03'  info = 'working'     descr = 'this is a description' icon = 'sap-icon://account' )
-      ( title = 'row_04'  info = 'working'     descr = 'this is a description' icon = 'sap-icon://account' )
-      ( title = 'row_05'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-      ( title = 'row_06'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' ) ).
+    DATA temp1 LIKE t_tab.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-title = 'row_01'.
+    temp2-info = 'completed'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-title = 'row_02'.
+    temp2-info = 'incompleted'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-title = 'row_03'.
+    temp2-info = 'working'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-title = 'row_04'.
+    temp2-info = 'working'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-title = 'row_05'.
+    temp2-info = 'completed'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-title = 'row_06'.
+    temp2-info = 'completed'.
+    temp2-descr = 'this is a description'.
+    temp2-icon = 'sap-icon://account'.
+    INSERT temp2 INTO TABLE temp1.
+    t_tab = temp1.
 
-    t_tab_group = VALUE #(
-       ( text = `Title`       key = `title` )
-       ( text = `Info`        key = `info` )
-       ( text = `Description` key = `descr` ) ).
+    DATA temp3 LIKE t_tab_group.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-text = `Title`.
+    temp4-key = `title`.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-text = `Info`.
+    temp4-key = `info`.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-text = `Description`.
+    temp4-key = `descr`.
+    INSERT temp4 INTO TABLE temp3.
+    t_tab_group = temp3.
 
-    t_tab_sort = VALUE #(
-       ( text = `Title`       key = `title` )
-       ( text = `Info`        key = `info` )
-       ( text = `Description` key = `descr` ) ).
+    DATA temp5 LIKE t_tab_sort.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-text = `Title`.
+    temp6-key = `title`.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-text = `Info`.
+    temp6-key = `info`.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-text = `Description`.
+    temp6-key = `descr`.
+    INSERT temp6 INTO TABLE temp5.
+    t_tab_sort = temp5.
 
-    t_tab_filter = VALUE #(
-      ( text = `Title`  key = `Title` )
-      ( text = `Descr`  key = `Descr` )
-      ( text = `Info`   key = `Info` ) ).
+    DATA temp7 LIKE t_tab_filter.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-text = `Title`.
+    temp8-key = `Title`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-text = `Descr`.
+    temp8-key = `Descr`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-text = `Info`.
+    temp8-key = `Info`.
+    INSERT temp8 INTO TABLE temp7.
+    t_tab_filter = temp7.
 
 
   ENDMETHOD.
@@ -204,8 +293,10 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
   METHOD z2ui5_view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->shell(
         )->page(
             title           = 'abap2UI5 - List'
             navbuttonpress  = client->_event( 'BACK' )
@@ -260,10 +351,15 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
   METHOD z2ui5_view_filter_popup.
 
-    DATA(popup_filter) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup_filter TYPE REF TO z2ui5_cl_xml_view.
+    popup_filter = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(filter_view) = popup_filter->view_settings_dialog( filteritems = client->_bind_edit( t_tab_filter )
-                                                            confirm     = client->_event( val = `CONFIRM_FILTER` t_arg = VALUE #( ( `${$parameters>/filterString}` ) ) )
+    DATA temp9 TYPE string_table.
+    CLEAR temp9.
+    INSERT `${$parameters>/filterString}` INTO TABLE temp9.
+    DATA filter_view TYPE REF TO z2ui5_cl_xml_view.
+    filter_view = popup_filter->view_settings_dialog( filteritems = client->_bind_edit( t_tab_filter )
+                                                            confirm     = client->_event( val = `CONFIRM_FILTER` t_arg = temp9 )
       )->filter_items(
         )->view_settings_filter_item( multiselect = abap_true
                                       text        = `{TEXT}`
@@ -283,9 +379,14 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
   METHOD z2ui5_view_group_popup.
 
-    DATA(popup_group) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup_group TYPE REF TO z2ui5_cl_xml_view.
+    popup_group = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(group_view) = popup_group->view_settings_dialog( confirm         = client->_event( val = `CONFIRM_GROUP` t_arg = VALUE #( ( `${$parameters>/groupItem/mProperties/key}` ) ) )
+    DATA temp11 TYPE string_table.
+    CLEAR temp11.
+    INSERT `${$parameters>/groupItem/mProperties/key}` INTO TABLE temp11.
+    DATA group_view TYPE REF TO z2ui5_cl_xml_view.
+    group_view = popup_group->view_settings_dialog( confirm         = client->_event( val = `CONFIRM_GROUP` t_arg = temp11 )
                                                           reset           = client->_event( `RESET_GROUP` )
                                                           groupdescending = client->_bind_edit( mv_group_descending )
                                                           groupitems      = client->_bind_edit( t_tab_group )
@@ -300,7 +401,8 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
 
   METHOD z2ui5_view_settings_popup.
-    DATA(popup_settings) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup_settings TYPE REF TO z2ui5_cl_xml_view.
+    popup_settings = z2ui5_cl_xml_view=>factory_popup( ).
 
     popup_settings = popup_settings->view_settings_dialog(
                                     confirm     = client->_event( 'ALL_EVENT' )
@@ -330,10 +432,15 @@ CLASS Z2UI5_CL_DEMO_APP_099 IMPLEMENTATION.
 
   METHOD z2ui5_view_sort_popup.
 
-    DATA(popup_sort) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup_sort TYPE REF TO z2ui5_cl_xml_view.
+    popup_sort = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(sort_view) = popup_sort->view_settings_dialog(
-                                    confirm        = client->_event( val = `CONFIRM_SORT` t_arg = VALUE #( ( `${$parameters>/sortItem/mProperties/key}` ) ) )
+    DATA temp13 TYPE string_table.
+    CLEAR temp13.
+    INSERT `${$parameters>/sortItem/mProperties/key}` INTO TABLE temp13.
+    DATA sort_view TYPE REF TO z2ui5_cl_xml_view.
+    sort_view = popup_sort->view_settings_dialog(
+                                    confirm        = client->_event( val = `CONFIRM_SORT` t_arg = temp13 )
                                     sortitems      = client->_bind_edit( t_tab_sort )
                                     sortdescending = client->_bind_edit( mv_sort_descending )
                         )->sort_items(

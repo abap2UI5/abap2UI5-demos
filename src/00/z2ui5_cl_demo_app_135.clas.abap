@@ -45,21 +45,27 @@ CLASS z2ui5_cl_demo_app_135 IMPLEMENTATION.
     set_session_stateful( client   = client
                           stateful = abap_true ).
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page(
       title          = `abap2UI5 - Sample: Sticky Session with locks - (ABAP Standard Only)`
       navbuttonpress = client->_event( 'BACK' )
-      shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+      shownavbutton  = temp1 ).
 
     page->message_strip(
         text    = client->_bind( error-text )
         type    = 'Error'
         visible = client->_bind( error-flag ) ).
 
-    DATA(vbox) = page->vbox( ).
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = page->vbox( ).
 
-    DATA(hbox) = vbox->hbox( alignitems = 'Center' ).
+    DATA hbox TYPE REF TO z2ui5_cl_xml_view.
+    hbox = vbox->hbox( alignitems = 'Center' ).
 
     hbox->info_label( text = client->_bind( session_text ) ).
 
@@ -146,13 +152,15 @@ CLASS z2ui5_cl_demo_app_135 IMPLEMENTATION.
 
         TRY.
             on_event( client ).
-          CATCH z2ui5_cx_util_error INTO DATA(x_error).
+            DATA x_error TYPE REF TO z2ui5_cx_util_error.
+          CATCH z2ui5_cx_util_error INTO x_error.
             error-text = x_error->get_text( ).
             error-flag = abap_true.
             client->view_model_update( ).
         ENDTRY.
 
-      CATCH cx_root INTO DATA(lx).
+        DATA lx TYPE REF TO cx_root.
+      CATCH cx_root INTO lx.
         client->message_box_display( lx->get_text( ) ).
     ENDTRY.
   ENDMETHOD.

@@ -8,7 +8,7 @@ CLASS z2ui5_cl_demo_app_319 DEFINITION PUBLIC.
         key  TYPE string,
         text TYPE string,
       END OF t_token,
-      t_tokens TYPE STANDARD TABLE OF t_token WITH EMPTY KEY.
+      t_tokens TYPE STANDARD TABLE OF t_token WITH DEFAULT KEY.
     TYPES:
       BEGIN OF t_range,
         exclude   TYPE boole_d,
@@ -19,7 +19,7 @@ CLASS z2ui5_cl_demo_app_319 DEFINITION PUBLIC.
         tokenText TYPE string,
         tokenLongKey type string,
       END OF t_range,
-      t_ranges TYPE STANDARD TABLE OF t_range WITH EMPTY KEY.
+      t_ranges TYPE STANDARD TABLE OF t_range WITH DEFAULT KEY.
     DATA:
       BEGIN OF m_selection,
         BEGIN OF product_type,
@@ -40,7 +40,7 @@ CLASS z2ui5_cl_demo_app_319 IMPLEMENTATION.
 
     m_client = client.
 
-    IF m_client->check_on_init( ).
+    IF m_client->check_on_init( ) IS NOT INITIAL.
       on_init( ).
       RETURN.
     ENDIF.
@@ -51,9 +51,11 @@ CLASS z2ui5_cl_demo_app_319 IMPLEMENTATION.
 
   METHOD on_init.
 
-    DATA(l_view) = z2ui5_cl_xml_view=>factory( ).
+    DATA l_view TYPE REF TO z2ui5_cl_xml_view.
+    l_view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(l_page) = l_view->shell( )->page( title          = 'SearchPage'
+    DATA l_page TYPE REF TO z2ui5_cl_xml_view.
+    l_page = l_view->shell( )->page( title          = 'SearchPage'
                                        navbuttonpress = m_client->_event( 'BACK' )
                                        shownavbutton  = m_client->check_app_prev_stack( ) ).
 
@@ -87,13 +89,20 @@ CLASS z2ui5_cl_demo_app_319 IMPLEMENTATION.
       WHEN 'BACK'.
         m_client->nav_app_leave( ).
       WHEN 'PRODTYPE_CHANGED'.
-        INSERT VALUE #( operation = 'EQ' value1 = 'EUR' keyField = 'CurrencyCode' tokenText = 'Euro (auto added line)' ) INTO TABLE m_selection-product_type-ranges.
+        DATA temp1 TYPE z2ui5_cl_demo_app_319=>t_range.
+        CLEAR temp1.
+        temp1-operation = 'EQ'.
+        temp1-value1 = 'EUR'.
+        temp1-keyField = 'CurrencyCode'.
+        temp1-tokenText = 'Euro (auto added line)'.
+        INSERT temp1 INTO TABLE m_selection-product_type-ranges.
         m_client->view_model_update( ).
         TRY.
             m_client->message_box_display(
               text  = z2ui5_cl_ajson=>new( )->set( iv_path = '/' iv_val = m_selection-product_type-ranges )->stringify( )
               title = 'range content' ).
-          CATCH z2ui5_cx_ajson_error INTO DATA(lx_ajson).
+            DATA lx_ajson TYPE REF TO z2ui5_cx_ajson_error.
+          CATCH z2ui5_cx_ajson_error INTO lx_ajson.
             m_client->message_toast_display( lx_ajson->get_text( ) ).
         ENDTRY.
     ENDCASE.

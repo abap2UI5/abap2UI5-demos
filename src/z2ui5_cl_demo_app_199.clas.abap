@@ -50,27 +50,35 @@ CLASS z2ui5_cl_demo_app_199 IMPLEMENTATION.
 
   METHOD render_main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
     FIELD-SYMBOLS <tab> TYPE data.
     ASSIGN mt_table->* TO <tab>.
 
-    DATA(page) = view->page( id             = `page_main`
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->page( id             = `page_main`
                              title          = 'Refresh'
                              navbuttonpress = client->_event( 'BACK' )
-                             shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                             shownavbutton  = temp1
                              class          = 'sapUiContentPadding' ).
-    DATA(table) = page->table( growing = 'true'
+    DATA table TYPE REF TO z2ui5_cl_xml_view.
+    table = page->table( growing = 'true'
                                width   = 'auto'
                                items   = client->_bind_edit( <tab> ) ).
 
-    DATA(columns) = table->columns( ).
+    DATA columns TYPE REF TO z2ui5_cl_xml_view.
+    columns = table->columns( ).
 
-    LOOP AT mt_comp INTO DATA(comp).
+    DATA comp LIKE LINE OF mt_comp.
+    LOOP AT mt_comp INTO comp.
       columns->column( )->text( comp-name ).
     ENDLOOP.
 
-    DATA(cells) = columns->get_parent( )->items(
+    DATA cells TYPE REF TO z2ui5_cl_xml_view.
+    cells = columns->get_parent( )->items(
                                        )->column_list_item( valign = 'Middle'
                                                             type   = 'Navigation'
                                        )->cells( ).
@@ -121,8 +129,8 @@ CLASS z2ui5_cl_demo_app_199 IMPLEMENTATION.
         ASSIGN mt_table->* TO <table>.
         mt_comp = z2ui5_cl_util=>rtti_get_t_attri_by_any( <table> ).
 
-        SELECT id, id_prev FROM z2ui5_t_01
-          INTO CORRESPONDING FIELDS OF TABLE @<table>
+        SELECT id id_prev FROM z2ui5_t_01
+          INTO CORRESPONDING FIELDS OF TABLE <table>
           UP TO 2 ROWS.
 
       CATCH cx_root.

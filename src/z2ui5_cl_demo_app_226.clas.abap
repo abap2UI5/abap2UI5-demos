@@ -26,13 +26,17 @@ CLASS z2ui5_cl_demo_app_226 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Icon Tab Bar - Sub tabs'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(layout) = page->label(
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->label(
              wrapping = `true`
              text     = `IconTabBar with filters with own content and sub tabs. The click area is split to allow the user to display the content or alternatively to expand/collapse the sub tabs.`
              class    = `sapUiSmallMargin` ).

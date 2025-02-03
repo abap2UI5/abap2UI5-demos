@@ -13,7 +13,7 @@ CLASS z2ui5_cl_demo_app_056 DEFINITION PUBLIC.
         storage_location TYPE string,
         quantity         TYPE i,
       END OF ty_s_tab.
-    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH EMPTY KEY.
+    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH DEFAULT KEY.
 
     DATA mt_table TYPE ty_t_table.
     DATA mt_token TYPE z2ui5_cl_util=>ty_t_token.
@@ -46,12 +46,19 @@ CLASS z2ui5_cl_demo_app_056 IMPLEMENTATION.
         client->view_model_update( ).
 
       WHEN `UPDATE_TOKENS`.
-        LOOP AT mt_tokens_removed INTO DATA(ls_token).
+        DATA ls_token LIKE LINE OF mt_tokens_removed.
+        LOOP AT mt_tokens_removed INTO ls_token.
           DELETE mt_token WHERE key = ls_token-key.
         ENDLOOP.
 
         LOOP AT mt_tokens_added INTO ls_token.
-          INSERT VALUE #( key = ls_token-key text = ls_token-text visible = abap_true editable = abap_true ) INTO TABLE mt_token.
+          DATA temp1 TYPE z2ui5_cl_util=>ty_s_token.
+          CLEAR temp1.
+          temp1-key = ls_token-key.
+          temp1-text = ls_token-text.
+          temp1-visible = abap_true.
+          temp1-editable = abap_true.
+          INSERT temp1 INTO TABLE mt_token.
         ENDLOOP.
 
         CLEAR mt_tokens_removed.
@@ -73,13 +80,46 @@ CLASS z2ui5_cl_demo_app_056 IMPLEMENTATION.
 
   METHOD set_data.
 
-    mt_table = VALUE #(
-        ( product = 'table'    create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'chair'    create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'sofa'     create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'computer' create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'oven'     create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'table2'   create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 ) ).
+    DATA temp2 TYPE z2ui5_cl_demo_app_056=>ty_t_table.
+    CLEAR temp2.
+    DATA temp3 LIKE LINE OF temp2.
+    temp3-product = 'table'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-product = 'chair'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-product = 'sofa'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-product = 'computer'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-product = 'oven'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-product = 'table2'.
+    temp3-create_date = `01.01.2023`.
+    temp3-create_by = `Peter`.
+    temp3-storage_location = `AREA_001`.
+    temp3-quantity = 400.
+    INSERT temp3 INTO TABLE temp2.
+    mt_table = temp2.
 
     DELETE mt_table WHERE product NOT IN mt_range.
 
@@ -88,22 +128,27 @@ CLASS z2ui5_cl_demo_app_056 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view = view->shell( )->page( id = `page_main`
              title                  = 'abap2UI5 - Select-Options'
              navbuttonpress         = client->_event( 'BACK' )
-             shownavbutton          = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+             shownavbutton          = temp1
         )->get_parent( ).
 
-    DATA(vbox) = view->vbox( ).
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = view->vbox( ).
     vbox->_z2ui5( )->multiinput_ext(
                        addedtokens   = client->_bind_edit( mt_tokens_added )
                        removedtokens = client->_bind_edit( mt_tokens_removed )
                        change        = client->_event( 'UPDATE_TOKENS' )
                        multiinputid  = `MultiInput` ).
 
-    DATA(tab) = vbox->table(
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = vbox->table(
         items = client->_bind( val = mt_table )
            )->header_toolbar(
              )->overflow_toolbar(
@@ -132,14 +177,16 @@ CLASS z2ui5_cl_demo_app_056 IMPLEMENTATION.
         type  = `Emphasized`
             )->get_parent( )->get_parent( ).
 
-    DATA(lo_columns) = tab->columns( ).
+    DATA lo_columns TYPE REF TO z2ui5_cl_xml_view.
+    lo_columns = tab->columns( ).
     lo_columns->column( )->text( text = `Product` ).
     lo_columns->column( )->text( text = `Date` ).
     lo_columns->column( )->text( text = `Name` ).
     lo_columns->column( )->text( text = `Location` ).
     lo_columns->column( )->text( text = `Quantity` ).
 
-    DATA(lo_cells) = tab->items( )->column_list_item( ).
+    DATA lo_cells TYPE REF TO z2ui5_cl_xml_view.
+    lo_cells = tab->items( )->column_list_item( ).
     lo_cells->text( `{PRODUCT}` ).
     lo_cells->text( `{CREATE_DATE}` ).
     lo_cells->text( `{CREATE_BY}` ).
@@ -163,7 +210,10 @@ CLASS z2ui5_cl_demo_app_056 IMPLEMENTATION.
 
     IF client->get( )-check_on_navigated = abap_true.
       TRY.
-          DATA(lo_value_help) = CAST z2ui5_cl_pop_get_range( client->get_app( client->get( )-s_draft-id_prev_app ) ).
+          DATA temp4 TYPE REF TO z2ui5_cl_pop_get_range.
+          temp4 ?= client->get_app( client->get( )-s_draft-id_prev_app ).
+          DATA lo_value_help LIKE temp4.
+          lo_value_help = temp4.
           IF lo_value_help->result( )-check_confirmed = abap_false.
             RETURN.
           ENDIF.

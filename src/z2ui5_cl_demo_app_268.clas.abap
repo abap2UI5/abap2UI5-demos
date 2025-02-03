@@ -31,7 +31,8 @@ CLASS z2ui5_cl_demo_app_268 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(css) = `.size1 {`                    &&
+    DATA css TYPE string.
+    css = `.size1 {`                    &&
                 `  font-size : 1.5rem;`       &&
                 `}`                           &&
                 `.size2 {`                    &&
@@ -64,15 +65,19 @@ CLASS z2ui5_cl_demo_app_268 IMPLEMENTATION.
                 ` }`                          &&
                 `}`.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `style`
                     ns   = `html` )->_cc_plain_xml( css )->get_parent( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
          )->page(
             title          = `abap2UI5 - Sample: Icon`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `button_hint_id`
@@ -140,7 +145,8 @@ CLASS z2ui5_cl_demo_app_268 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

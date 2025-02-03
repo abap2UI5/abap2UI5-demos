@@ -32,7 +32,8 @@ CLASS z2ui5_cl_demo_app_109 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = mv_placement
               )->quick_view_page( pageid      = `employeePageId`
                                   header      = `Employee Info`
@@ -74,12 +75,15 @@ CLASS z2ui5_cl_demo_app_109 IMPLEMENTATION.
 
   METHOD z2ui5_display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
       )->page(
               title          = 'abap2UI5 - Popover Quickview Examples'
               navbuttonpress = client->_event( val = 'BACK' )
-              shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+              shownavbutton  = temp1
           )->simple_form( 'QuickView Popover'
               )->content( 'form'
                   )->title( 'QuickView Popover'

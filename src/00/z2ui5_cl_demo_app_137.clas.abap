@@ -39,7 +39,8 @@ CLASS z2ui5_cl_demo_app_137 IMPLEMENTATION.
 
         on_event( client ).
 
-      CATCH cx_root INTO DATA(lx).
+        DATA lx TYPE REF TO cx_root.
+      CATCH cx_root INTO lx.
         client->message_box_display( lx->get_text( ) ).
     ENDTRY.
   ENDMETHOD.
@@ -48,17 +49,23 @@ CLASS z2ui5_cl_demo_app_137 IMPLEMENTATION.
     set_session_stateful( client   = client
                           stateful = abap_true ).
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page(
       title          = `abap2UI5 - Sample: Sticky Session`
       navbuttonpress = client->_event( 'BACK' )
-      shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+      shownavbutton  = temp1 ).
 
-    DATA(vbox) = page->vbox( ).
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = page->vbox( ).
     vbox->info_label( text = client->_bind( session_text ) ).
 
-    DATA(hbox) = vbox->hbox( alignitems = 'Center' ).
+    DATA hbox TYPE REF TO z2ui5_cl_xml_view.
+    hbox = vbox->hbox( alignitems = 'Center' ).
     hbox->label( text  = 'press button to increment counter in backend session'
                  class = 'sapUiTinyMarginEnd' ).
     hbox->button(

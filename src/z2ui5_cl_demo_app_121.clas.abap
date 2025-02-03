@@ -54,13 +54,16 @@ CLASS Z2UI5_CL_DEMO_APP_121 IMPLEMENTATION.
 
 
     "render view
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     client->view_display( view->shell(
           )->page(
                   title          = 'abap2UI5'
                   navbuttonpress = client->_event( val = 'BACK' )
-                  shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                  shownavbutton  = temp1
               )->_z2ui5( )->timer(
                                         finished = client->_event( `TIMER_FINISHED` )
                                         delayms  = `2000`

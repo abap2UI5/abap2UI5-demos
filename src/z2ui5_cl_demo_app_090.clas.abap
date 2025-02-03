@@ -130,50 +130,86 @@ CLASS z2ui5_cl_demo_app_090 IMPLEMENTATION.
     client->_bind_edit( val           = mt_groups_p13n
                         custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ).
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = z2ui5_cl_xml_view=>factory( ).
 
+    DATA temp11 TYPE xsdboolean.
+    temp11 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     page = page->shell( )->page(
         title          = 'abap2UI5 - P13N Dialog'
         navbuttonpress = client->_event( 'BACK' )
-        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+        shownavbutton  = temp11
         class          = 'sapUiContentPadding' ).
 
     page = page->vbox( ).
 
+    DATA temp1 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-n = `title`.
+    temp2-v = `My Custom View Settings`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `close`.
+    temp2-v = `sap.z2ui5.updateData(${$parameters>/reason})`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `id`.
+    temp2-v = `p13nPopup`.
+    INSERT temp2 INTO TABLE temp1.
+    DATA temp3 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-n = `id`.
+    temp4-v = `columnsPanel`.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `title`.
+    temp4-v = `Columns`.
+    INSERT temp4 INTO TABLE temp3.
+    DATA temp5 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-n = `id`.
+    temp6-v = `sortPanel`.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-n = `title`.
+    temp6-v = `Sort`.
+    INSERT temp6 INTO TABLE temp5.
+    DATA temp7 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-n = `id`.
+    temp8-v = `filterPanel`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-n = `title`.
+    temp8-v = `Filter`.
+    INSERT temp8 INTO TABLE temp7.
+    DATA temp9 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-n = `id`.
+    temp10-v = `groupPanel`.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-n = `title`.
+    temp10-v = `Group`.
+    INSERT temp10 INTO TABLE temp9.
     page->_generic( name         = `Popup`
                     ns           = `p13n`
-                          t_prop = VALUE #( ( n = `title` v = `My Custom View Settings` )
-                                            ( n = `close` v = `sap.z2ui5.updateData(${$parameters>/reason})` )
-*                                            ( n = `warningText`  v = `Are you sure?` )
-                                            ( n = `id`  v = `p13nPopup` )
-*                                            ( n = `reset`  v = client->_event( `P13N_RESET` ) )
-                                          )
+                          t_prop = temp1
                          )->_generic( name = `panels`
                                       ns   = `p13n`
                            )->_generic( name   = `SelectionPanel`
                                         ns     = `p13n`
-                                        t_prop = VALUE #( ( n = `id`    v = `columnsPanel` )
-                                                          ( n = `title`  v = `Columns` )
-*                                                          ( n = `enableCount`  v = 'X' )
-*                                                          ( n = `showHeader` v = 'X' )
-                                                         ) )->get_parent(
+                                        t_prop = temp3 )->get_parent(
                           )->_generic( name   = `SortPanel`
                                        ns     = `p13n`
-                                       t_prop = VALUE #( ( n = `id`  v = `sortPanel` )
-                                                         ( n = `title` v = `Sort` )
-                                                        )
+                                       t_prop = temp5
                                                     )->get_parent(
                           )->_generic( name   = `P13nFilterPanel`
                                        ns     = ``
-                                       t_prop = VALUE #( ( n = `id`  v = `filterPanel` )
-                                                         ( n = `title` v = `Filter` )
-                                                        )
+                                       t_prop = temp7
                                                     )->get_parent(
                          )->_generic( name   = `GroupPanel`
                                       ns     = `p13n`
-                                      t_prop = VALUE #( ( n = `id`  v = `groupPanel` )
-                                                        ( n = `title`  v = `Group` )
-                                                       )
+                                      t_prop = temp9
                                       )->get_parent( )->get_parent( )->get_parent(
       )->get_parent( )->get_parent( ).
 
@@ -190,44 +226,104 @@ CLASS z2ui5_cl_demo_app_090 IMPLEMENTATION.
 
   METHOD z2ui5_view_p13n.
 
-    DATA(p13n_dialog) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA p13n_dialog TYPE REF TO z2ui5_cl_xml_view.
+    p13n_dialog = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(p13n) = p13n_dialog->_generic( name = `P13nDialog`
-      t_prop                                 = VALUE #(
-      ( n = `ok`                      v = client->_event( `OK` ) )
-      ( n = `cancel`                  v = client->_event( `CANCEL` ) )
-      ( n = `reset`                   v = client->_event( `RESET` ) )
-      ( n = `showReset`               v = `true` )
-      ( n = `initialVisiblePanelType` v = `sort` )
-      )
+    DATA temp3 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-n = `ok`.
+    temp4-v = client->_event( `OK` ).
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `cancel`.
+    temp4-v = client->_event( `CANCEL` ).
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `reset`.
+    temp4-v = client->_event( `RESET` ).
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `showReset`.
+    temp4-v = `true`.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `initialVisiblePanelType`.
+    temp4-v = `sort`.
+    INSERT temp4 INTO TABLE temp3.
+    DATA temp5 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-n = `items`.
+    temp6-v = `{path:'` && client->_bind_edit( val = mt_columns path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}`.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-n = `columnsItems`.
+    temp6-v = `{path:'` && client->_bind_edit( val = mt_columns1 path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}`.
+    INSERT temp6 INTO TABLE temp5.
+    DATA temp7 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-n = `columnKey`.
+    temp8-v = `{columnkey}`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-n = `text`.
+    temp8-v = `{text}`.
+    INSERT temp8 INTO TABLE temp7.
+    DATA temp9 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-n = `columnKey`.
+    temp10-v = `{columnkey}`.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-n = `visible`.
+    temp10-v = `{visible}`.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-n = `index`.
+    temp10-v = `{index}`.
+    INSERT temp10 INTO TABLE temp9.
+    DATA temp11 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp11.
+    DATA temp12 LIKE LINE OF temp11.
+    temp12-n = `groupItems`.
+    temp12-v = `{path:'` && client->_bind_edit( val = mt_groups path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}`.
+    INSERT temp12 INTO TABLE temp11.
+    DATA temp1 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-n = `columnKey`.
+    temp2-v = `{columnkey}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `text`.
+    temp2-v = `{text}`.
+    INSERT temp2 INTO TABLE temp1.
+    DATA temp13 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp13.
+    DATA temp14 LIKE LINE OF temp13.
+    temp14-n = `columnKey`.
+    temp14-v = `{columnkey}`.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-n = `operation`.
+    temp14-v = `{operation}`.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-n = `showIfGrouped`.
+    temp14-v = `{showifgrouped}`.
+    INSERT temp14 INTO TABLE temp13.
+    DATA p13n TYPE REF TO z2ui5_cl_xml_view.
+    p13n = p13n_dialog->_generic( name = `P13nDialog`
+      t_prop                                 = temp3
       )->_generic( name = `panels`
       )->_generic( name = `P13nColumnsPanel`
-      t_prop            = VALUE #(
-*     ( n = `title`   v = `Columns` )
-*     ( n = `visible` v = `true` )
-*     ( n = `type`    v = `Columns` )
-      ( n = `items`   v = `{path:'` && client->_bind_edit( val = mt_columns path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}` )
-      ( n = `columnsItems`   v = `{path:'` && client->_bind_edit( val = mt_columns1 path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}` ) )
+      t_prop            = temp5
       )->items(
          )->_generic( name = `P13nItem`
-           t_prop          = VALUE #( ( n = `columnKey` v = `{columnkey}` )
-                             ( n = `text`      v = `{text}` ) ) )->get_parent( )->get_parent(
+           t_prop          = temp7 )->get_parent( )->get_parent(
       )->_generic( name = `columnsItems`
            )->_generic( name = `P13nColumnsItem`
-               t_prop        = VALUE #( ( n = `columnKey` v = `{columnkey}` )
-                                  ( n = `visible`   v = `{visible}` )
-                                   ( n = `index`    v = `{index}` ) ) )->get_parent( )->get_parent( )->get_parent(
+               t_prop        = temp9 )->get_parent( )->get_parent( )->get_parent(
       )->_generic( name = `P13nGroupPanel`
-           t_prop       = VALUE #( ( n = `groupItems` v = `{path:'` && client->_bind_edit( val = mt_groups path = abap_true custom_mapper = z2ui5_cl_ajson_mapping=>create_lower_case( ) ) && `'}` ) )
+           t_prop       = temp11
       )->items(
       )->_generic( name = `P13nItem`
-           t_prop       = VALUE #( ( n = `columnKey` v = `{columnkey}` )
-                             ( n = `text`      v = `{text}` ) ) )->get_parent( )->get_parent(
+           t_prop       = temp1 )->get_parent( )->get_parent(
       )->_generic( name = `groupItems`
         )->_generic( name = `P13nGroupItem`
-            t_prop        = VALUE #( ( n = `columnKey` v = `{columnkey}` )
-                              ( n = `operation` v = `{operation}` )
-                              ( n = `showIfGrouped` v = `{showifgrouped}` ) ) ).
+            t_prop        = temp13 ).
 
     client->popup_display( p13n->stringify( ) ).
 
@@ -236,36 +332,60 @@ CLASS z2ui5_cl_demo_app_090 IMPLEMENTATION.
 
   METHOD z2ui5_view_p13n_popup.
 
-    DATA(p13n_popup) = z2ui5_cl_xml_view=>factory( ).
+    DATA p13n_popup TYPE REF TO z2ui5_cl_xml_view.
+    p13n_popup = z2ui5_cl_xml_view=>factory( ).
 
+    DATA temp5 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-n = `title`.
+    temp6-v = `My Custom View Settings`.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-n = `id`.
+    temp6-v = `p13nPopup`.
+    INSERT temp6 INTO TABLE temp5.
+    DATA temp7 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-n = `id`.
+    temp8-v = `columnsPanel`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-n = `title`.
+    temp8-v = `Columns`.
+    INSERT temp8 INTO TABLE temp7.
+    DATA temp9 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-n = `id`.
+    temp10-v = `sortPanel`.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-n = `title`.
+    temp10-v = `Sort`.
+    INSERT temp10 INTO TABLE temp9.
+    DATA temp11 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp11.
+    DATA temp12 LIKE LINE OF temp11.
+    temp12-n = `id`.
+    temp12-v = `groupPanel`.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-n = `title`.
+    temp12-v = `Group`.
+    INSERT temp12 INTO TABLE temp11.
     p13n_popup->_generic( name       = `Popup`
                           ns         = `p13n`
-                              t_prop = VALUE #( ( n = `title` v = `My Custom View Settings` )
-*                                                ( n = `close` v = client->_event( 'P13N_CLOSE' ) )
-*                                                ( n = `warningText`  v = `Are you sure?` )
-                                                ( n = `id`  v = `p13nPopup` )
-*                                                ( n = `reset`  v = client->_event( `P13N_RESET` ) )
-                                              )
+                              t_prop = temp5
                              )->_generic( name = `panels`
                                           ns   = `p13n`
                                )->_generic( name   = `SelectionPanel`
                                             ns     = `p13n`
-                                            t_prop = VALUE #( ( n = `id`    v = `columnsPanel` )
-                                                              ( n = `title`  v = `Columns` )
-*                                                              ( n = `enableCount`  v = 'X' )
-*                                                              ( n = `showHeader` v = 'X' )
-                                                             ) )->get_parent(
+                                            t_prop = temp7 )->get_parent(
                               )->_generic( name   = `SortPanel`
                                            ns     = `p13n`
-                                           t_prop = VALUE #( ( n = `id`  v = `sortPanel` )
-                                                             ( n = `title` v = `Sort` )
-                                                            )
+                                           t_prop = temp9
                                                         )->get_parent(
                              )->_generic( name   = `GroupPanel`
                                           ns     = `p13n`
-                                          t_prop = VALUE #( ( n = `id`  v = `groupPanel` )
-                                                            ( n = `title`  v = `Group` )
-                                                           )
+                                          t_prop = temp11
                                           )->get_parent( )->get_parent( )->get_parent( ).
 
     client->view_display( p13n_popup->stringify( ) ).
@@ -274,35 +394,113 @@ CLASS z2ui5_cl_demo_app_090 IMPLEMENTATION.
 
   METHOD init_data_set.
 
-    mt_columns = VALUE #( ( columnkey = `productId` text = `Product ID` )
-                                       ( columnkey = `name`      text = `Name` )
-                                       ( columnkey = `category`  text = `Category` )
-                                       ( columnkey = `supplierName` text = `Supplier Name` ) ).
-    mt_columns1 = VALUE #(
-                                         ( columnkey = `name`      visible = abap_true index = 0 )
-                                         ( columnkey = `category`  visible = abap_true index = 1 )
-                                         ( columnkey = `productId` visible = abap_false )
-                                         ( columnkey = `supplierName` visible = abap_false ) ).
+    DATA temp7 TYPE z2ui5_cl_demo_app_090=>tt_items2.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-columnkey = `productId`.
+    temp8-text = `Product ID`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-columnkey = `name`.
+    temp8-text = `Name`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-columnkey = `category`.
+    temp8-text = `Category`.
+    INSERT temp8 INTO TABLE temp7.
+    temp8-columnkey = `supplierName`.
+    temp8-text = `Supplier Name`.
+    INSERT temp8 INTO TABLE temp7.
+    mt_columns = temp7.
+    DATA temp9 TYPE z2ui5_cl_demo_app_090=>tt_items2.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-columnkey = `name`.
+    temp10-visible = abap_true.
+    temp10-index = 0.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-columnkey = `category`.
+    temp10-visible = abap_true.
+    temp10-index = 1.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-columnkey = `productId`.
+    temp10-visible = abap_false.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-columnkey = `supplierName`.
+    temp10-visible = abap_false.
+    INSERT temp10 INTO TABLE temp9.
+    mt_columns1 = temp9.
 
-    mt_groups = VALUE #( ( columnkey = `name` text = `Name` showifgrouped = abap_true )
-                         ( columnkey = `category` text = `Category` showifgrouped = abap_true )
-                         ( columnkey = `productId` showifgrouped = abap_false )
-                         ( columnkey = `supplierName` showifgrouped = abap_false ) ).
+    DATA temp11 TYPE z2ui5_cl_demo_app_090=>tt_items3.
+    CLEAR temp11.
+    DATA temp12 LIKE LINE OF temp11.
+    temp12-columnkey = `name`.
+    temp12-text = `Name`.
+    temp12-showifgrouped = abap_true.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-columnkey = `category`.
+    temp12-text = `Category`.
+    temp12-showifgrouped = abap_true.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-columnkey = `productId`.
+    temp12-showifgrouped = abap_false.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-columnkey = `supplierName`.
+    temp12-showifgrouped = abap_false.
+    INSERT temp12 INTO TABLE temp11.
+    mt_groups = temp11.
 
-    mt_columns_p13n = VALUE #(
-                                ( visible = `true` name = `key1` label = `City` )
-                                ( visible = `false` name = `key2` label = `Country` )
-                                ( visible = `false` name = `key2` label = `Region` ) ).
+    DATA temp13 TYPE z2ui5_cl_demo_app_090=>tt_items22.
+    CLEAR temp13.
+    DATA temp14 LIKE LINE OF temp13.
+    temp14-visible = `true`.
+    temp14-name = `key1`.
+    temp14-label = `City`.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-visible = `false`.
+    temp14-name = `key2`.
+    temp14-label = `Country`.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-visible = `false`.
+    temp14-name = `key2`.
+    temp14-label = `Region`.
+    INSERT temp14 INTO TABLE temp13.
+    mt_columns_p13n = temp13.
 
-    mt_sort_p13n = VALUE #(
-                          ( sorted = `true` name = `key1` label = `City` descending = `true` )
-                          ( sorted = `false` name = `key2` label = `Country` descending = `false` )
-                          ( sorted = `false` name = `key2` label = `Region` descending = `false` ) ).
+    DATA temp15 TYPE z2ui5_cl_demo_app_090=>tt_items32.
+    CLEAR temp15.
+    DATA temp16 LIKE LINE OF temp15.
+    temp16-sorted = `true`.
+    temp16-name = `key1`.
+    temp16-label = `City`.
+    temp16-descending = `true`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-sorted = `false`.
+    temp16-name = `key2`.
+    temp16-label = `Country`.
+    temp16-descending = `false`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-sorted = `false`.
+    temp16-name = `key2`.
+    temp16-label = `Region`.
+    temp16-descending = `false`.
+    INSERT temp16 INTO TABLE temp15.
+    mt_sort_p13n = temp15.
 
-    mt_groups_p13n = VALUE #(
-                          ( grouped = `true` name = `key1` label = `City` )
-                          ( grouped = `false` name = `key2` label = `Country` )
-                          ( grouped = `false` name = `key2` label = `Region` ) ).
+    DATA temp17 TYPE z2ui5_cl_demo_app_090=>tt_items33.
+    CLEAR temp17.
+    DATA temp18 LIKE LINE OF temp17.
+    temp18-grouped = `true`.
+    temp18-name = `key1`.
+    temp18-label = `City`.
+    INSERT temp18 INTO TABLE temp17.
+    temp18-grouped = `false`.
+    temp18-name = `key2`.
+    temp18-label = `Country`.
+    INSERT temp18 INTO TABLE temp17.
+    temp18-grouped = `false`.
+    temp18-name = `key2`.
+    temp18-label = `Region`.
+    INSERT temp18 INTO TABLE temp17.
+    mt_groups_p13n = temp17.
 
   ENDMETHOD.
 

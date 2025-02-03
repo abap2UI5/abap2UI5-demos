@@ -11,18 +11,18 @@ CLASS z2ui5_cl_demo_app_192 DEFINITION PUBLIC.
              tabname TYPE char30,
              comp    TYPE abap_componentdescr,
            END OF ty_s_key_value,
-           ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH EMPTY KEY.
+           ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH DEFAULT KEY.
 
     TYPES: BEGIN OF ty_s_merged_data,
              t_kopf  TYPE REF TO data,
              t_pos   TYPE REF TO data,
              t_keyva TYPE ty_t_key_values,
            END OF ty_s_merged_data,
-           ty_t_merged_data TYPE STANDARD TABLE OF ty_s_merged_data WITH EMPTY KEY.
+           ty_t_merged_data TYPE STANDARD TABLE OF ty_s_merged_data WITH DEFAULT KEY.
 
 
 
-    DATA mt_new_data2 TYPE STANDARD TABLE OF REF TO z2ui5_cl_demo_app_193 WITH EMPTY KEY.
+    DATA mt_new_data2 TYPE STANDARD TABLE OF REF TO z2ui5_cl_demo_app_193 WITH DEFAULT KEY.
 
     TYPES:
       BEGIN OF ty_s_out,
@@ -30,7 +30,7 @@ CLASS z2ui5_cl_demo_app_192 DEFINITION PUBLIC.
         bb TYPE string,
         cc TYPE string,
       END OF ty_s_out,
-      ty_t_out TYPE STANDARD TABLE OF ty_s_out WITH EMPTY KEY.
+      ty_t_out TYPE STANDARD TABLE OF ty_s_out WITH DEFAULT KEY.
 
     DATA mt_out TYPE ty_t_out.
 
@@ -60,7 +60,8 @@ CLASS z2ui5_cl_demo_app_192 IMPLEMENTATION.
 
   METHOD ui5_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->shell(
         )->page( title          = 'xxx'
                  navbuttonpress = client->_event( val = 'BACK' )
@@ -88,16 +89,28 @@ CLASS z2ui5_cl_demo_app_192 IMPLEMENTATION.
     FIELD-SYMBOLS <fs_t_head_new> TYPE STANDARD TABLE.
     FIELD-SYMBOLS <fs_s_head_new> TYPE any.
 
-    mt_out = VALUE #( ( aa = 'aa' bb = 'bb' cc = 'cc' )
-                      ( aa = 'a1' bb = 'b1' cc = 'c1' ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_192=>ty_t_out.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-aa = 'aa'.
+    temp2-bb = 'bb'.
+    temp2-cc = 'cc'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-aa = 'a1'.
+    temp2-bb = 'b1'.
+    temp2-cc = 'c1'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_out = temp1.
 
-    DATA(kopf) = REF #( mt_out ).
+    DATA kopf LIKE REF TO mt_out.
+    GET REFERENCE OF mt_out INTO kopf.
 
 
 
     LOOP AT kopf->* ASSIGNING <fs_s_head>.
 
-      DATA(lo_new_data) = NEW z2ui5_cl_demo_app_193( ).
+      DATA lo_new_data TYPE REF TO z2ui5_cl_demo_app_193.
+      CREATE OBJECT lo_new_data TYPE z2ui5_cl_demo_app_193.
       INSERT lo_new_data INTO TABLE mt_new_data2.
 
       lr_structdescr ?= cl_abap_structdescr=>describe_by_data( <fs_s_head> ).
@@ -107,7 +120,7 @@ CLASS z2ui5_cl_demo_app_192 IMPLEMENTATION.
       ASSIGN lo_new_data->mt_kopf->* TO <fs_t_head_new>.
 
       APPEND INITIAL LINE TO <fs_t_head_new> ASSIGNING <fs_s_head_new>.
-      <fs_s_head_new> = CORRESPONDING #( <fs_s_head> ).
+      MOVE-CORRESPONDING <fs_s_head> TO <fs_s_head_new>.
 
     ENDLOOP.
 
@@ -116,7 +129,8 @@ CLASS z2ui5_cl_demo_app_192 IMPLEMENTATION.
 
   METHOD xml_parse.
 
-    LOOP AT mt_new_data2 INTO DATA(lo_data).
+    DATA lo_data LIKE LINE OF mt_new_data2.
+    LOOP AT mt_new_data2 INTO lo_data.
       lo_data->xml_parse( ).
     ENDLOOP.
 
@@ -125,7 +139,8 @@ CLASS z2ui5_cl_demo_app_192 IMPLEMENTATION.
 
   METHOD xml_stringify.
 
-    LOOP AT mt_new_data2 INTO DATA(lo_data).
+    DATA lo_data LIKE LINE OF mt_new_data2.
+    LOOP AT mt_new_data2 INTO lo_data.
       lo_data->xml_stringify( ).
     ENDLOOP.
 

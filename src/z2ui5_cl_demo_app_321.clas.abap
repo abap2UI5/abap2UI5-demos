@@ -16,8 +16,9 @@ CLASS z2ui5_cl_demo_app_321 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    IF client->check_on_navigated( ).
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    IF client->check_on_navigated( ) IS NOT INITIAL.
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
       client->view_display( val = view->shell(
              )->page(
                      title          = 'abap2UI5 - Navigation with app state'

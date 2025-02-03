@@ -40,7 +40,8 @@ CLASS z2ui5_cl_demo_app_160 DEFINITION
       END OF s_output .
 
     DATA check_initialized TYPE abap_bool .
-    DATA mt_output TYPE STANDARD TABLE OF s_output.
+    TYPES temp1_d2eb35b09b TYPE STANDARD TABLE OF s_output.
+DATA mt_output TYPE temp1_d2eb35b09b.
     DATA client TYPE REF TO z2ui5_if_client.
 
   PROTECTED SECTION.
@@ -87,12 +88,48 @@ CLASS z2ui5_cl_demo_app_160 IMPLEMENTATION.
       WHEN 'PL_TOTAL_CHANGE'.
 
         lt_event_arguments = client->get( )-t_event_arg.
-        DATA(lv_id_event) = lt_event_arguments[ 1 ].
+        DATA lv_id_event LIKE LINE OF lt_event_arguments.
+        DATA temp1 LIKE LINE OF lt_event_arguments.
+        DATA temp2 LIKE sy-tabix.
+        temp2 = sy-tabix.
+        READ TABLE lt_event_arguments INDEX 1 INTO temp1.
+        sy-tabix = temp2.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        lv_id_event = temp1.
 
-        DATA(lv_tab_index) = lt_event_arguments[ 2 ].
-        DATA(ls_row_submit) = mt_output[ lv_tab_index ].
+        DATA lv_tab_index LIKE LINE OF lt_event_arguments.
+        DATA temp3 LIKE LINE OF lt_event_arguments.
+        DATA temp4 LIKE sy-tabix.
+        temp4 = sy-tabix.
+        READ TABLE lt_event_arguments INDEX 2 INTO temp3.
+        sy-tabix = temp4.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        lv_tab_index = temp3.
+        DATA ls_row_submit LIKE LINE OF mt_output.
+        DATA temp5 LIKE LINE OF mt_output.
+        DATA temp6 LIKE sy-tabix.
+        temp6 = sy-tabix.
+        READ TABLE mt_output INDEX lv_tab_index INTO temp5.
+        sy-tabix = temp6.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        ls_row_submit = temp5.
 
-        DATA(lv_id_parent) = lt_event_arguments[ 3 ].
+        DATA lv_id_parent LIKE LINE OF lt_event_arguments.
+        DATA temp7 LIKE LINE OF lt_event_arguments.
+        DATA temp8 LIKE sy-tabix.
+        temp8 = sy-tabix.
+        READ TABLE lt_event_arguments INDEX 3 INTO temp7.
+        sy-tabix = temp8.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        lv_id_parent = temp7.
 
         client->message_box_display( lv_tab_index && lv_id_event && lv_id_parent ).
 
@@ -108,26 +145,32 @@ CLASS z2ui5_cl_demo_app_160 IMPLEMENTATION.
 
   METHOD render_main_screen.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
       )->page(
         title           = 'abap2UI5 - Event on cell level'
         navbuttonpress  = client->_event( 'BACK' )
-          shownavbutton = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+          shownavbutton = temp2
         )->header_content(
             )->link(
       )->get_parent( ).
 
 
-    DATA(table) = page->flex_box( height = '85vh' )->ui_table( alternaterowcolors  = 'true'
+    DATA table TYPE REF TO z2ui5_cl_xml_view.
+    table = page->flex_box( height = '85vh' )->ui_table( alternaterowcolors  = 'true'
                                                                visiblerowcountmode = 'Auto'
                                                                fixedrowcount       = '1'
                                                                selectionmode       = 'None'
                                                                rows                = client->_bind_edit( val = mt_output
 *        compress_mode = z2ui5_if_client=>cs_compress_mode-none
       ) ).
-    DATA(columns) = table->ui_columns( ).
+    DATA columns TYPE REF TO z2ui5_cl_xml_view.
+    columns = table->ui_columns( ).
 
     columns->ui_column( width          = '5.2rem'
                         sortproperty   = 'SET_SK'
@@ -142,16 +185,16 @@ CLASS z2ui5_cl_demo_app_160 IMPLEMENTATION.
                         sortproperty   = 'IS_TOTAL'
                         filterproperty = 'IS_TOTAL' )->text( text = 'Column 4' )->ui_template( )->text( text = `{IS_TOTAL}` ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `${$source>/id}` INTO TABLE temp1.
+    INSERT `${INDEX}` INTO TABLE temp1.
+    INSERT `$event.oSource.oParent.sId` INTO TABLE temp1.
     columns->ui_column( width          = '5rem'
                         sortproperty   = 'PL_TOTAL'
                         filterproperty = 'PL_TOTAL' )->text( text = 'Column 5' )->ui_template( )->input(
       value           = `{PL_TOTAL}`
-      submit          = client->_event( val = 'PL_TOTAL_CHANGE' t_arg = VALUE #(
-        ( `${$source>/id}` )
-        ( `${INDEX}` )
-*        ( `$source.oParent.sId` )
-        ( `$event.oSource.oParent.sId` )
-         ) ) editable = abap_true
+      submit          = client->_event( val = 'PL_TOTAL_CHANGE' t_arg = temp1 ) editable = abap_true
       type            = 'Number' ).
 
     columns->ui_column( width          = '4rem'

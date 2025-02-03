@@ -27,17 +27,22 @@ CLASS Z2UI5_CL_DEMO_APP_016 IMPLEMENTATION.
 
   METHOD render_tab_bar.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(container) = view->shell(
+    DATA container TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( abap_false = client->get( )-check_launchpad_active ).
+    container = view->shell(
         )->page(
-             showheader    = xsdbool( abap_false = client->get( )-check_launchpad_active )
+             showheader    = temp1
             title          = 'abap2UI5 - Visualization'
             navbuttonpress = client->_event( 'BACK' )
             shownavbutton  = abap_true
         )->tab_container( ).
 
-    DATA(grid) = container->tab(
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = container->tab(
             text     = 'Bar Chart'
             selected = client->_bind( mv_tab_bar_active )
         )->grid( 'XL6 L6 M6 S12' ).
@@ -52,7 +57,8 @@ CLASS Z2UI5_CL_DEMO_APP_016 IMPLEMENTATION.
             )->get( )->layout_data(
                 )->grid_data( 'XL12 L12 M12 S12' ).
 
-    DATA(bar) = grid->flex_box(
+    DATA bar TYPE REF TO z2ui5_cl_xml_view.
+    bar = grid->flex_box(
             width      = '22rem'
             height     = '13rem'
             alignitems = 'Center'

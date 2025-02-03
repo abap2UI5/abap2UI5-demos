@@ -24,7 +24,8 @@ CLASS z2ui5_cl_demo_app_120 DEFINITION
         key           TYPE string,
         icon          TYPE string,
       END OF ty_spot.
-    DATA mt_spot TYPE TABLE OF ty_spot.
+    TYPES temp1_0dabf66d4a TYPE TABLE OF ty_spot.
+DATA mt_spot TYPE temp1_0dabf66d4a.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -39,12 +40,15 @@ CLASS z2ui5_cl_demo_app_120 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
+      DATA temp3 TYPE xsdboolean.
+      temp3 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
       client->view_display( view->shell(
               )->page(
                       title          = 'abap2UI5 - Device Capabilities'
                       navbuttonpress = client->_event( val = 'BACK' )
-                      shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                      shownavbutton  = temp3
                   )->_z2ui5( )->geolocation(
                                             finished         = client->_event( `GEOLOCATION_LOADED` )
                                             longitude        = client->_bind_edit( longitude )
@@ -83,15 +87,27 @@ CLASS z2ui5_cl_demo_app_120 IMPLEMENTATION.
       WHEN 'MAP_CONTAINER_DISPLAY'.
 
         IF longitude IS NOT INITIAL.
-          mt_spot = VALUE #( ( pos = longitude && `;` && latitude && `;0`  type = `Default`  contentoffset = `0;-6` scale = `1;1;1` key = `Your Position`   tooltip = `Your Position` ) ).
+          DATA temp1 LIKE mt_spot.
+          CLEAR temp1.
+          DATA temp2 LIKE LINE OF temp1.
+          temp2-pos = longitude && `;` && latitude && `;0`.
+          temp2-type = `Default`.
+          temp2-contentoffset = `0;-6`.
+          temp2-scale = `1;1;1`.
+          temp2-key = `Your Position`.
+          temp2-tooltip = `Your Position`.
+          INSERT temp2 INTO TABLE temp1.
+          mt_spot = temp1.
         ENDIF.
 
         view = z2ui5_cl_xml_view=>factory( ).
+        DATA temp4 TYPE xsdboolean.
+        temp4 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
         client->view_display( view->shell(
               )->page(
                       title          = 'abap2UI5 - Device Capabilities'
                       navbuttonpress = client->_event( val = 'BACK' )
-                      shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                      shownavbutton  = temp4
                   )->_z2ui5( )->geolocation(
                                             finished         = client->_event( )
                                             longitude        = client->_bind_edit( longitude )

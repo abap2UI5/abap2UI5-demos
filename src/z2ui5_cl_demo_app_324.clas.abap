@@ -21,7 +21,7 @@ CLASS z2ui5_cl_demo_app_324 IMPLEMENTATION.
     me->client = client.
 
     TRY.
-        IF client->check_on_init( ).
+        IF client->check_on_init( ) IS NOT INITIAL.
           client->view_display( z2ui5_cl_xml_view=>factory(
                                     )->page( shownavbutton = abap_true
                                              navbuttonpress = client->_event( 'BACK' )
@@ -37,7 +37,8 @@ CLASS z2ui5_cl_demo_app_324 IMPLEMENTATION.
             call_dynpro( ).
         ENDCASE.
 
-      CATCH cx_root INTO DATA(x).
+        DATA x TYPE REF TO cx_root.
+      CATCH cx_root INTO x.
         client->nav_app_call( z2ui5_cl_pop_error=>factory( x ) ).
     ENDTRY.
 
@@ -48,7 +49,8 @@ CLASS z2ui5_cl_demo_app_324 IMPLEMENTATION.
 
     " of course this makes no sense in abap2UI5.
     " It's just to provoke "Sending of dynpro SAPLSPO1 0500 not possible" error.
-    DATA(fm) = 'POPUP_TO_CONFIRM'.
+    DATA fm TYPE c LENGTH 16.
+    fm = 'POPUP_TO_CONFIRM'.
     CALL FUNCTION fm
       EXPORTING
         text_question  = 'Test'

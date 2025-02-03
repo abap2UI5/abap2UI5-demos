@@ -50,9 +50,11 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
 
   METHOD view_display_app_01.
 
-    DATA(lo_view_nested) = z2ui5_cl_xml_view=>factory( ).
+    DATA lo_view_nested TYPE REF TO z2ui5_cl_xml_view.
+    lo_view_nested = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = lo_view_nested->page( title = `APP_01` ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = lo_view_nested->page( title = `APP_01` ).
 
     page->button( text  = 'Update this view'
                   press = client->_event( 'UPDATE_DETAIL' ) ).
@@ -68,9 +70,11 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
 
   METHOD view_display_app_02.
 
-    DATA(lo_view_nested) = z2ui5_cl_xml_view=>factory( ).
+    DATA lo_view_nested TYPE REF TO z2ui5_cl_xml_view.
+    lo_view_nested = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = lo_view_nested->page( title = `APP_02` ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = lo_view_nested->page( title = `APP_02` ).
 
     page->button( text  = 'Update this view'
                   press = client->_event( 'UPDATE_DETAIL' )
@@ -102,9 +106,11 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
 
   METHOD view_display_master.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->shell( )->page(
           title           = 'abap2UI5 - Master-Detail View with Nested Views'
           navbuttonpress  = client->_event( 'BACK' )
             shownavbutton = abap_true
@@ -115,15 +121,19 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
              )->link(
          )->get_parent( ).
 
-    DATA(lr_master) = page->flexible_column_layout( layout = 'TwoColumnsBeginExpanded'
+    DATA lr_master TYPE REF TO z2ui5_cl_xml_view.
+    lr_master = page->flexible_column_layout( layout = 'TwoColumnsBeginExpanded'
                                                     id     ='test' )->begin_column_pages( ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `${TEXT}` INTO TABLE temp1.
     lr_master->tree( items = client->_bind( mt_tree ) )->items(
         )->standard_tree_item(
             type  = 'Active'
             title = '{TEXT}'
             press = client->_event( val = `EVENT_ITEM`
-            t_arg                       = VALUE #( ( `${TEXT}` ) ) ) ).
+            t_arg                       = temp1 ) ).
 
     client->view_display( page->stringify( ) ).
 
@@ -137,20 +147,52 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      mt_tree = VALUE #( ( text = 'Apps'
-                    nodes       = VALUE #( ( text = 'Frontend'
-                                       nodes      = VALUE #( ( text = 'App_001' )
-                                                        ( text = 'App_002' )
-                  ) ) ) )
-                  ( text  = 'Configuration'
-                    nodes = VALUE #( ( text  = 'User Interface'
-                                       nodes = VALUE #( ( text = 'Theme' )
-                                                        ( text = 'Library' )
-                                     ) )
-                                     ( text  = 'Database'
-                                       nodes = VALUE #( ( text = 'HANA' )
-                                                         ( text = 'ANY DB' )
-         ) ) ) ) ).
+      DATA temp3 TYPE z2ui5_cl_demo_app_069=>ty_t_tree.
+      CLEAR temp3.
+      DATA temp4 LIKE LINE OF temp3.
+      temp4-text = 'Apps'.
+      DATA temp1 TYPE z2ui5_cl_demo_app_069=>ty_t_tree1-nodes.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-text = 'Frontend'.
+      DATA temp9 TYPE z2ui5_cl_demo_app_069=>ty_t_tree2-nodes.
+      CLEAR temp9.
+      DATA temp10 LIKE LINE OF temp9.
+      temp10-text = 'App_001'.
+      INSERT temp10 INTO TABLE temp9.
+      temp10-text = 'App_002'.
+      INSERT temp10 INTO TABLE temp9.
+      temp2-nodes = temp9.
+      INSERT temp2 INTO TABLE temp1.
+      temp4-nodes = temp1.
+      INSERT temp4 INTO TABLE temp3.
+      temp4-text = 'Configuration'.
+      DATA temp7 TYPE z2ui5_cl_demo_app_069=>ty_t_tree1-nodes.
+      CLEAR temp7.
+      DATA temp8 LIKE LINE OF temp7.
+      temp8-text = 'User Interface'.
+      DATA temp11 TYPE z2ui5_cl_demo_app_069=>ty_t_tree2-nodes.
+      CLEAR temp11.
+      DATA temp12 LIKE LINE OF temp11.
+      temp12-text = 'Theme'.
+      INSERT temp12 INTO TABLE temp11.
+      temp12-text = 'Library'.
+      INSERT temp12 INTO TABLE temp11.
+      temp8-nodes = temp11.
+      INSERT temp8 INTO TABLE temp7.
+      temp8-text = 'Database'.
+      DATA temp13 TYPE z2ui5_cl_demo_app_069=>ty_t_tree2-nodes.
+      CLEAR temp13.
+      DATA temp14 LIKE LINE OF temp13.
+      temp14-text = 'HANA'.
+      INSERT temp14 INTO TABLE temp13.
+      temp14-text = 'ANY DB'.
+      INSERT temp14 INTO TABLE temp13.
+      temp8-nodes = temp13.
+      INSERT temp8 INTO TABLE temp7.
+      temp4-nodes = temp7.
+      INSERT temp4 INTO TABLE temp3.
+      mt_tree = temp3.
 
       view_display_master( ).
 
@@ -162,8 +204,17 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
         view_display_app_01( ).
 
       WHEN `EVENT_ITEM`.
-        DATA(lt_arg) = client->get( )-t_event_arg.
-        CASE lt_arg[ 1 ].
+        DATA lt_arg TYPE string_table.
+        lt_arg = client->get( )-t_event_arg.
+        DATA temp5 LIKE LINE OF lt_arg.
+        DATA temp6 LIKE sy-tabix.
+        temp6 = sy-tabix.
+        READ TABLE lt_arg INDEX 1 INTO temp5.
+        sy-tabix = temp6.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        CASE temp5.
           WHEN 'App_001'.
             view_display_app_01( ).
           WHEN 'App_002'.
@@ -171,8 +222,12 @@ CLASS Z2UI5_CL_DEMO_APP_069 IMPLEMENTATION.
         ENDCASE.
 
       WHEN `NEST_TEST`.
-        mv_check_enabled_01 = xsdbool( mv_check_enabled_01 = abap_false ).
-        mv_check_enabled_02 = xsdbool( mv_check_enabled_01 = abap_false ).
+        DATA temp15 TYPE xsdboolean.
+        temp15 = boolc( mv_check_enabled_01 = abap_false ).
+        mv_check_enabled_01 = temp15.
+        DATA temp16 TYPE xsdboolean.
+        temp16 = boolc( mv_check_enabled_01 = abap_false ).
+        mv_check_enabled_02 = temp16.
 
         client->nest_view_model_update( ).
 

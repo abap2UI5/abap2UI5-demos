@@ -13,7 +13,7 @@ CLASS z2ui5_cl_demo_app_118 DEFINITION
              adate TYPE d,
              atime TYPE t,
            END OF s_row.
-    TYPES t_rows TYPE STANDARD TABLE OF s_row WITH EMPTY KEY.
+    TYPES t_rows TYPE STANDARD TABLE OF s_row WITH DEFAULT KEY.
 
     DATA problematic_rows TYPE t_rows.
     DATA these_are_fine_rows TYPE t_rows.
@@ -32,33 +32,84 @@ CLASS z2ui5_cl_demo_app_118 IMPLEMENTATION.
 
     IF check_initialized = abap_false.
       check_initialized = abap_true.
-      problematic_rows = VALUE #(
-        ( id = 1 descr = 'filled with the actual date and time in correct format' adate = sy-datum atime = sy-uzeit )
-        ( id = 2 descr = 'correct init values' adate = '00000000' atime = '000000' )
-        ( id = 3 descr = 'correct init values by ignoring' )
-        ( id = 4 descr = 'filling with a zero leads to a correct init value' adate = 0 atime = 0 )
-        ( id = 5 descr = 'this raises an exception now' adate = ''  atime = '' )
-        ( id = 6 descr = 'Fifth row' adate = sy-datum atime = sy-uzeit ) ).
+      DATA temp1 TYPE z2ui5_cl_demo_app_118=>t_rows.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-id = 1.
+      temp2-descr = 'filled with the actual date and time in correct format'.
+      temp2-adate = sy-datum.
+      temp2-atime = sy-uzeit.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-id = 2.
+      temp2-descr = 'correct init values'.
+      temp2-adate = '00000000'.
+      temp2-atime = '000000'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-id = 3.
+      temp2-descr = 'correct init values by ignoring'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-id = 4.
+      temp2-descr = 'filling with a zero leads to a correct init value'.
+      temp2-adate = 0.
+      temp2-atime = 0.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-id = 5.
+      temp2-descr = 'this raises an exception now'.
+      temp2-adate = ''.
+      temp2-atime = ''.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-id = 6.
+      temp2-descr = 'Fifth row'.
+      temp2-adate = sy-datum.
+      temp2-atime = sy-uzeit.
+      INSERT temp2 INTO TABLE temp1.
+      problematic_rows = temp1.
 
-      these_are_fine_rows = VALUE #(
-        ( id = 1 descr = 'First row' adate = sy-datum atime = sy-uzeit )
-        ( id = 2 descr = 'Second row' adate = 0 atime = 0 )
-        ( id = 3 descr = 'Third row' adate = 0 atime = 0 )
-        ( id = 4 descr = 'Fourth row' adate = 0 atime = 0 )
-        ( id = 5 descr = 'Fifth row' adate = sy-datum atime = sy-uzeit ) ).
+      DATA temp3 TYPE z2ui5_cl_demo_app_118=>t_rows.
+      CLEAR temp3.
+      DATA temp4 LIKE LINE OF temp3.
+      temp4-id = 1.
+      temp4-descr = 'First row'.
+      temp4-adate = sy-datum.
+      temp4-atime = sy-uzeit.
+      INSERT temp4 INTO TABLE temp3.
+      temp4-id = 2.
+      temp4-descr = 'Second row'.
+      temp4-adate = 0.
+      temp4-atime = 0.
+      INSERT temp4 INTO TABLE temp3.
+      temp4-id = 3.
+      temp4-descr = 'Third row'.
+      temp4-adate = 0.
+      temp4-atime = 0.
+      INSERT temp4 INTO TABLE temp3.
+      temp4-id = 4.
+      temp4-descr = 'Fourth row'.
+      temp4-adate = 0.
+      temp4-atime = 0.
+      INSERT temp4 INTO TABLE temp3.
+      temp4-id = 5.
+      temp4-descr = 'Fifth row'.
+      temp4-adate = sy-datum.
+      temp4-atime = sy-uzeit.
+      INSERT temp4 INTO TABLE temp3.
+      these_are_fine_rows = temp3.
 
     ENDIF.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->_z2ui5( )->title( 'ABAP2UI5 Weird behavior showcase' )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->_z2ui5( )->title( 'ABAP2UI5 Weird behavior showcase' )->shell(
         )->page(
             title          = 'ABAP2UI5 Weird behavior showcase'
             navbuttonpress = client->_event( 'BACK' )
             showheader     = abap_true ).
 
-    DATA(tab_ko) = page->table(
+    DATA tab_ko TYPE REF TO z2ui5_cl_xml_view.
+    tab_ko = page->table(
                         mode  = 'MultiSelect'
                         items = client->_bind_edit( problematic_rows ) ).
 
@@ -86,7 +137,8 @@ CLASS z2ui5_cl_demo_app_118 IMPLEMENTATION.
                  )->text( '{ATIME}' ).
 
 
-    DATA(tab_ok) = page->table(
+    DATA tab_ok TYPE REF TO z2ui5_cl_xml_view.
+    tab_ok = page->table(
                         mode  = 'MultiSelect'
                         items = client->_bind_edit( these_are_fine_rows ) ).
 

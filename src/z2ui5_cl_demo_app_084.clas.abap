@@ -24,7 +24,8 @@ CLASS z2ui5_cl_demo_app_084 DEFINITION PUBLIC.
         value TYPE string,
         descr TYPE string,
       END OF s_suggestion_items.
-    DATA mt_suggestion TYPE STANDARD TABLE OF s_suggestion_items WITH EMPTY KEY.
+    TYPES temp1_c1d7389a64 TYPE STANDARD TABLE OF s_suggestion_items WITH DEFAULT KEY.
+DATA mt_suggestion TYPE temp1_c1d7389a64.
 
     TYPES:
       BEGIN OF s_combobox,
@@ -32,7 +33,7 @@ CLASS z2ui5_cl_demo_app_084 DEFINITION PUBLIC.
         text TYPE string,
       END OF s_combobox.
 
-    TYPES ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH EMPTY KEY.
+    TYPES ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH DEFAULT KEY.
 
 
 
@@ -61,7 +62,8 @@ CLASS z2ui5_cl_demo_app_084 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      DATA(lv_script) = `` && |\n| &&
+      DATA lv_script TYPE string.
+      lv_script = `` && |\n| &&
                         `function setInputFIlter(){` && |\n| &&
                         ` var inp = sap.z2ui5.oView.byId('suggInput');` && |\n| &&
                         ` inp.setFilterFunction(function(sValue, oItem){` && |\n| &&
@@ -100,11 +102,15 @@ CLASS z2ui5_cl_demo_app_084 IMPLEMENTATION.
         z2ui5_on_rendering( ).
       WHEN 'BUTTON_MCUSTOM'.
 *        send type = '' is mandatory in order to not break current implementation
+        DATA temp1 TYPE string_table.
+        CLEAR temp1.
+        INSERT `First Button` INTO TABLE temp1.
+        INSERT `Second Button` INTO TABLE temp1.
         client->message_box_display( type             = ''
                                      text             = 'Custom MessageBox'
                                      icon             = `SUCCESS`
                                      title            = 'Custom MessageBox'
-                                     actions          = VALUE #( ( `First Button` ) ( `Second Button` ) )
+                                     actions          = temp1
                                      emphasizedaction = `First Button`
                                      onclose          = `callMessageToast()`
                                      details          = `<h3>these are details</h3>` ).
@@ -142,40 +148,62 @@ CLASS z2ui5_cl_demo_app_084 IMPLEMENTATION.
 
   METHOD z2ui5_on_init.
 
-    screen = VALUE #(
-        check_is_active = abap_true
-        colour          = 'BLUE'
-        combo_key       = 'GRAY'
-        segment_key     = 'GREEN'
-        date            = '07.12.22'
-        date_time       = '23.12.2022, 19:27:20'
-        time_start      = '05:24:00'
-        time_end        = '17:23:57' ).
+    CLEAR screen.
+    screen-check_is_active = abap_true.
+    screen-colour = 'BLUE'.
+    screen-combo_key = 'GRAY'.
+    screen-segment_key = 'GREEN'.
+    screen-date = '07.12.22'.
+    screen-date_time = '23.12.2022, 19:27:20'.
+    screen-time_start = '05:24:00'.
+    screen-time_end = '17:23:57'.
 
-    mt_suggestion = VALUE #(
-        ( descr = 'Green'  value = 'GREEN' )
-        ( descr = 'Blue'   value = 'BLUE' )
-        ( descr = 'Black'  value = 'BLACK' )
-        ( descr = 'Gray'   value = 'GRAY' )
-        ( descr = 'Blue2'  value = 'BLUE2' )
-        ( descr = 'Blue3'  value = 'BLUE3' ) ).
+    DATA temp3 LIKE mt_suggestion.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-descr = 'Green'.
+    temp4-value = 'GREEN'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-descr = 'Blue'.
+    temp4-value = 'BLUE'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-descr = 'Black'.
+    temp4-value = 'BLACK'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-descr = 'Gray'.
+    temp4-value = 'GRAY'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-descr = 'Blue2'.
+    temp4-value = 'BLUE2'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-descr = 'Blue3'.
+    temp4-value = 'BLUE3'.
+    INSERT temp4 INTO TABLE temp3.
+    mt_suggestion = temp3.
 
   ENDMETHOD.
 
 
   METHOD z2ui5_on_rendering.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `script`
                     ns   = `html` )->_cc_plain_xml( `function callMessageToast(sAction) { sap.m.MessageToast.show('Hello there !!'); }` ).
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( abap_false = client->get( )-check_launchpad_active ).
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
          )->page(
-          showheader       = xsdbool( abap_false = client->get( )-check_launchpad_active )
+          showheader       = temp1
             title          = 'abap2UI5 - Selection-Screen Example'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp2 ).
 
-    DATA(grid) = page->grid( 'L6 M12 S12'
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L6 M12 S12'
         )->content( 'layout' ).
 
     grid->simple_form( title    = 'Input'

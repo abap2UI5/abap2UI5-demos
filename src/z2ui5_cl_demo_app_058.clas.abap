@@ -10,7 +10,7 @@ CLASS z2ui5_cl_demo_app_058 DEFINITION PUBLIC.
         text TYPE string,
       END OF s_combobox.
 
-    TYPES ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH EMPTY KEY.
+    TYPES ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH DEFAULT KEY.
 
     TYPES:
       BEGIN OF ty_s_cols,
@@ -29,15 +29,17 @@ CLASS z2ui5_cl_demo_app_058 DEFINITION PUBLIC.
         default TYPE abap_bool,
         data    TYPE string,
       END OF ty_s_db_layout.
-    DATA mt_db_layout TYPE STANDARD TABLE OF ty_s_db_layout.
+    TYPES temp1_2c3f88f5df TYPE STANDARD TABLE OF ty_s_db_layout.
+DATA mt_db_layout TYPE temp1_2c3f88f5df.
 
-    DATA:
+    TYPES temp2_2c3f88f5df TYPE STANDARD TABLE OF ty_s_cols.
+DATA:
       BEGIN OF ms_layout,
         check_zebra   TYPE abap_bool,
         title         TYPE string,
         sticky_header TYPE string,
         selmode       TYPE string,
-        t_cols        TYPE STANDARD TABLE OF ty_s_cols,
+        t_cols        TYPE temp2_2c3f88f5df,
       END OF ms_layout.
 
     TYPES:
@@ -49,7 +51,7 @@ CLASS z2ui5_cl_demo_app_058 DEFINITION PUBLIC.
         storage_location TYPE string,
         quantity         TYPE i,
       END OF ty_s_tab.
-    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH EMPTY KEY.
+    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH DEFAULT KEY.
 
     DATA mv_check_table TYPE abap_bool.
 
@@ -121,7 +123,16 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
         app-view_popup = `POPUP_SAVE`.
 
       WHEN `POPUP_LAYOUT_LOAD`.
-        DATA(ls_layout2) = mt_db_layout[ selkz = abap_true ].
+        DATA ls_layout2 LIKE LINE OF mt_db_layout.
+        DATA temp2 LIKE LINE OF mt_db_layout.
+        DATA temp3 LIKE sy-tabix.
+        temp3 = sy-tabix.
+        READ TABLE mt_db_layout WITH KEY selkz = abap_true INTO temp2.
+        sy-tabix = temp3.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        ls_layout2 = temp2.
         z2ui5_cl_util=>xml_parse(
           EXPORTING
             xml  = ls_layout2-data
@@ -130,9 +141,12 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
         app-view_popup = `POPUP_SAVE`.
 
       WHEN `BUTTON_SAVE_LAYOUT`.
-        DATA(ls_layout) = VALUE ty_s_db_layout(
-          data = z2ui5_cl_util=>xml_stringify( ms_layout )
-          name = mv_layout ).
+        DATA temp1 TYPE ty_s_db_layout.
+        CLEAR temp1.
+        temp1-data = z2ui5_cl_util=>xml_stringify( ms_layout ).
+        temp1-name = mv_layout.
+        DATA ls_layout LIKE temp1.
+        ls_layout = temp1.
         INSERT ls_layout INTO TABLE mt_db_layout.
         app-view_popup = `POPUP_SAVE`.
 
@@ -149,12 +163,30 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
     app-view_main = `MAIN`.
 
     ms_layout-title = `data`.
-    ms_layout-t_cols = VALUE #(
-        ( name = `PRODUCT`    title = `PRODUCT` visible = abap_true )
-        ( name = `CREATE_DAT` title = `CREATE_DAT` visible = abap_true )
-        ( name = `CREATE_BY`  title = `CREATE_BY` visible = abap_true )
-        ( name = `STORAGE_LOCATION` title = `STORAGE_LOCATION`  visible = abap_true )
-        ( name = `QUANTITY`   title = `QUANTITY` visible = abap_true ) ).
+    DATA temp2 LIKE ms_layout-t_cols.
+    CLEAR temp2.
+    DATA temp3 LIKE LINE OF temp2.
+    temp3-name = `PRODUCT`.
+    temp3-title = `PRODUCT`.
+    temp3-visible = abap_true.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-name = `CREATE_DAT`.
+    temp3-title = `CREATE_DAT`.
+    temp3-visible = abap_true.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-name = `CREATE_BY`.
+    temp3-title = `CREATE_BY`.
+    temp3-visible = abap_true.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-name = `STORAGE_LOCATION`.
+    temp3-title = `STORAGE_LOCATION`.
+    temp3-visible = abap_true.
+    INSERT temp3 INTO TABLE temp2.
+    temp3-name = `QUANTITY`.
+    temp3-title = `QUANTITY`.
+    temp3-visible = abap_true.
+    INSERT temp3 INTO TABLE temp2.
+    ms_layout-t_cols = temp2.
 
   ENDMETHOD.
 
@@ -178,15 +210,19 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
 
   METHOD z2ui5_on_render_main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view = view->shell( )->page( id = `page_main`
              title                  = 'abap2UI5 - Table Layout Sample'
              navbuttonpress         = client->_event( 'BACK' )
-             shownavbutton          = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+             shownavbutton          = temp1 ).
 
 
 
-    DATA(tab) = view->table(
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = view->table(
         headertext         = ms_layout-title
         items              = client->_bind( mt_table )
         alternaterowcolors = ms_layout-check_zebra
@@ -194,9 +230,11 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
 *        autopopinmode = abap_true
         mode               = ms_layout-selmode ).
 
+    DATA temp4 TYPE string.
+    temp4 = lines( mt_table ).
     tab->header_toolbar(
           )->toolbar(
-              )->title( text = ms_layout-title && ` (` && shift_right( CONV string( lines( mt_table ) ) ) && `)`
+              )->title( text = ms_layout-title && ` (` && shift_right( temp4 ) && `)`
       )->toolbar_spacer(
               )->button(
                   icon  = 'sap-icon://save'
@@ -205,19 +243,31 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
                   icon  = 'sap-icon://action-settings'
                   press = client->_event( 'BUTTON_SETUP' ) ).
 
-    DATA(lv_width) = 10.
-    DATA(lo_columns) = tab->columns( ).
-    LOOP AT ms_layout-t_cols REFERENCE INTO DATA(lr_field)
+    DATA lv_width TYPE i.
+    lv_width = 10.
+    DATA lo_columns TYPE REF TO z2ui5_cl_xml_view.
+    lo_columns = tab->columns( ).
+    DATA temp5 LIKE LINE OF ms_layout-t_cols.
+    DATA lr_field LIKE REF TO temp5.
+    LOOP AT ms_layout-t_cols REFERENCE INTO lr_field
           WHERE visible = abap_true.
+      DATA temp6 TYPE string.
+      temp6 = lv_width.
+      DATA temp8 TYPE char10.
+      temp8 = lr_field->title.
       lo_columns->column(
-            minscreenwidth = shift_right( CONV string( lv_width ) ) && `px`
+            minscreenwidth = shift_right( temp6 ) && `px`
             demandpopin    = abap_true
-            width          = lr_field->length )->text( text = CONV char10( lr_field->title ) ).
+            width          = lr_field->length )->text( text = temp8 ).
       lv_width = lv_width + 10.
     ENDLOOP.
 
-    DATA(lo_cells) = tab->items( )->column_list_item(
-        press    = client->_event( val = 'DETAIL' t_arg = VALUE #( ( `${UUID}` ) ) )
+    DATA temp7 TYPE string_table.
+    CLEAR temp7.
+    INSERT `${UUID}` INTO TABLE temp7.
+    DATA lo_cells TYPE REF TO z2ui5_cl_xml_view.
+    lo_cells = tab->items( )->column_list_item(
+        press    = client->_event( val = 'DETAIL' t_arg = temp7 )
         selected = `{SELKZ}`
       )->cells( ).
 
@@ -237,7 +287,8 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
 
   METHOD z2ui5_on_render_popup.
 
-    DATA(ro_popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA ro_popup TYPE REF TO z2ui5_cl_xml_view.
+    ro_popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     ro_popup = ro_popup->dialog( title        = 'View Setup'
                                  resizable    = abap_true
@@ -250,8 +301,24 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
           )->button( text  = `zurücksetzten`
                      press = client->_event( 'BUTTON_INIT' ) ).
 
-    DATA(lo_tab) = ro_popup->tab_container( ).
+    DATA lo_tab TYPE REF TO z2ui5_cl_xml_view.
+    lo_tab = ro_popup->tab_container( ).
 
+    DATA temp9 TYPE ty_t_combo.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-key = 'None'.
+    temp10-text = 'None'.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-key = 'SingleSelect'.
+    temp10-text = 'SingleSelect'.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-key = 'SingleSelectLeft'.
+    temp10-text = 'SingleSelectLeft'.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-key = 'MultiSelect'.
+    temp10-text = 'MultiSelect'.
+    INSERT temp10 INTO TABLE temp9.
     lo_tab->tab( text     = 'Table'
                  selected = client->_bind_edit( mv_check_table )
        )->simple_form( editable = abap_true
@@ -265,11 +332,7 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
                )->label( 'sel mode'
                )->combobox(
                    selectedkey = client->_bind_edit( ms_layout-selmode )
-                   items       = client->_bind_local( VALUE ty_t_combo(
-                       ( key = 'None'  text = 'None' )
-                       ( key = 'SingleSelect' text = 'SingleSelect' )
-                       ( key = 'SingleSelectLeft' text = 'SingleSelectLeft' )
-                       ( key = 'MultiSelect'  text = 'MultiSelect' ) ) )
+                   items       = client->_bind_local( temp9 )
                    )->item(
                        key  = '{KEY}'
                        text = '{TEXT}' ).
@@ -315,7 +378,8 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
 
   METHOD z2ui5_on_render_popup_save.
 
-    DATA(lo_popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA lo_popup TYPE REF TO z2ui5_cl_xml_view.
+    lo_popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     lo_popup = lo_popup->dialog( title        = 'abap2UI5 - Layout'
                                  contentwidth = `50%`
@@ -356,13 +420,46 @@ CLASS z2ui5_cl_demo_app_058 IMPLEMENTATION.
 
   METHOD z2ui5_set_data.
 
-    mt_table = VALUE #(
-        ( product = 'table'    create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'chair'    create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'sofa'     create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'computer' create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'oven'     create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'table2'   create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 ) ).
+    DATA temp11 TYPE z2ui5_cl_demo_app_058=>ty_t_table.
+    CLEAR temp11.
+    DATA temp12 LIKE LINE OF temp11.
+    temp12-product = 'table'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-product = 'chair'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-product = 'sofa'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-product = 'computer'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-product = 'oven'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-product = 'table2'.
+    temp12-create_date = `01.01.2023`.
+    temp12-create_by = `Peter`.
+    temp12-storage_location = `AREA_001`.
+    temp12-quantity = 400.
+    INSERT temp12 INTO TABLE temp11.
+    mt_table = temp11.
 
   ENDMETHOD.
 ENDCLASS.

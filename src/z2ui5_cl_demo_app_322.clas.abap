@@ -17,8 +17,9 @@ CLASS z2ui5_cl_demo_app_322 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    IF client->check_on_navigated( ).
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    IF client->check_on_navigated( ) IS NOT INITIAL.
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
       client->view_display( val = view->shell(
              )->page(
                      title          = 'abap2UI5 - Navigation with app state'
@@ -37,7 +38,7 @@ CLASS z2ui5_cl_demo_app_322 IMPLEMENTATION.
                              press = client->_event_client( 'HISTORY_BACK' )
               )->stringify( ) ).
 
-      IF client->check_app_prev_stack( ).
+      IF client->check_app_prev_stack( ) IS NOT INITIAL.
         client->set_push_state( `/head/pos/` && client->get( )-s_draft-id ).
       ENDIF.
       RETURN.

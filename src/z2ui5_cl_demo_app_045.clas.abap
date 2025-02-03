@@ -14,7 +14,8 @@ CLASS z2ui5_cl_demo_app_045 DEFINITION PUBLIC.
         checkbox TYPE abap_bool,
       END OF ty_row.
 
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    TYPES temp1_850264c07c TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
+DATA t_tab TYPE temp1_850264c07c.
     DATA check_initialized TYPE abap_bool.
     DATA mv_info_filter TYPE string.
     METHODS refresh_data.
@@ -31,9 +32,21 @@ CLASS Z2UI5_CL_DEMO_APP_045 IMPLEMENTATION.
   METHOD refresh_data.
 
     DO 1000 TIMES.
-      DATA(ls_row) = VALUE ty_row( count = sy-index  value = 'red'
-        info = COND #( WHEN sy-index < 50 THEN 'completed' ELSE 'uncompleted' )
-        descr = 'this is a description' checkbox = abap_true ).
+      DATA temp1 TYPE ty_row.
+      CLEAR temp1.
+      temp1-count = sy-index.
+      temp1-value = 'red'.
+      DATA temp2 TYPE z2ui5_cl_demo_app_045=>ty_row-info.
+      IF sy-index < 50.
+        temp2 = 'completed'.
+      ELSE.
+        temp2 = 'uncompleted'.
+      ENDIF.
+      temp1-info = temp2.
+      temp1-descr = 'this is a description'.
+      temp1-checkbox = abap_true.
+      DATA ls_row LIKE temp1.
+      ls_row = temp1.
       INSERT ls_row INTO TABLE t_tab.
     ENDDO.
 
@@ -64,11 +77,14 @@ CLASS Z2UI5_CL_DEMO_APP_045 IMPLEMENTATION.
     ENDCASE.
 
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
         )->page(
             title          = 'abap2UI5 - Scroll Container with Table and Toolbar'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton  = temp1
             )->header_content(
                 )->link(
       )->get_parent( ).
@@ -83,7 +99,8 @@ CLASS Z2UI5_CL_DEMO_APP_045 IMPLEMENTATION.
                         text  = 'filter'
                         press = client->_event( 'FLTER_INFO' ) ).
 
-    DATA(tab) = page->scroll_container( height   = '70%'
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = page->scroll_container( height   = '70%'
                                         vertical = abap_true
         )->table(
             growing             = abap_true

@@ -24,13 +24,16 @@ CLASS z2ui5_cl_demo_app_161 IMPLEMENTATION.
 
   METHOD simple_popup1.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(dialog) = popup->dialog(
+    DATA dialog TYPE REF TO z2ui5_cl_xml_view.
+    dialog = popup->dialog(
             afterclose = client->_event( 'BTN_OK_1ND' )
          )->content( ).
 
-    DATA(content) = dialog->button( text  = `Open 2nd popup`
+    DATA content TYPE REF TO z2ui5_cl_xml_view.
+    content = dialog->button( text  = `Open 2nd popup`
                                     press = client->_event( 'GOTO_2ND' ) ).
 
     dialog->get_parent( )->buttons(
@@ -46,13 +49,16 @@ CLASS z2ui5_cl_demo_app_161 IMPLEMENTATION.
 
   METHOD simple_popup2.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(dialog) = popup->dialog(
+    DATA dialog TYPE REF TO z2ui5_cl_xml_view.
+    dialog = popup->dialog(
         afterclose = client->_event( 'BTN_OK_2ND' )
          )->content( ).
 
-    DATA(content) = dialog->label( text = 'this is a second popup' ).
+    DATA content TYPE REF TO z2ui5_cl_xml_view.
+    content = dialog->label( text = 'this is a second popup' ).
 
     dialog->get_parent( )->buttons(
                   )->button(
@@ -67,12 +73,15 @@ CLASS z2ui5_cl_demo_app_161 IMPLEMENTATION.
 
   METHOD ui5_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
         )->page(
                 title          = 'abap2UI5 - Popup To Popup'
                 navbuttonpress = client->_event( val = 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                shownavbutton  = temp1
            )->button(
             text  = 'Open Popup...'
             press = client->_event( 'POPUP' ) ).

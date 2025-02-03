@@ -26,13 +26,17 @@ CLASS z2ui5_cl_demo_app_235 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page_01) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page_01 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page_01 = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Toolbar vs Bar vs OverflowToolbar'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(page_02) = page_01->page(
+    DATA page_02 TYPE REF TO z2ui5_cl_xml_view.
+    page_02 = page_01->page(
                          title         = `Bar can center a Title.`
                          titlelevel    = `H2`
                          class         = `sapUiContentPadding`

@@ -29,7 +29,8 @@ CLASS Z2UI5_CL_DEMO_APP_018 IMPLEMENTATION.
 
   METHOD z2ui5_display_popup_input.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->dialog(
              title = 'Title'
              icon  = 'sap-icon://edit'
@@ -63,12 +64,15 @@ CLASS Z2UI5_CL_DEMO_APP_018 IMPLEMENTATION.
 
   METHOD z2ui5_display_view_main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
         )->page(
                 title          = 'abap2UI5 - Template'
                 navbuttonpress = client->_event( val = 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                shownavbutton  = temp1
             )->simple_form( title    = 'VIEW_MAIN'
                             editable = abap_true
                 )->content( 'form'
@@ -101,12 +105,15 @@ CLASS Z2UI5_CL_DEMO_APP_018 IMPLEMENTATION.
 
   METHOD z2ui5_display_view_second.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
           )->page(
                   title          = 'abap2UI5 - Template'
                   navbuttonpress = client->_event( val = 'BACK' )
-                  shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                  shownavbutton  = temp2
               )->simple_form( 'VIEW_SECOND'
                   )->content( 'form'
       )->get_parent( )->get_parent( )->footer(

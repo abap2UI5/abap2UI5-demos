@@ -27,7 +27,7 @@ CLASS z2ui5_cl_demo_app_304 IMPLEMENTATION.
 
     me->client = client.
 
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
       view_display( ).
     ENDIF.
 
@@ -38,7 +38,8 @@ CLASS z2ui5_cl_demo_app_304 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
     " Note, these are demo sounds and are part of the abap2UI5 sample repo.
     " They are NOT meant to use in production.
@@ -47,7 +48,8 @@ CLASS z2ui5_cl_demo_app_304 IMPLEMENTATION.
                         |function playSuccess() \{ new Audio("/SAP/PUBLIC/BC/ABAP/mime_demo/z2ui5_demo_success.mp3").play(); \}|
                      && |function playError() \{ new Audio("/SAP/PUBLIC/BC/ABAP/mime_demo/z2ui5_demo_error.mp3").play(); \}| ).
 
-    DATA(vbox) = view->page( title = `Play success and error sounds` )->vbox( class = `sapUiSmallMargin` ).
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = view->page( title = `Play success and error sounds` )->vbox( class = `sapUiSmallMargin` ).
     vbox->message_strip(
         text    = client->_bind( message-text )
         type    = client->_bind( message-type )

@@ -31,7 +31,8 @@ CLASS z2ui5_cl_demo_app_256 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(css) = `.fixFlexFixedSize > .sapUiFixFlexFixed {`      &&
+    DATA css TYPE string.
+    css = `.fixFlexFixedSize > .sapUiFixFlexFixed {`      &&
                 `    background: #D7E9FF;`                      &&
                 `}`                                             &&
       `.fixFlexFixedSize > .sapUiFixFlexFlexible {`   &&
@@ -42,15 +43,19 @@ CLASS z2ui5_cl_demo_app_256 IMPLEMENTATION.
                 `}`.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `style`
                     ns   = `html` )->_cc_plain_xml( css )->get_parent( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
          )->page(
             title          = `abap2UI5 - Sample: Fix Flex - Fix container size`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `hint_icon`
@@ -64,7 +69,8 @@ CLASS z2ui5_cl_demo_app_256 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.ui.layout.FixFlex/sample/sap.ui.layout.sample.FixFlexFixedSize' ).
 
-    DATA(layout) = page->fix_flex( ns             = `layout`
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->fix_flex( ns             = `layout`
                                    class          = `fixFlexFixedSize`
                                    fixcontentsize = `150px`
                          )->fix_content( ns = `layout`
@@ -113,7 +119,8 @@ CLASS z2ui5_cl_demo_app_256 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

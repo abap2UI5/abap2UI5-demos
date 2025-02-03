@@ -13,7 +13,8 @@ CLASS z2ui5_cl_demo_app_294 DEFINITION
         value_state_text TYPE string,
       END OF ty_a_data.
 
-    DATA lt_a_data TYPE STANDARD TABLE OF ty_a_data.
+    TYPES temp1_2fb714d2bc TYPE STANDARD TABLE OF ty_a_data.
+DATA lt_a_data TYPE temp1_2fb714d2bc.
     DATA s_text TYPE string.
     DATA check_initialized TYPE abap_bool.
 
@@ -42,11 +43,14 @@ CLASS z2ui5_cl_demo_app_294 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Date Picker - Value States'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `button_hint_id`
@@ -91,7 +95,8 @@ CLASS z2ui5_cl_demo_app_294 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`
@@ -128,21 +133,35 @@ CLASS z2ui5_cl_demo_app_294 IMPLEMENTATION.
     s_text = 'DatePicker with valueState '.
 
     " Append entries to the internal table
-    APPEND VALUE #( label       = s_text && 'None'
-                    value_state = 'None' ) TO lt_a_data.
+    DATA temp1 TYPE z2ui5_cl_demo_app_294=>ty_a_data.
+    CLEAR temp1.
+    temp1-label = s_text && 'None'.
+    temp1-value_state = 'None'.
+    APPEND temp1 TO lt_a_data.
 
-    APPEND VALUE #( label       = s_text && 'Information'
-                    value_state = 'Information' ) TO lt_a_data.
+    DATA temp2 TYPE z2ui5_cl_demo_app_294=>ty_a_data.
+    CLEAR temp2.
+    temp2-label = s_text && 'Information'.
+    temp2-value_state = 'Information'.
+    APPEND temp2 TO lt_a_data.
 
-    APPEND VALUE #( label       = s_text && 'Success'
-                    value_state = 'Success' ) TO lt_a_data.
+    DATA temp3 TYPE z2ui5_cl_demo_app_294=>ty_a_data.
+    CLEAR temp3.
+    temp3-label = s_text && 'Success'.
+    temp3-value_state = 'Success'.
+    APPEND temp3 TO lt_a_data.
 
-    APPEND VALUE #( label            = s_text && 'Warning and long valueStateText'
-                    value_state      = 'Warning'
-                    value_state_text = 'Warning message. This is an extra long text used as a warning message. ' &&
-                                       'It illustrates how the text wraps into two or more lines without truncation to show the full length of the message.' ) TO lt_a_data.
+    DATA temp4 TYPE z2ui5_cl_demo_app_294=>ty_a_data.
+    CLEAR temp4.
+    temp4-label = s_text && 'Warning and long valueStateText'.
+    temp4-value_state = 'Warning'.
+    temp4-value_state_text = 'Warning message. This is an extra long text used as a warning message. ' && 'It illustrates how the text wraps into two or more lines without truncation to show the full length of the message.'.
+    APPEND temp4 TO lt_a_data.
 
-    APPEND VALUE #( label       = s_text && 'Error'
-                    value_state = 'Error' ) TO lt_a_data.
+    DATA temp5 TYPE z2ui5_cl_demo_app_294=>ty_a_data.
+    CLEAR temp5.
+    temp5-label = s_text && 'Error'.
+    temp5-value_state = 'Error'.
+    APPEND temp5 TO lt_a_data.
   ENDMETHOD.
 ENDCLASS.

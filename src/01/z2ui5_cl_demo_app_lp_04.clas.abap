@@ -21,15 +21,25 @@ CLASS z2ui5_cl_demo_app_lp_04 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     product_url = z2ui5_cl_util=>url_param_get(
                     val =  `product`
                     url = client->get( )-s_config-search ).
     check_launchpad_active = client->get( )-check_launchpad_active.
 
-    data(lt_params) = client->get( )-t_comp_params.
+    DATA lt_params TYPE z2ui5_if_types=>ty_t_name_value.
+    lt_params = client->get( )-t_comp_params.
     try.
-    product = lt_params[ n = `PRODUCT` ]-v.
+    DATA temp1 LIKE LINE OF lt_params.
+    DATA temp2 LIKE sy-tabix.
+    temp2 = sy-tabix.
+    READ TABLE lt_params WITH KEY n = `PRODUCT` INTO temp1.
+    sy-tabix = temp2.
+    IF sy-subrc <> 0.
+      ASSERT 1 = 0.
+    ENDIF.
+    product = temp1-v.
     catch cx_root.
     endtry.
     IF check_initialized = abap_false.
@@ -37,12 +47,20 @@ CLASS z2ui5_cl_demo_app_lp_04 IMPLEMENTATION.
 
       quantity = '500'.
 
+      DATA temp3 TYPE string_table.
+      CLEAR temp3.
+      INSERT `{ semanticObject: "Z2UI5_CL_LP_SAMPLE_03",  action: "display" }` INTO TABLE temp3.
+      INSERT `{ ProductID : "123234" }` INTO TABLE temp3.
+      DATA temp4 TYPE xsdboolean.
+      temp4 = boolc( abap_false = client->get( )-check_launchpad_active ).
+      DATA temp5 TYPE xsdboolean.
+      temp5 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
       client->view_display( view->shell(
             )->page(
-                    showheader       = xsdbool( abap_false = client->get( )-check_launchpad_active )
+                    showheader       = temp4
                     title          = 'abap2UI5 -  Cross App Navigation App 128'
                     navbuttonpress = client->_event( val = 'BACK' )
-                    shownavbutton = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                    shownavbutton = temp5
                 )->header_content(
                     )->link(
                         text = 'Source_Code'
@@ -62,7 +80,7 @@ CLASS z2ui5_cl_demo_app_lp_04 IMPLEMENTATION.
                             text  = 'go to app 127'
                             press = client->_event_client(
             val    = client->cs_event-cross_app_nav_to_ext
-            t_arg  = VALUE #( ( `{ semanticObject: "Z2UI5_CL_LP_SAMPLE_03",  action: "display" }` ) ( `{ ProductID : "123234" }`) )
+            t_arg  = temp3
         )
              )->stringify( ) ).
 

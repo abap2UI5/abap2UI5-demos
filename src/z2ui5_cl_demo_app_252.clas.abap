@@ -31,11 +31,14 @@ CLASS z2ui5_cl_demo_app_252 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Flex Box - Render Type'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
 
     page->header_content(
@@ -50,7 +53,8 @@ CLASS z2ui5_cl_demo_app_252 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.m.FlexBox/sample/sap.m.sample.FlexBoxRenderType' ).
 
-    DATA(layout) = page->vbox(
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->vbox(
                           )->panel( headertext = `Render Type - Div`
                               )->flex_box( rendertype = `Div`
                                   )->button( text  = `Some text`
@@ -102,7 +106,8 @@ CLASS z2ui5_cl_demo_app_252 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

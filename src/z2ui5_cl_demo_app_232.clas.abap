@@ -26,13 +26,17 @@ CLASS z2ui5_cl_demo_app_232 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'Sample: MultiInput - Suggestions wrapping'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(layout) = page->vertical_layout( class = `sapUiContentPadding`
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->vertical_layout( class = `sapUiContentPadding`
                                           width = `100%` ).
     layout->label( text     = `Product`
                    labelfor = `wrappingMultiInput` ).

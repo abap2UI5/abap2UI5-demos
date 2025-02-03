@@ -22,7 +22,8 @@ CLASS Z2UI5_CL_DEMO_APP_012 IMPLEMENTATION.
 
   METHOD ui5_popup_decide.
 
-    DATA(popup)  = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup  = z2ui5_cl_xml_view=>factory_popup( ).
     popup->dialog( 'Popup - Decide'
             )->vbox(
                 )->text( 'this is a popup to decide, you have to make a decision now...'
@@ -43,7 +44,8 @@ CLASS Z2UI5_CL_DEMO_APP_012 IMPLEMENTATION.
 
   METHOD ui5_popup_info_frontend_close.
 
-    DATA(popup)  = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup  = z2ui5_cl_xml_view=>factory_popup( ).
     popup->dialog( 'Popup - Info'
             )->vbox(
                 )->text( 'this is an information, press close to go back to the main view without a server roundtrip'
@@ -61,13 +63,18 @@ CLASS Z2UI5_CL_DEMO_APP_012 IMPLEMENTATION.
 
   METHOD ui5_view_display.
 
-    DATA(lo_main) = z2ui5_cl_xml_view=>factory( )->shell( ).
-    DATA(page) = lo_main->page(
+    DATA lo_main TYPE REF TO z2ui5_cl_xml_view.
+    lo_main = z2ui5_cl_xml_view=>factory( )->shell( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = lo_main->page(
             title          = 'abap2UI5 - Popups'
             navbuttonpress = client->_event( val = 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(grid) = page->grid( 'L7 M12 S12' )->content( 'layout'
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L7 M12 S12' )->content( 'layout'
         )->simple_form( 'Popup in same App' )->content( 'form'
             )->label( 'Demo'
             )->button(
@@ -112,7 +119,10 @@ CLASS Z2UI5_CL_DEMO_APP_012 IMPLEMENTATION.
 
     IF mv_check_popup = abap_true.
       mv_check_popup = abap_false.
-      DATA(app) = CAST z2ui5_cl_demo_app_020( client->get_app( client->get( )-s_draft-id_prev_app ) ).
+      DATA temp1 TYPE REF TO z2ui5_cl_demo_app_020.
+      temp1 ?= client->get_app( client->get( )-s_draft-id_prev_app ).
+      DATA app LIKE temp1.
+      app = temp1.
       client->message_toast_display( app->mv_event && ` pressed` ).
     ENDIF.
 

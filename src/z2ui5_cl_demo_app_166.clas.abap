@@ -42,12 +42,16 @@ CLASS z2ui5_cl_demo_app_166 IMPLEMENTATION.
 
   METHOD set_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
                 title          = 'abap2UI5 - Binding Structure Level'
                 navbuttonpress = client->_event( 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                shownavbutton  = temp1 ).
 
     page->input( client->_bind_edit( val = ms_struc-title ) ).
     page->input( client->_bind_edit( val = ms_struc-value ) ).

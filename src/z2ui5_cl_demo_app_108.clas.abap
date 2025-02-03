@@ -69,7 +69,8 @@ CLASS Z2UI5_CL_DEMO_APP_108 IMPLEMENTATION.
 
   METHOD z2ui5_on_rendering.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title           = 'abap2UI5 - Side Panel Example'
             navbuttonpress  = client->_event( 'BACK' )
@@ -79,7 +80,8 @@ CLASS Z2UI5_CL_DEMO_APP_108 IMPLEMENTATION.
          )->link(
          )->get_parent( ).
 
-    DATA(side_panel) = page->side_panel( sidepanelposition = `Left`
+    DATA side_panel TYPE REF TO z2ui5_cl_xml_view.
+    side_panel = page->side_panel( sidepanelposition = `Left`
       )->main_content(
         )->button( text = `Button 1`
         )->button( text = `Button 2`

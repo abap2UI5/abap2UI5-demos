@@ -17,7 +17,7 @@ CLASS z2ui5_cl_demo_app_111 DEFINITION
         quantity         TYPE i,
       END OF ty_s_tab .
     TYPES
-      ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH EMPTY KEY .
+      ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH DEFAULT KEY .
 
     DATA mv_search_value TYPE string .
     DATA mt_table TYPE ty_t_table .
@@ -86,13 +86,46 @@ CLASS z2ui5_cl_demo_app_111 IMPLEMENTATION.
 
   METHOD z2ui5_set_data.
 
-    mt_table = VALUE #(
-        ( product = 'table' create_date = `01.01.2023` create_by = `Peter` storage_location = `AREA_001` quantity = 400 )
-        ( product = 'chair' create_date = `01.01.2022` create_by = `James` storage_location = `AREA_001` quantity = 123 )
-        ( product = 'sofa' create_date = `01.05.2021` create_by = `Simone` storage_location = `AREA_001` quantity = 700 )
-        ( product = 'computer' create_date = `27.01.2023` create_by = `Theo` storage_location = `AREA_001` quantity = 200 )
-        ( product = 'printer' create_date = `01.01.2023` create_by = `Hannah` storage_location = `AREA_001` quantity = 90 )
-        ( product = 'table2' create_date = `01.01.2023` create_by = `Julia` storage_location = `AREA_001` quantity = 110 ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_111=>ty_t_table.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-product = 'table'.
+    temp2-create_date = `01.01.2023`.
+    temp2-create_by = `Peter`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 400.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product = 'chair'.
+    temp2-create_date = `01.01.2022`.
+    temp2-create_by = `James`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 123.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product = 'sofa'.
+    temp2-create_date = `01.05.2021`.
+    temp2-create_by = `Simone`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 700.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product = 'computer'.
+    temp2-create_date = `27.01.2023`.
+    temp2-create_by = `Theo`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 200.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product = 'printer'.
+    temp2-create_date = `01.01.2023`.
+    temp2-create_by = `Hannah`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 90.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product = 'table2'.
+    temp2-create_date = `01.01.2023`.
+    temp2-create_by = `Julia`.
+    temp2-storage_location = `AREA_001`.
+    temp2-quantity = 110.
+    INSERT temp2 INTO TABLE temp1.
+    mt_table = temp1.
 
   ENDMETHOD.
 
@@ -101,11 +134,16 @@ CLASS z2ui5_cl_demo_app_111 IMPLEMENTATION.
 
     IF mv_search_value IS NOT INITIAL.
 
-      LOOP AT mt_table REFERENCE INTO DATA(lr_row).
-        DATA(lv_row) = ``.
-        DATA(lv_index) = 1.
+      DATA temp3 LIKE LINE OF mt_table.
+      DATA lr_row LIKE REF TO temp3.
+      LOOP AT mt_table REFERENCE INTO lr_row.
+        DATA lv_row TYPE string.
+        lv_row = ``.
+        DATA lv_index TYPE i.
+        lv_index = 1.
         DO.
-          ASSIGN COMPONENT lv_index OF STRUCTURE lr_row->* TO FIELD-SYMBOL(<field>).
+          FIELD-SYMBOLS <field> TYPE any.
+          ASSIGN COMPONENT lv_index OF STRUCTURE lr_row->* TO <field>.
           IF sy-subrc <> 0.
             EXIT.
           ENDIF.
@@ -124,7 +162,8 @@ CLASS z2ui5_cl_demo_app_111 IMPLEMENTATION.
 
   METHOD z2ui5_view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
     client->view_display( z2ui5_cl_xml_view=>factory(
 *        )->_cc_plain_xml( `<html:script>` && lv_script && `</html:script>`
@@ -134,21 +173,27 @@ CLASS z2ui5_cl_demo_app_111 IMPLEMENTATION.
 
 
 
-    DATA(page1) = view->page( id = `page_main`
+    DATA page1 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page1 = view->page( id = `page_main`
             title                = 'abap2UI5 - List Report Features'
             navbuttonpress       = client->_event( 'BACK' )
-            shownavbutton        = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton        = temp1 ).
 
-    DATA(page) = page1->dynamic_page( headerexpanded = abap_true
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = page1->dynamic_page( headerexpanded = abap_true
                                       headerpinned   = abap_true ).
 
-    DATA(header_title) = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
+    DATA header_title TYPE REF TO z2ui5_cl_xml_view.
+    header_title = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
     header_title->heading( ns = 'f' )->smart_variant_management( id                     = `svm`
                                                                  showexecuteonselection = abap_true ).
     header_title->expanded_content( 'f' ).
     header_title->snapped_content( ns = 'f' ).
 
-    DATA(lo_fb) = page->header( )->dynamic_page_header( pinnable = abap_true ).
+    DATA lo_fb TYPE REF TO z2ui5_cl_xml_view.
+    lo_fb = page->header( )->dynamic_page_header( pinnable = abap_true ).
 
     lo_fb->filter_bar( id             = `fbar`
                        persistencykey = `myPersKey`
@@ -199,19 +244,23 @@ CLASS z2ui5_cl_demo_app_111 IMPLEMENTATION.
               )->get( )->suggestion_items( )->item( text = `{QUANTITY}`
             )->get_parent( )->get_parent( )->get_parent( ).
 
-    DATA(cont) = page->content( ns = 'f' ).
+    DATA cont TYPE REF TO z2ui5_cl_xml_view.
+    cont = page->content( ns = 'f' ).
 
-    DATA(tab) = cont->table( id    = `table1`
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = cont->table( id    = `table1`
                              items = client->_bind_edit( val = mt_table ) ).
 
-    DATA(lo_columns) = tab->columns( ).
+    DATA lo_columns TYPE REF TO z2ui5_cl_xml_view.
+    lo_columns = tab->columns( ).
     lo_columns->column( )->text( text = `Product` ).
     lo_columns->column( )->text( text = `Date` ).
     lo_columns->column( )->text( text = `Name` ).
     lo_columns->column( )->text( text = `Location` ).
     lo_columns->column( )->text( text = `Quantity` ).
 
-    DATA(lo_cells) = tab->items( )->column_list_item( ).
+    DATA lo_cells TYPE REF TO z2ui5_cl_xml_view.
+    lo_cells = tab->items( )->column_list_item( ).
     lo_cells->text( `{PRODUCT}` ).
     lo_cells->text( `{CREATE_DATE}` ).
     lo_cells->text( `{CREATE_BY}` ).

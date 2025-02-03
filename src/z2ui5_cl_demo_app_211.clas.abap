@@ -63,33 +63,53 @@ CLASS z2ui5_cl_demo_app_211 IMPLEMENTATION.
 
   METHOD on_init.
 
-    mt_t002 = VALUE #( class = 'Z2UI5_CL_DEMO_APP_212'
-                       ( id = '1' count = '5' table = 'Z2UI5_T003' descr = 'Table 01' icon = 'sap-icon://add' )
-*                       ( id = '2' count = '10' table = 'Z2UI5_T003'  descr = 'Table 01' icon = 'sap-icon://add' )
-                       ( id = '3' count = '15' table = 'Z2UI5_T004'  descr = 'Table 02' icon = 'sap-icon://accept' ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_211=>ty_t_t002.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-class = 'Z2UI5_CL_DEMO_APP_212'.
+    temp2-id = '1'.
+    temp2-count = '5'.
+    temp2-table = 'Z2UI5_T003'.
+    temp2-descr = 'Table 01'.
+    temp2-icon = 'sap-icon://add'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = '3'.
+    temp2-count = '15'.
+    temp2-table = 'Z2UI5_T004'.
+    temp2-descr = 'Table 02'.
+    temp2-icon = 'sap-icon://accept'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_t002 = temp1.
 
     mv_selectedkey = '1'.
 
   ENDMETHOD.
 
   METHOD render_main.
-    DATA(view) = z2ui5_cl_xml_view=>factory( )->shell( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( )->shell( ).
 
-    DATA(page) = view->page( id             = `page_main`
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->page( id             = `page_main`
                              title          = 'Customizing'
                              navbuttonpress = client->_event( 'BACK' )
                              shownavbutton  = abap_true
                              class          = 'sapUiContentPadding' ).
 
-    DATA(lo_items) = page->icon_tab_bar( class       = 'sapUiResponsiveContentPadding'
+    DATA lo_items TYPE REF TO z2ui5_cl_xml_view.
+    lo_items = page->icon_tab_bar( class       = 'sapUiResponsiveContentPadding'
                                          selectedkey = client->_bind_edit( mv_selectedkey )
                                          select      = client->_event( val = 'ONSELECTICONTABBAR' )
                                                        )->items( ).
 
-    LOOP AT mt_t002 REFERENCE INTO DATA(line).
+    DATA temp3 LIKE LINE OF mt_t002.
+    DATA line LIKE REF TO temp3.
+    LOOP AT mt_t002 REFERENCE INTO line.
 
-      DATA(text) = line->descr.
-      DATA(with_icon) = line->icon.
+      DATA text LIKE line->descr.
+      text = line->descr.
+      DATA with_icon LIKE line->icon.
+      with_icon = line->icon.
 
       lo_items->icon_tab_filter( icon      = line->icon
                                  iconcolor = 'Positive'
@@ -124,7 +144,8 @@ CLASS z2ui5_cl_demo_app_211 IMPLEMENTATION.
 
   METHOD render_sub_app.
 
-    READ TABLE mt_t002 REFERENCE INTO DATA(t002)
+    DATA t002 TYPE REF TO z2ui5_cl_demo_app_211=>ty_s_t002.
+    READ TABLE mt_t002 REFERENCE INTO t002
          WITH KEY id = mv_selectedkey.
 
     IF sy-subrc <> 0.
@@ -146,7 +167,8 @@ CLASS z2ui5_cl_demo_app_211 IMPLEMENTATION.
 
             render_main( ).
 
-            ASSIGN mo_app->('MO_PARENT_VIEW') TO FIELD-SYMBOL(<view>).
+            FIELD-SYMBOLS <view> TYPE any.
+            ASSIGN mo_app->('MO_PARENT_VIEW') TO <view>.
             IF <view> IS ASSIGNED.
               <view> = mo_main_page.
             ENDIF.
@@ -160,14 +182,16 @@ CLASS z2ui5_cl_demo_app_211 IMPLEMENTATION.
 
     ENDCASE.
 
-    ASSIGN mo_app->('MV_VIEW_DISPLAY') TO FIELD-SYMBOL(<view_display>).
+    FIELD-SYMBOLS <view_display> TYPE any.
+    ASSIGN mo_app->('MV_VIEW_DISPLAY') TO <view_display>.
 
     IF <view_display> = abap_true.
       <view_display> = abap_false.
       client->view_display( mo_main_page->stringify( ) ).
     ENDIF.
 
-    ASSIGN mo_app->('MV_VIEW_MODEL_UPDATE') TO FIELD-SYMBOL(<view_update>).
+    FIELD-SYMBOLS <view_update> TYPE any.
+    ASSIGN mo_app->('MV_VIEW_MODEL_UPDATE') TO <view_update>.
 
     IF <view_update> = abap_true.
       <view_update> = abap_false.

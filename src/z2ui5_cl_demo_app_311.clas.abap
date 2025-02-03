@@ -13,7 +13,7 @@ CLASS z2ui5_cl_demo_app_311 DEFINITION PUBLIC.
         group       TYPE string,
       END OF ty_msg.
 
-    DATA t_msg TYPE STANDARD TABLE OF ty_msg WITH EMPTY KEY.
+    DATA t_msg TYPE STANDARD TABLE OF ty_msg WITH DEFAULT KEY.
     DATA check_initialized TYPE abap_bool.
 
     METHODS z2ui5_display_view.
@@ -36,7 +36,8 @@ CLASS Z2UI5_CL_DEMO_APP_311 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     popup->message_popover(
             items             = client->_bind( t_msg )
@@ -59,7 +60,8 @@ CLASS Z2UI5_CL_DEMO_APP_311 IMPLEMENTATION.
 
   METHOD z2ui5_display_popup.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     popup = popup->dialog(
           title         = `Messages`
@@ -94,10 +96,12 @@ CLASS Z2UI5_CL_DEMO_APP_311 IMPLEMENTATION.
 
   METHOD z2ui5_display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( ns   = `html`
                     name = `style` )->_cc_plain_xml( `.sapMDialogScroll { height:100%; }` ).
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->shell(
         )->page(
             title           = 'abap2UI5 - List'
             navbuttonpress  = client->_event( val = 'BACK' )
@@ -138,11 +142,34 @@ CLASS Z2UI5_CL_DEMO_APP_311 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      t_msg = VALUE #(
-          ( description = 'descr' subtitle = 'subtitle' title = 'title' type = 'Error'     group = 'group 01' )
-          ( description = 'descr' subtitle = 'subtitle' title = 'title' type = 'Information' group = 'group 01' )
-          ( description = 'descr' subtitle = 'subtitle' title = 'title' type = 'Information' group = 'group 02' )
-          ( description = 'descr' subtitle = 'subtitle' title = 'title' type = 'Success' group = 'group 03' ) ).
+      DATA temp1 LIKE t_msg.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-description = 'descr'.
+      temp2-subtitle = 'subtitle'.
+      temp2-title = 'title'.
+      temp2-type = 'Error'.
+      temp2-group = 'group 01'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-description = 'descr'.
+      temp2-subtitle = 'subtitle'.
+      temp2-title = 'title'.
+      temp2-type = 'Information'.
+      temp2-group = 'group 01'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-description = 'descr'.
+      temp2-subtitle = 'subtitle'.
+      temp2-title = 'title'.
+      temp2-type = 'Information'.
+      temp2-group = 'group 02'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-description = 'descr'.
+      temp2-subtitle = 'subtitle'.
+      temp2-title = 'title'.
+      temp2-type = 'Success'.
+      temp2-group = 'group 03'.
+      INSERT temp2 INTO TABLE temp1.
+      t_msg = temp1.
 
       z2ui5_display_view( ).
 

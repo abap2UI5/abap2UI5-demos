@@ -52,15 +52,24 @@ CLASS z2ui5_cl_demo_app_079 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( )->shell( )->page( title = 'PDF Output' navbuttonpress = client->_event( 'BACK' ) shownavbutton = abap_true
+      DATA temp1 TYPE z2ui5_if_types=>ty_t_name_value.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-n = `src`.
+      temp2-v = get_example_pdf( ).
+      INSERT temp2 INTO TABLE temp1.
+      temp2-n = `height`.
+      temp2-v = `90%`.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-n = `width`.
+      temp2-v = `90%`.
+      INSERT temp2 INTO TABLE temp1.
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( )->shell( )->page( title = 'PDF Output' navbuttonpress = client->_event( 'BACK' ) shownavbutton = abap_true
                       )->_generic(
                         ns = `html`
                         name = `iframe`
-                        t_prop = VALUE #(
-                            ( n = `src`    v = get_example_pdf( ) )
-                            ( n = `height` v = `90%` )
-                            ( n = `width`  v = `90%` )
-                    ) ).
+                        t_prop = temp1 ).
 
       client->view_display( view->stringify( ) ).
 

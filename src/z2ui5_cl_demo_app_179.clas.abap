@@ -23,7 +23,8 @@ CLASS z2ui5_cl_demo_app_179 DEFINITION
         starttime      TYPE string,
         endtime        TYPE string,
       END OF ty_s_data.
-    DATA mt_data TYPE STANDARD TABLE OF ty_s_data WITH EMPTY KEY.
+    TYPES temp1_6cd5a9d875 TYPE STANDARD TABLE OF ty_s_data WITH DEFAULT KEY.
+DATA mt_data TYPE temp1_6cd5a9d875.
 
   PROTECTED SECTION.
 
@@ -45,7 +46,8 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
   METHOD set_mock_data.
 
 
-    DATA(lv_mock) = `[` && |\n| &&
+    DATA lv_mock TYPE string.
+    lv_mock = `[` && |\n| &&
                     `   {` && |\n| &&
                     `       "ObjectID": "rls-0-1",` && |\n| &&
                     `       "RelationID": "rls-0",` && |\n| &&
@@ -149,17 +151,26 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
   METHOD set_view.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    view->_generic_property( VALUE #( n = `core:require` v = `{Helper:'z2ui5/Util'}` ) ).
+    DATA temp1 TYPE z2ui5_if_types=>ty_s_name_value.
+    CLEAR temp1.
+    temp1-n = `core:require`.
+    temp1-v = `{Helper:'z2ui5/Util'}`.
+    view->_generic_property( temp1 ).
 
-    DATA(page) = view->page( id = `page_main`
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->page( id = `page_main`
             title               = 'abap2UI5 - Gantt'
             navbuttonpress      = client->_event( 'BACK' )
-            shownavbutton       = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton       = temp2
             class               = 'sapUiContentPadding' ).
 
-    DATA(cont) = page->scroll_container(
+    DATA cont TYPE REF TO z2ui5_cl_xml_view.
+    cont = page->scroll_container(
 *               height     =
 *               width      =
 *               vertical   =
@@ -169,7 +180,8 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
 *               visible    =
                  ).
 
-    DATA(tool) = cont->container_toolbar(
+    DATA tool TYPE REF TO z2ui5_cl_xml_view.
+    tool = cont->container_toolbar(
       showsearchbutton        = abap_true
         showdisplaytypebutton = abap_true
         showlegendbutton      = abap_true
@@ -184,16 +196,19 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
       ).
 
 
-    DATA(gantt_container) = cont->gantt_chart_container( ).
+    DATA gantt_container TYPE REF TO z2ui5_cl_xml_view.
+    gantt_container = cont->gantt_chart_container( ).
 
 *    gantt_charts
 
-    DATA(gantt) = gantt_container->gantt_chart_with_table(
+    DATA gantt TYPE REF TO z2ui5_cl_xml_view.
+    gantt = gantt_container->gantt_chart_with_table(
          id                        = `gantt`
          shapeselectionmode        = `Single`
          isconnectordetailsvisible = abap_true ).
 
-    DATA(table) = gantt->gantt_table( )->tree_table(
+    DATA table TYPE REF TO z2ui5_cl_xml_view.
+    table = gantt->gantt_table( )->tree_table(
         rows = `{path: '` && client->_bind( val = mt_data path = abap_true ) &&
          `',     parameters: {` && |\r\n| &&
          `           operationMode: 'Server',` && |\r\n| &&
@@ -211,12 +226,14 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
 
 
 
-    DATA(row_settings) = table->row_settings_template( )->gantt_row_settings( rowid = `{OBJECTID}`
+    DATA row_settings TYPE REF TO z2ui5_cl_xml_view.
+    row_settings = table->row_settings_template( )->gantt_row_settings( rowid = `{OBJECTID}`
 *                                  shapes1 = `{path: 'TASK', templateShareable:false}`
 *                                  shapes2 = `{path: 'SUBTASK', templateShareable:false}`
                                   relationships                                     = `{path:'Relationships', templateShareable: 'true'}` ).
 
-    DATA(shapes) = row_settings->shapes1( ).
+    DATA shapes TYPE REF TO z2ui5_cl_xml_view.
+    shapes = row_settings->shapes1( ).
     shapes->base_rectangle(
         shapeid                 = `{OBJECTID}`
         time                    = `{= Helper.DateCreateObject(${STARTTIME}) }`
@@ -226,7 +243,8 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
         connectable             = abap_true
         horizontaltextalignment = `Start` ).
 
-    DATA(relas) = row_settings->relationships( ).
+    DATA relas TYPE REF TO z2ui5_cl_xml_view.
+    relas = row_settings->relationships( ).
     relas->relationship(
         shapeid     = `{RELATIONID}`
         type        = `{RELATIONTYPE}`
@@ -234,8 +252,10 @@ CLASS Z2UI5_CL_DEMO_APP_179 IMPLEMENTATION.
         predecessor = `{PREDECTASKID}` ).
 
 
-    DATA(columns) = table->ui_columns( ).
-    DATA(column) = columns->ui_column(
+    DATA columns TYPE REF TO z2ui5_cl_xml_view.
+    columns = table->ui_columns( ).
+    DATA column TYPE REF TO z2ui5_cl_xml_view.
+    column = columns->ui_column(
          id = 'OBJECTNAME' ).
 
     column->ui_custom_data( )->core_custom_data(

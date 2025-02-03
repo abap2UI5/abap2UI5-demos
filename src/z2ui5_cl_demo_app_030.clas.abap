@@ -15,7 +15,7 @@ CLASS z2ui5_cl_demo_app_030 DEFINITION PUBLIC.
       END OF ty_row.
 
     DATA check_initialized TYPE abap_bool.
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -30,27 +30,110 @@ CLASS Z2UI5_CL_DEMO_APP_030 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      t_tab = VALUE #(
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'incompleted' descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'working'     descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'working'     descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
-            ( title = 'Peter'  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' ) ).
+      DATA temp1 LIKE t_tab.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'incompleted'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'working'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'working'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-title = 'Peter'.
+      temp2-info = 'completed'.
+      temp2-descr = 'this is a description'.
+      temp2-icon = 'sap-icon://account'.
+      INSERT temp2 INTO TABLE temp1.
+      t_tab = temp1.
 
     ENDIF.
 
@@ -58,7 +141,8 @@ CLASS Z2UI5_CL_DEMO_APP_030 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'BUTTON_ROUNDTRIP'.
-        DATA(lv_dummy) = 'user pressed a button, your custom implementation can be called here'.
+        DATA lv_dummy TYPE c LENGTH 68.
+        lv_dummy = 'user pressed a button, your custom implementation can be called here'.
 
       WHEN 'BUTTON_MSG_BOX'.
         client->message_box_display(
@@ -70,17 +154,20 @@ CLASS Z2UI5_CL_DEMO_APP_030 IMPLEMENTATION.
 
     ENDCASE.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
 
-    DATA(page) = view->dynamic_page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->dynamic_page(
         showfooter = abap_true
        "  headerExpanded = abap_true
       "   toggleHeaderOnTitleClick = client->_event( 'ON_TITLE' )
       ).
 
 
-    DATA(header_title) = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
+    DATA header_title TYPE REF TO z2ui5_cl_xml_view.
+    header_title = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
 
     header_title->heading( ns = 'f' )->title( 'Header Title' ).
 
@@ -145,7 +232,8 @@ CLASS Z2UI5_CL_DEMO_APP_030 IMPLEMENTATION.
                                         text  = '34' ).
 
 
-    DATA(cont) = page->content( ns = 'f' ).
+    DATA cont TYPE REF TO z2ui5_cl_xml_view.
+    cont = page->content( ns = 'f' ).
 
     cont->list(
          headertext = 'List Ouput'

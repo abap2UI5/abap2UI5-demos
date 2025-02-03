@@ -51,10 +51,13 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
       WHEN 'BUTTON'.
 
-        LOOP AT mt_comp REFERENCE INTO DATA(comp).
+        DATA temp1 LIKE LINE OF mt_comp.
+        DATA comp LIKE REF TO temp1.
+        LOOP AT mt_comp REFERENCE INTO comp.
 
           ASSIGN ms_table_row->* TO <row>.
-          ASSIGN COMPONENT comp->name OF STRUCTURE <row> TO FIELD-SYMBOL(<val>).
+          FIELD-SYMBOLS <val> TYPE any.
+          ASSIGN COMPONENT comp->name OF STRUCTURE <row> TO <val>.
           IF <val> IS NOT ASSIGNED.
             CONTINUE.
           ELSE.
@@ -77,7 +80,8 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
     FIELD-SYMBOLS <tab> TYPE data.
 
     IF mo_parent_view IS INITIAL.
-      DATA(page) = z2ui5_cl_xml_view=>factory( ).
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      page = z2ui5_cl_xml_view=>factory( ).
     ELSE.
       page = mo_parent_view->get( `Page` ).
     ENDIF.
@@ -85,21 +89,25 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
     ASSIGN mt_table->* TO <tab>.
 
-    DATA(table) = page->table( growing = 'true'
+    DATA table TYPE REF TO z2ui5_cl_xml_view.
+    table = page->table( growing = 'true'
                                width   = 'auto'
                                items   = client->_bind( <tab> )
 *                               headertext = mv_table
                                ).
 
-    DATA(columns) = table->columns( ).
+    DATA columns TYPE REF TO z2ui5_cl_xml_view.
+    columns = table->columns( ).
 
-    LOOP AT mt_comp INTO DATA(comp).
+    DATA comp LIKE LINE OF mt_comp.
+    LOOP AT mt_comp INTO comp.
 
       columns->column( )->text( comp-name ).
 
     ENDLOOP.
 
-    DATA(cells) = columns->get_parent( )->items(
+    DATA cells TYPE REF TO z2ui5_cl_xml_view.
+    cells = columns->get_parent( )->items(
                                        )->column_list_item( valign = 'Middle'
                                                             type   = 'Navigation'
                                        )->cells( ).
@@ -153,9 +161,11 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
     TRY.
 
-        DATA(new_struct_desc) = cl_abap_structdescr=>create( mt_comp ).
+        DATA new_struct_desc TYPE REF TO cl_abap_structdescr.
+        new_struct_desc = cl_abap_structdescr=>create( mt_comp ).
 
-        DATA(new_table_desc) = cl_abap_tabledescr=>create( p_line_type  = new_struct_desc
+        DATA new_table_desc TYPE REF TO cl_abap_tabledescr.
+        new_table_desc = cl_abap_tabledescr=>create( p_line_type  = new_struct_desc
                                                            p_table_kind = cl_abap_tabledescr=>tablekind_std ).
 
         CREATE DATA mt_table     TYPE HANDLE new_table_desc.
@@ -167,7 +177,7 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
         SELECT *
           FROM (mv_table)
-          INTO CORRESPONDING FIELDS OF TABLE @<table>
+          INTO CORRESPONDING FIELDS OF TABLE <table>
           UP TO 100 ROWS.
 
       CATCH cx_root.
@@ -197,12 +207,20 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
     DATA structdescr TYPE REF TO cl_abap_structdescr.
     DATA lt_fixval   TYPE fixvalues.
 
-    LOOP AT mt_comp REFERENCE INTO DATA(dfies).
+    DATA temp2 LIKE LINE OF mt_comp.
+    DATA dfies LIKE REF TO temp2.
+    LOOP AT mt_comp REFERENCE INTO dfies.
 
-      comp = VALUE cl_abap_structdescr=>component_table(
-                       BASE comp
-                       ( name = dfies->name
-                         type = CAST #( cl_abap_datadescr=>describe_by_data( lt_fixval ) ) ) ).
+      DATA temp3 TYPE cl_abap_structdescr=>component_table.
+      CLEAR temp3.
+      temp3 = comp.
+      DATA temp4 LIKE LINE OF temp3.
+      temp4-name = dfies->name.
+      DATA temp1 TYPE REF TO cl_abap_datadescr.
+      temp1 ?= cl_abap_datadescr=>describe_by_data( lt_fixval ).
+      temp4-type = temp1.
+      INSERT temp4 INTO TABLE temp3.
+      comp = temp3.
     ENDLOOP.
 
     structdescr = cl_abap_structdescr=>create( comp ).
@@ -220,15 +238,21 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
         TRY.
 
+            DATA typedesc TYPE REF TO cl_abap_typedescr.
             cl_abap_typedescr=>describe_by_name( EXPORTING  p_name         = mv_table
-                                                 RECEIVING p_descr_ref     = DATA(typedesc)
+                                                 RECEIVING p_descr_ref     = typedesc
                                                  EXCEPTIONS type_not_found = 1
                                                             OTHERS         = 2 ).
 
-            DATA(structdesc) = CAST cl_abap_structdescr( typedesc ).
-            DATA(comp) = structdesc->get_components( ).
+            DATA temp5 TYPE REF TO cl_abap_structdescr.
+            temp5 ?= typedesc.
+            DATA structdesc LIKE temp5.
+            structdesc = temp5.
+            DATA comp TYPE abap_component_tab.
+            comp = structdesc->get_components( ).
 
-            LOOP AT comp INTO DATA(com).
+            DATA com LIKE LINE OF comp.
+            LOOP AT comp INTO com.
               IF com-as_include = abap_false.
                 APPEND com TO result.
               ENDIF.
@@ -238,9 +262,16 @@ CLASS z2ui5_cl_demo_app_194 IMPLEMENTATION.
 
         ENDTRY.
 
-        DATA(component) = VALUE cl_abap_structdescr=>component_table(
-                                    ( name = 'ROW_ID'
-                                      type = CAST #( cl_abap_datadescr=>describe_by_data( index ) ) ) ).
+        DATA temp6 TYPE cl_abap_structdescr=>component_table.
+        CLEAR temp6.
+        DATA temp7 LIKE LINE OF temp6.
+        temp7-name = 'ROW_ID'.
+        DATA temp2 TYPE REF TO cl_abap_datadescr.
+        temp2 ?= cl_abap_datadescr=>describe_by_data( index ).
+        temp7-type = temp2.
+        INSERT temp7 INTO TABLE temp6.
+        DATA component LIKE temp6.
+        component = temp6.
 
         APPEND LINES OF component TO result.
 

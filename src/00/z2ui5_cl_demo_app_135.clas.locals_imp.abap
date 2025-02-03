@@ -41,7 +41,8 @@ CLASS lcl_locking IMPLEMENTATION.
 
   METHOD acquire_lock.
 
-    DATA(lv_fm) = 'ENQUEUE_E_TABLE'.
+    DATA lv_fm TYPE c LENGTH 15.
+    lv_fm = 'ENQUEUE_E_TABLE'.
     CALL FUNCTION lv_fm
       EXPORTING
         tabname        = 'ZTEST'
@@ -51,7 +52,8 @@ CLASS lcl_locking IMPLEMENTATION.
         system_failure = 2
         OTHERS         = 3.
     IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO DATA(error_text).
+      DATA error_text TYPE string.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO error_text.
       RAISE EXCEPTION TYPE z2ui5_cx_util_error EXPORTING val = error_text.
     ENDIF.
 
@@ -64,7 +66,8 @@ CLASS lcl_locking IMPLEMENTATION.
     DATA argument TYPE c LENGTH 150.
     argument = |ZTEST                         Z100*|.
 
-    DATA(lv_fm) = 'ENQUEUE_READ'.
+    DATA lv_fm TYPE c LENGTH 12.
+    lv_fm = 'ENQUEUE_READ'.
     CALL FUNCTION lv_fm
       EXPORTING
         garg                  = argument
@@ -76,11 +79,19 @@ CLASS lcl_locking IMPLEMENTATION.
         system_failure        = 2
         OTHERS                = 3.
     IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO DATA(error_text).
+      DATA error_text TYPE string.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO error_text.
       RAISE EXCEPTION TYPE z2ui5_cx_util_error EXPORTING val = error_text.
     ENDIF.
 
-    result = VALUE #( enqueue_table[ 1 ]-gusevb OPTIONAL ).
+    DATA temp1 TYPE i.
+    CLEAR temp1.
+    DATA temp2 TYPE lcl_locking=>ty_seqg3.
+    READ TABLE enqueue_table INTO temp2 INDEX 1.
+    IF sy-subrc = 0.
+      temp1 = temp2-gusevb.
+    ENDIF.
+    result = temp1.
 
   ENDMETHOD.
 

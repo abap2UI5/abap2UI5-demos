@@ -23,17 +23,25 @@ CLASS z2ui5_cl_demo_app_073 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2 = `$` && client->_bind( mv_url ).
+    INSERT temp2 INTO TABLE temp1.
+    DATA temp3 TYPE xsdboolean.
+    temp3 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     client->view_display( view->shell(
           )->page(
                   title          = 'abap2UI5 - First Example'
                   navbuttonpress = client->_event( val = 'BACK' )
-                  shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                  shownavbutton  = temp3
              )->_z2ui5( )->timer(
                   checkactive = client->_bind( mv_check_timer_active )
                   finished    = client->_event_client( val     = client->cs_event-open_new_tab
-                                                         t_arg = VALUE #( ( `$` && client->_bind( mv_url ) ) ) )
+                                                         t_arg = temp1 )
               )->simple_form( title    = 'Form Title'
                               editable = abap_true
                   )->content( 'form'

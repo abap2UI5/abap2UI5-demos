@@ -33,11 +33,13 @@ CLASS Z2UI5_CL_DEMO_APP_067 IMPLEMENTATION.
         client->nav_app_leave( client->get_app( client->get( )-s_draft-id_prev_app_stack ) ).
     ENDCASE.
 
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     client->view_display( z2ui5_cl_xml_view=>factory( )->shell(
         )->page(
                 title          = 'abap2UI5 - Currency Format'
                 navbuttonpress = client->_event( 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                shownavbutton  = temp1
                 )->simple_form( title    = 'Currency'
                                 editable = abap_true
                 )->content( 'form'

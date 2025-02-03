@@ -37,7 +37,9 @@ CLASS z2ui5_cl_demo_app_004 IMPLEMENTATION.
         client->message_box_display( 'server-client roundtrip, method on_event of the abap controller was called' ).
 
       WHEN 'BUTTON_RESTART'.
-        client->nav_app_leave( NEW z2ui5_cl_demo_app_004( ) ).
+        DATA temp1 TYPE REF TO z2ui5_cl_demo_app_004.
+        CREATE OBJECT temp1 TYPE z2ui5_cl_demo_app_004.
+        client->nav_app_leave( temp1 ).
 
       WHEN 'BUTTON_CHANGE_VIEW'.
         CASE mv_view_main.
@@ -48,7 +50,8 @@ CLASS z2ui5_cl_demo_app_004 IMPLEMENTATION.
         ENDCASE.
 
       WHEN 'BUTTON_ERROR'.
-        DATA(lv_dummy) = 1 / 0.
+        DATA lv_dummy TYPE i.
+        lv_dummy = 1 / 0.
 
       WHEN 'BACK'.
         client->nav_app_leave( ).
@@ -62,12 +65,16 @@ CLASS z2ui5_cl_demo_app_004 IMPLEMENTATION.
 
     mv_view_main = 'MAIN'.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
             title            = 'abap2UI5 - Controller'
             navbuttonpress   = client->_event( val = 'BACK' )
-               shownavbutton = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+               shownavbutton = temp1 ).
 
     page->grid( 'L6 M12 S12' )->content( 'layout'
         )->simple_form( title    = 'Controller'
@@ -98,8 +105,10 @@ CLASS z2ui5_cl_demo_app_004 IMPLEMENTATION.
 
     mv_view_main = 'SECOND'.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell( )->page(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->shell( )->page(
       title          = 'abap2UI5 - Controller'
       navbuttonpress = client->_event( 'BACK' )
       shownavbutton  = abap_true ).

@@ -14,7 +14,8 @@ CLASS z2ui5_cl_demo_app_302 DEFINITION
       END OF ty_product.
 
     DATA check_initialized TYPE abap_bool.
-    DATA lt_a_data TYPE TABLE OF ty_product.
+    TYPES temp1_16f0541213 TYPE TABLE OF ty_product.
+DATA lt_a_data TYPE temp1_16f0541213.
 
   PROTECTED SECTION.
 
@@ -40,11 +41,14 @@ CLASS z2ui5_cl_demo_app_302 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Object Attribute inside Table'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `button_hint_id`
@@ -101,7 +105,8 @@ CLASS z2ui5_cl_demo_app_302 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`
@@ -123,17 +128,40 @@ CLASS z2ui5_cl_demo_app_302 IMPLEMENTATION.
       check_initialized = abap_true.
       display_view( client ).
 
-      lt_a_data = VALUE #(
-        ( product = 'Power Projector 4713'    supplier = 'Robert Brown Entertainment' )
-        ( product = 'HT-1022'                 supplier = 'Pear Computing Services' )
-        ( product = 'Ergo Screen E-III'       supplier = 'DelBont Industries' )
-        ( product = 'Gladiator MX'            supplier = 'Asia High tech' )
-        ( product = 'Hurricane GX'            supplier = 'Telecomunicaciones Star' )
-        ( product = 'Notebook Basic 17'       supplier = 'Pear Computing Services' )
-        ( product = 'ITelO Vault SAT'         supplier = 'New Line Design' )
-        ( product = 'Hurricane GX'            supplier = 'Robert Brown Entertainment' )
-        ( product = 'Webcam'                  supplier = 'Getränkegroßhandel Janssen' )
-        ( product = 'Deskjet Super Highspeed' supplier = 'Vente Et Réparation de Ordinateur' ) ).
+      DATA temp1 LIKE lt_a_data.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-product = 'Power Projector 4713'.
+      temp2-supplier = 'Robert Brown Entertainment'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'HT-1022'.
+      temp2-supplier = 'Pear Computing Services'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Ergo Screen E-III'.
+      temp2-supplier = 'DelBont Industries'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Gladiator MX'.
+      temp2-supplier = 'Asia High tech'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Hurricane GX'.
+      temp2-supplier = 'Telecomunicaciones Star'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Notebook Basic 17'.
+      temp2-supplier = 'Pear Computing Services'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'ITelO Vault SAT'.
+      temp2-supplier = 'New Line Design'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Hurricane GX'.
+      temp2-supplier = 'Robert Brown Entertainment'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Webcam'.
+      temp2-supplier = 'Getränkegroßhandel Janssen'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-product = 'Deskjet Super Highspeed'.
+      temp2-supplier = 'Vente Et Réparation de Ordinateur'.
+      INSERT temp2 INTO TABLE temp1.
+      lt_a_data = temp1.
     ENDIF.
 
     on_event( client ).

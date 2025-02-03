@@ -58,8 +58,18 @@ CLASS z2ui5_cl_demo_app_131 IMPLEMENTATION.
 
   METHOD on_init.
 
-    mt_t002 = VALUE #( ( id = '1' class = 'Z2UI5_CL_DEMO_APP_132'  count = '12' )
-                       ( id = '2' class = 'Z2UI5_CL_DEMO_APP_132'  count = '80' ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_131=>ty_t_t002.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-id = '1'.
+    temp2-class = 'Z2UI5_CL_DEMO_APP_132'.
+    temp2-count = '12'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-id = '2'.
+    temp2-class = 'Z2UI5_CL_DEMO_APP_132'.
+    temp2-count = '80'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_t002 = temp1.
 
     mv_selectedkey = '1'.
 
@@ -67,19 +77,26 @@ CLASS z2ui5_cl_demo_app_131 IMPLEMENTATION.
 
   METHOD render_main.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( )->shell( ).
-    DATA(page) = view->page( id             = `page_main`
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( )->shell( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->page( id             = `page_main`
                              title          = 'Main App calling Subapps'
                              navbuttonpress = client->_event( 'BACK' )
-                             shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                             shownavbutton  = temp1
                              class          = 'sapUiContentPadding' ).
 
-    DATA(lo_items) = page->icon_tab_bar( class       = 'sapUiResponsiveContentPadding'
+    DATA lo_items TYPE REF TO z2ui5_cl_xml_view.
+    lo_items = page->icon_tab_bar( class       = 'sapUiResponsiveContentPadding'
                                          selectedkey = client->_bind_edit( mv_selectedkey )
                                          select      = client->_event( val = 'ONSELECTICONTABBAR' )
                                                        )->items( ).
 
-    LOOP AT mt_t002 REFERENCE INTO DATA(line).
+    DATA temp3 LIKE LINE OF mt_t002.
+    DATA line LIKE REF TO temp3.
+    LOOP AT mt_t002 REFERENCE INTO line.
       lo_items->icon_tab_filter( text  = line->class
                                  count = line->count
                                  key   = line->id ).
@@ -110,7 +127,8 @@ CLASS z2ui5_cl_demo_app_131 IMPLEMENTATION.
     FIELD-SYMBOLS <view_display> TYPE any.
 
 
-    READ TABLE mt_t002 REFERENCE INTO DATA(t002)
+    DATA t002 TYPE REF TO z2ui5_cl_demo_app_131=>ty_s_t002.
+    READ TABLE mt_t002 REFERENCE INTO t002
          WITH KEY id = mv_selectedkey.
 
     IF sy-subrc <> 0.
@@ -133,7 +151,8 @@ CLASS z2ui5_cl_demo_app_131 IMPLEMENTATION.
 
             render_main( ).
 
-            ASSIGN mo_app->('MO_PARENT_VIEW') TO FIELD-SYMBOL(<view>).
+            FIELD-SYMBOLS <view> TYPE any.
+            ASSIGN mo_app->('MO_PARENT_VIEW') TO <view>.
             IF <view> IS ASSIGNED.
               <view> = mo_main_page.
             ENDIF.

@@ -22,7 +22,7 @@ CLASS z2ui5_cl_demo_app_070 DEFINITION
         process          TYPE string,
         process_state    TYPE string,
       END OF ty_s_tab .
-    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH EMPTY KEY.
+    TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH DEFAULT KEY.
 
     TYPES:
       BEGIN OF ty_s_filter_pop,
@@ -94,7 +94,8 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
         z2ui5_set_search( ).
         client->view_model_update( ).
       WHEN 'SORT'.
-        DATA(lt_arg) = client->get( )-t_event_arg.
+        DATA lt_arg TYPE string_table.
+        lt_arg = client->get( )-t_event_arg.
         client->message_toast_display( 'Event SORT' ).
       WHEN 'FILTER'.
         lt_arg = client->get( )-t_event_arg.
@@ -110,7 +111,8 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
         client->nav_app_leave( ).
       WHEN 'ROWEDIT'.
         lt_arg = client->get( )-t_event_arg.
-        READ TABLE lt_arg INTO DATA(ls_arg) INDEX 1.
+        DATA ls_arg TYPE string.
+        READ TABLE lt_arg INTO ls_arg INDEX 1.
         IF sy-subrc = 0.
           client->message_toast_display( |Event ROWEDIT Row Index { ls_arg } | ).
         ENDIF.
@@ -133,35 +135,65 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
 
   METHOD z2ui5_on_init.
 
-    mt_mapping = VALUE #(
-      (   n = `EQ`     v = `={LOW}` )
-      (   n = `LT`     v = `<{LOW}` )
-      (   n = `LE`     v = `<={LOW}` )
-      (   n = `GT`     v = `>{LOW}` )
-      (   n = `GE`     v = `>={LOW}` )
-      (   n = `CP`     v = `*{LOW}*` )
-      (   n = `BT`     v = `{LOW}...{HIGH}` )
-      (   n = `NE`     v = `!(={LOW})` )
-      (   n = `NE`     v = `!(<leer>)` )
-      (   n = `<leer>` v = `<leer>` ) ).
+    DATA temp1 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-n = `EQ`.
+    temp2-v = `={LOW}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `LT`.
+    temp2-v = `<{LOW}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `LE`.
+    temp2-v = `<={LOW}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `GT`.
+    temp2-v = `>{LOW}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `GE`.
+    temp2-v = `>={LOW}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `CP`.
+    temp2-v = `*{LOW}*`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `BT`.
+    temp2-v = `{LOW}...{HIGH}`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `NE`.
+    temp2-v = `!(={LOW})`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `NE`.
+    temp2-v = `!(<leer>)`.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-n = `<leer>`.
+    temp2-v = `<leer>`.
+    INSERT temp2 INTO TABLE temp1.
+    mt_mapping = temp1.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page1) = view->page( id = `page_main`
+    DATA page1 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp5 TYPE xsdboolean.
+    temp5 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page1 = view->page( id = `page_main`
             title                = 'abap2UI5 - sap.ui.table.Table Features'
             navbuttonpress       = client->_event( 'BACK' )
-            shownavbutton        = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton        = temp5
             class                = 'sapUiContentPadding' ).
 
-    DATA(page) = page1->dynamic_page( headerexpanded = abap_true
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = page1->dynamic_page( headerexpanded = abap_true
                                       headerpinned   = abap_true ).
 
-    DATA(header_title) = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
+    DATA header_title TYPE REF TO z2ui5_cl_xml_view.
+    header_title = page->title( ns = 'f' )->get( )->dynamic_page_title( ).
     header_title->heading( ns = 'f' )->hbox( )->title( `Search Field` ).
     header_title->expanded_content( 'f' ).
     header_title->snapped_content( ns = 'f' ).
 
-    DATA(lo_box) = page->header( )->dynamic_page_header( pinnable = abap_true
+    DATA lo_box TYPE REF TO z2ui5_cl_xml_view.
+    lo_box = page->header( )->dynamic_page_header( pinnable = abap_true
          )->flex_box( alignitems     = `Start`
                       justifycontent = `SpaceBetween` )->flex_box( alignitems = `Start` ).
 
@@ -178,9 +210,11 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
         press = client->_event( `BUTTON_START` )
         type  = `Emphasized` ).
 
-    DATA(cont) = page->content( ns = 'f' ).
+    DATA cont TYPE REF TO z2ui5_cl_xml_view.
+    cont = page->content( ns = 'f' ).
 
-    DATA(tab) = cont->ui_table( rows               = client->_bind( val = mt_table )
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = cont->ui_table( rows               = client->_bind( val = mt_table )
                                 editable           = abap_false
                                 alternaterowcolors = abap_true
                                 rowactioncount     = '2'
@@ -191,7 +225,8 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
                                 filter             = client->_event( 'FILTER' )
                                 customfilter       = client->_event( 'CUSTOMFILTER' ) ).
     tab->ui_extension( )->overflow_toolbar( )->title( text = 'Products' ).
-    DATA(lo_columns) = tab->ui_columns( ).
+    DATA lo_columns TYPE REF TO z2ui5_cl_xml_view.
+    lo_columns = tab->ui_columns( ).
     lo_columns->ui_column( width = '4rem' )->checkbox( selected = client->_bind_edit( lv_selkz )
                                                        enabled  = abap_true
                                                        select   = client->_event( val = `SELKZ` ) )->ui_template( )->checkbox( selected = `{SELKZ}` ).
@@ -229,12 +264,18 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
                            sortproperty   = 'PRICE'
                            filterproperty = 'PRICE' )->text( text = `Price` )->ui_template( )->currency( value    = `{PRICE}`
                                                                                                          currency = `{WAERS}` ).
+    DATA temp3 TYPE string_table.
+    CLEAR temp3.
+    INSERT `${ROW_ID}` INTO TABLE temp3.
+    DATA temp4 TYPE string_table.
+    CLEAR temp4.
+    INSERT `${ROW_ID}` INTO TABLE temp4.
     lo_columns->get_parent( )->ui_row_action_template( )->ui_row_action(
       )->ui_row_action_item( type = 'Navigation'
-                           press  = client->_event( val = 'ROW_ACTION_ITEM_NAVIGATION' t_arg = VALUE #( ( `${ROW_ID}` ) ) )
+                           press  = client->_event( val = 'ROW_ACTION_ITEM_NAVIGATION' t_arg = temp3 )
                           )->get_parent( )->ui_row_action_item( icon  = 'sap-icon://edit'
                                                                 text  = 'Edit'
-                                                                press = client->_event( val = 'ROW_ACTION_ITEM_EDIT' t_arg = VALUE #( ( `${ROW_ID}` ) ) ) ).
+                                                                press = client->_event( val = 'ROW_ACTION_ITEM_EDIT' t_arg = temp4 ) ).
 
 
     client->view_display( view->stringify( ) ).
@@ -244,13 +285,88 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
 
   METHOD z2ui5_set_data.
 
-    mt_table = VALUE #(
-        ( selkz = abap_false row_id = '1' product = 'table'    create_date = `01.01.2023` create_by = `Olaf` storage_location = `AREA_001` quantity = 400  meins = 'ST' price = '1000.50' waers = 'EUR' process = '10'  process_state = 'None' )
-        ( selkz = abap_false row_id = '2' product = 'chair'    create_date = `01.01.2022` create_by = `Karlo` storage_location = `AREA_001` quantity = 123   meins = 'ST' price = '2000.55' waers = 'USD' process = '20' process_state = 'Warning' )
-        ( selkz = abap_false row_id = '3' product = 'sofa'     create_date = `01.05.2021` create_by = `Elin` storage_location = `AREA_002` quantity = 700   meins = 'ST' price = '3000.11' waers = 'CNY' process = '30' process_state = 'Success' )
-        ( selkz = abap_false row_id = '4' product = 'computer' create_date = `27.01.2023` create_by = `Theo` storage_location = `AREA_002` quantity = 200  meins = 'ST' price = '4000.88' waers = 'USD' process = '40' process_state = 'Information' )
-        ( selkz = abap_false row_id = '5' product = 'printer'  create_date = `01.01.2023` create_by = `Renate` storage_location = `AREA_003` quantity = 90   meins = 'ST' price = '5000.47' waers = 'EUR' process = '70' process_state = 'Warning' )
-        ( selkz = abap_false row_id = '6' product = 'table2'   create_date = `01.01.2023` create_by = `Angela` storage_location = `AREA_003` quantity = 110  meins = 'ST' price = '6000.33' waers = 'GBP' process = '90'  process_state = 'Error' ) ).
+    DATA temp5 TYPE z2ui5_cl_demo_app_070=>ty_t_table.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '1'.
+    temp6-product = 'table'.
+    temp6-create_date = `01.01.2023`.
+    temp6-create_by = `Olaf`.
+    temp6-storage_location = `AREA_001`.
+    temp6-quantity = 400.
+    temp6-meins = 'ST'.
+    temp6-price = '1000.50'.
+    temp6-waers = 'EUR'.
+    temp6-process = '10'.
+    temp6-process_state = 'None'.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '2'.
+    temp6-product = 'chair'.
+    temp6-create_date = `01.01.2022`.
+    temp6-create_by = `Karlo`.
+    temp6-storage_location = `AREA_001`.
+    temp6-quantity = 123.
+    temp6-meins = 'ST'.
+    temp6-price = '2000.55'.
+    temp6-waers = 'USD'.
+    temp6-process = '20'.
+    temp6-process_state = 'Warning'.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '3'.
+    temp6-product = 'sofa'.
+    temp6-create_date = `01.05.2021`.
+    temp6-create_by = `Elin`.
+    temp6-storage_location = `AREA_002`.
+    temp6-quantity = 700.
+    temp6-meins = 'ST'.
+    temp6-price = '3000.11'.
+    temp6-waers = 'CNY'.
+    temp6-process = '30'.
+    temp6-process_state = 'Success'.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '4'.
+    temp6-product = 'computer'.
+    temp6-create_date = `27.01.2023`.
+    temp6-create_by = `Theo`.
+    temp6-storage_location = `AREA_002`.
+    temp6-quantity = 200.
+    temp6-meins = 'ST'.
+    temp6-price = '4000.88'.
+    temp6-waers = 'USD'.
+    temp6-process = '40'.
+    temp6-process_state = 'Information'.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '5'.
+    temp6-product = 'printer'.
+    temp6-create_date = `01.01.2023`.
+    temp6-create_by = `Renate`.
+    temp6-storage_location = `AREA_003`.
+    temp6-quantity = 90.
+    temp6-meins = 'ST'.
+    temp6-price = '5000.47'.
+    temp6-waers = 'EUR'.
+    temp6-process = '70'.
+    temp6-process_state = 'Warning'.
+    INSERT temp6 INTO TABLE temp5.
+    temp6-selkz = abap_false.
+    temp6-row_id = '6'.
+    temp6-product = 'table2'.
+    temp6-create_date = `01.01.2023`.
+    temp6-create_by = `Angela`.
+    temp6-storage_location = `AREA_003`.
+    temp6-quantity = 110.
+    temp6-meins = 'ST'.
+    temp6-price = '6000.33'.
+    temp6-waers = 'GBP'.
+    temp6-process = '90'.
+    temp6-process_state = 'Error'.
+    INSERT temp6 INTO TABLE temp5.
+    mt_table = temp5.
 
   ENDMETHOD.
 
@@ -259,11 +375,16 @@ CLASS z2ui5_cl_demo_app_070 IMPLEMENTATION.
 
     IF mv_search_value IS NOT INITIAL.
 
-      LOOP AT mt_table REFERENCE INTO DATA(lr_row).
-        DATA(lv_row) = ``.
-        DATA(lv_index) = 1.
+      DATA temp7 LIKE LINE OF mt_table.
+      DATA lr_row LIKE REF TO temp7.
+      LOOP AT mt_table REFERENCE INTO lr_row.
+        DATA lv_row TYPE string.
+        lv_row = ``.
+        DATA lv_index TYPE i.
+        lv_index = 1.
         DO.
-          ASSIGN COMPONENT lv_index OF STRUCTURE lr_row->* TO FIELD-SYMBOL(<field>).
+          FIELD-SYMBOLS <field> TYPE any.
+          ASSIGN COMPONENT lv_index OF STRUCTURE lr_row->* TO <field>.
           IF sy-subrc <> 0.
             EXIT.
           ENDIF.

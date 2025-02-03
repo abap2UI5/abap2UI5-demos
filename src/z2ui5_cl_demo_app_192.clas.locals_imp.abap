@@ -11,7 +11,7 @@ CLASS lcl_merged_data DEFINITION.
              tabname TYPE char30,
              comp    TYPE abap_componentdescr,
            END OF ty_s_key_value,
-           ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH EMPTY KEY.
+           ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH DEFAULT KEY.
 
     TYPES: BEGIN OF ty_s_merged_data,
              t_kopf  TYPE REF TO data,

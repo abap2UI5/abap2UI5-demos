@@ -45,15 +45,19 @@ CLASS Z2UI5_CL_DEMO_APP_309 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `script`
                     ns   = `html` )->_cc_plain_xml( `sap.z2ui5.afterBE = () => { alert("afterBE triggered !!"); }` ).
 
-    DATA(page) = view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page(
         title          = `Client->FOLLOW_UP_ACTION use cases`
         class          = `sapUiContentPadding`
         navbuttonpress = client->_event( 'BACK' )
-        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+        shownavbutton  = temp1 ).
     page = page->vbox( ).
     page->get_parent( )->hbox( class = `sapUiSmallMargin` ).
     page->button( text  = `call custom JS from EB`

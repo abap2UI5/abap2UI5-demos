@@ -58,7 +58,8 @@ CLASS Z2UI5_CL_DEMO_APP_096 IMPLEMENTATION.
 
     IF mo_view_parent IS NOT BOUND.
 
-      DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page( title = 'Main View' ).
 
       mo_view_parent = page->grid( 'L6 M12 S12'

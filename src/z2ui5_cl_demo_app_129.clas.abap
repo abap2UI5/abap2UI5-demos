@@ -18,7 +18,7 @@ CLASS z2ui5_cl_demo_app_129 DEFINITION
         text TYPE string,
       END OF s_combobox .
     TYPES
-      ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH EMPTY KEY .
+      ty_t_combo TYPE STANDARD TABLE OF s_combobox WITH DEFAULT KEY .
     DATA lv_text TYPE string.
     DATA:
       BEGIN OF screen,
@@ -35,7 +35,7 @@ CLASS z2ui5_cl_demo_app_129 DEFINITION
         check_switch_02 TYPE abap_bool VALUE abap_false,
       END OF screen .
     DATA
-      mt_suggestion TYPE STANDARD TABLE OF s_suggestion_items WITH EMPTY KEY .
+      mt_suggestion TYPE STANDARD TABLE OF s_suggestion_items WITH DEFAULT KEY .
     DATA check_initialized TYPE abap_bool .
   PROTECTED SECTION.
 
@@ -102,30 +102,46 @@ CLASS Z2UI5_CL_DEMO_APP_129 IMPLEMENTATION.
 
   METHOD z2ui5_on_init.
 
-    screen = VALUE #(
-        check_is_active = abap_true
-        colour          = 'BLUE'
-        combo_key       = 'GRAY'
-        segment_key     = 'GREEN'
-        date            = '07.12.22'
-        date_time       = '23.12.2022, 19:27:20'
-        time_start      = '05:24:00'
-        time_end        = '17:23:57').
+    CLEAR screen.
+    screen-check_is_active = abap_true.
+    screen-colour = 'BLUE'.
+    screen-combo_key = 'GRAY'.
+    screen-segment_key = 'GREEN'.
+    screen-date = '07.12.22'.
+    screen-date_time = '23.12.2022, 19:27:20'.
+    screen-time_start = '05:24:00'.
+    screen-time_end = '17:23:57'.
 
-    mt_suggestion = VALUE #(
-        ( descr = 'Green'  value = 'GREEN' )
-        ( descr = 'Blue'   value = 'BLUE' )
-        ( descr = 'Black'  value = 'BLACK' )
-        ( descr = 'Grey'   value = 'GREY' )
-        ( descr = 'Blue2'  value = 'BLUE2' )
-        ( descr = 'Blue3'  value = 'BLUE3' ) ).
+    DATA temp1 LIKE mt_suggestion.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-descr = 'Green'.
+    temp2-value = 'GREEN'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-descr = 'Blue'.
+    temp2-value = 'BLUE'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-descr = 'Black'.
+    temp2-value = 'BLACK'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-descr = 'Grey'.
+    temp2-value = 'GREY'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-descr = 'Blue2'.
+    temp2-value = 'BLUE2'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-descr = 'Blue3'.
+    temp2-value = 'BLUE3'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_suggestion = temp1.
 
   ENDMETHOD.
 
 
   METHOD z2ui5_on_rendering.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = z2ui5_cl_xml_view=>factory( ).
 
     page->_z2ui5( )->timer( finished    = client->_event( 'REFRESH' )
                             checkrepeat = abap_true
@@ -139,18 +155,22 @@ CLASS Z2UI5_CL_DEMO_APP_129 IMPLEMENTATION.
             navbuttonpress  = client->_event( 'BACK' )
               shownavbutton = abap_true ).
 
-    DATA(grid) = page->grid( 'L6 M12 S12'
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L6 M12 S12'
         )->content( 'layout' ).
 
     grid = grid->text( text = client->_bind_edit( val = lv_text view = client->cs_view-main
       ) ).
 
+    DATA temp3 TYPE string_table.
+    CLEAR temp3.
+    INSERT `${$source>/sId}` INTO TABLE temp3.
     page->footer( )->overflow_toolbar(
          )->toolbar_spacer(
          )->button(
              id    = `ppvr`
              text  = 'Open Popover'
-             press = client->_event( val = 'BUTTON_POPOVER' t_arg = VALUE #( ( `${$source>/sId}` ) ) )
+             press = client->_event( val = 'BUTTON_POPOVER' t_arg = temp3 )
              type  = 'Ghost'
          )->button(
              text  = 'Open Popup'
@@ -163,7 +183,8 @@ CLASS Z2UI5_CL_DEMO_APP_129 IMPLEMENTATION.
 
 
   METHOD z2ui5_on_rendering_popover.
-    DATA(popover) = z2ui5_cl_xml_view=>factory_popup( )->popover( placement = `Top` ).
+    DATA popover TYPE REF TO z2ui5_cl_xml_view.
+    popover = z2ui5_cl_xml_view=>factory_popup( )->popover( placement = `Top` ).
 
     popover->text( text = 'this is popover in middle with timer auto refresh' ).
     client->popover_display( xml   = popover->stringify( )
@@ -173,7 +194,8 @@ CLASS Z2UI5_CL_DEMO_APP_129 IMPLEMENTATION.
 
   METHOD z2ui5_on_rendering_popup.
 
-    DATA(dialog) = z2ui5_cl_xml_view=>factory_popup( )->dialog( ).
+    DATA dialog TYPE REF TO z2ui5_cl_xml_view.
+    dialog = z2ui5_cl_xml_view=>factory_popup( )->dialog( ).
 
     dialog->text( text = 'this is popup in middle with timer auto refresh' ).
     dialog->button( text  = 'close'

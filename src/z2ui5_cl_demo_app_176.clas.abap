@@ -10,7 +10,7 @@ CLASS z2ui5_cl_demo_app_176 DEFINITION PUBLIC.
         date TYPE string,
         age  TYPE string,
       END OF ty_s_data,
-      ty_t_data TYPE STANDARD TABLE OF ty_s_data WITH EMPTY KEY.
+      ty_t_data TYPE STANDARD TABLE OF ty_s_data WITH DEFAULT KEY.
 
     TYPES:
       BEGIN OF ty_s_layout,
@@ -19,7 +19,7 @@ CLASS z2ui5_cl_demo_app_176 DEFINITION PUBLIC.
         visible TYPE string,
         binding TYPE string,
       END OF ty_s_layout,
-      ty_t_layout TYPE STANDARD TABLE OF ty_s_layout WITH EMPTY KEY.
+      ty_t_layout TYPE STANDARD TABLE OF ty_s_layout WITH DEFAULT KEY.
 
     DATA mt_layout TYPE ty_t_layout.
     DATA mt_data   TYPE ty_t_data.
@@ -42,14 +42,18 @@ CLASS z2ui5_cl_demo_app_176 IMPLEMENTATION.
 
   METHOD main_view.
 
-    DATA(lo_view) = z2ui5_cl_xml_view=>factory( ).
+    DATA lo_view TYPE REF TO z2ui5_cl_xml_view.
+    lo_view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = lo_view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( i_client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = lo_view->shell(
         )->page(
                 title          = `Main View`
                 id             = `test`
                 navbuttonpress = i_client->_event( 'BACK' )
-                shownavbutton  = xsdbool( i_client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                shownavbutton  = temp1 ).
 
     i_client->view_display( lo_view->stringify( ) ).
 
@@ -60,14 +64,41 @@ CLASS z2ui5_cl_demo_app_176 IMPLEMENTATION.
 
     i_client->_bind( mt_layout ).
 
-    mt_data = VALUE #( ( name = 'Theo' date = '01.01.2000' age = '5' )
-                       ( name = 'Lore' date = '01.01.2000' age = '1' ) ).
+    DATA temp1 TYPE z2ui5_cl_demo_app_176=>ty_t_data.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-name = 'Theo'.
+    temp2-date = '01.01.2000'.
+    temp2-age = '5'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-name = 'Lore'.
+    temp2-date = '01.01.2000'.
+    temp2-age = '1'.
+    INSERT temp2 INTO TABLE temp1.
+    mt_data = temp1.
 
-    mt_layout = VALUE #( ( fname = 'NAME' merge = 'false' visible = 'true'  binding = '{NAME}' )
-                         ( fname = 'DATE' merge = 'false' visible = 'true'  binding = '{DATE}' )
-                         ( fname = 'AGE'  merge = 'false' visible = 'false' binding = '{AGE}' ) ).
+    DATA temp3 TYPE z2ui5_cl_demo_app_176=>ty_t_layout.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-fname = 'NAME'.
+    temp4-merge = 'false'.
+    temp4-visible = 'true'.
+    temp4-binding = '{NAME}'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-fname = 'DATE'.
+    temp4-merge = 'false'.
+    temp4-visible = 'true'.
+    temp4-binding = '{DATE}'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-fname = 'AGE'.
+    temp4-merge = 'false'.
+    temp4-visible = 'false'.
+    temp4-binding = '{AGE}'.
+    INSERT temp4 INTO TABLE temp3.
+    mt_layout = temp3.
 
-    DATA(lo_view_nested) = z2ui5_cl_xml_view=>factory( ).
+    DATA lo_view_nested TYPE REF TO z2ui5_cl_xml_view.
+    lo_view_nested = z2ui5_cl_xml_view=>factory( ).
 
     lo_view_nested->shell( )->page( `Nested View`
       )->table( items = i_client->_bind( mt_data )

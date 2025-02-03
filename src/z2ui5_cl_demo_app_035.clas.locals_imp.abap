@@ -23,7 +23,7 @@ CLASS lcl_file_api DEFINITION FINAL.
         name  TYPE string,
         value TYPE string,
       END OF ty_s_suggest.
-    TYPES ty_t_suggest TYPE STANDARD TABLE OF ty_s_suggest WITH EMPTY KEY.
+    TYPES ty_t_suggest TYPE STANDARD TABLE OF ty_s_suggest WITH DEFAULT KEY.
 
   PROTECTED SECTION.
 

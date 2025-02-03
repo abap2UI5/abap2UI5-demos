@@ -37,16 +37,22 @@ CLASS z2ui5_cl_demo_app_132 IMPLEMENTATION.
 
         TRY.
 
+            DATA typedesc TYPE REF TO cl_abap_typedescr.
             cl_abap_typedescr=>describe_by_name( EXPORTING  p_name         = 'Z2UI5_T_UTIL_01'
-                                                 RECEIVING p_descr_ref     = DATA(typedesc)
+                                                 RECEIVING p_descr_ref     = typedesc
                                                  EXCEPTIONS type_not_found = 1
                                                             OTHERS         = 2 ).
 
-            DATA(structdesc) = CAST cl_abap_structdescr( typedesc ).
+            DATA temp1 TYPE REF TO cl_abap_structdescr.
+            temp1 ?= typedesc.
+            DATA structdesc LIKE temp1.
+            structdesc = temp1.
 
-            DATA(comp) = structdesc->get_components( ).
+            DATA comp TYPE abap_component_tab.
+            comp = structdesc->get_components( ).
 
-            LOOP AT comp INTO DATA(com).
+            DATA com LIKE LINE OF comp.
+            LOOP AT comp INTO com.
 
               IF com-as_include = abap_false.
 
@@ -56,13 +62,21 @@ CLASS z2ui5_cl_demo_app_132 IMPLEMENTATION.
 
             ENDLOOP.
 
-          CATCH cx_root INTO DATA(root). " TODO: variable is assigned but never used (ABAP cleaner)
+            DATA root TYPE REF TO cx_root.
+          CATCH cx_root INTO root. " TODO: variable is assigned but never used (ABAP cleaner)
 
         ENDTRY.
 
-        DATA(component) = VALUE cl_abap_structdescr=>component_table(
-                                    ( name = 'ROW_ID'
-                                      type = CAST #( cl_abap_datadescr=>describe_by_data( index ) ) ) ).
+        DATA temp2 TYPE cl_abap_structdescr=>component_table.
+        CLEAR temp2.
+        DATA temp3 LIKE LINE OF temp2.
+        temp3-name = 'ROW_ID'.
+        DATA temp4 TYPE REF TO cl_abap_datadescr.
+        temp4 ?= cl_abap_datadescr=>describe_by_data( index ).
+        temp3-type = temp4.
+        INSERT temp3 INTO TABLE temp2.
+        DATA component LIKE temp2.
+        component = temp2.
 
         APPEND LINES OF component TO result.
 
@@ -88,7 +102,8 @@ CLASS z2ui5_cl_demo_app_132 IMPLEMENTATION.
   METHOD render_main.
     IF mo_parent_view IS INITIAL.
 
-      DATA(page) = z2ui5_cl_xml_view=>factory( ).
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      page = z2ui5_cl_xml_view=>factory( ).
 
     ELSE.
 
@@ -96,7 +111,8 @@ CLASS z2ui5_cl_demo_app_132 IMPLEMENTATION.
 
     ENDIF.
 
-    DATA(layout) = page->vertical_layout( class = `sapUiContentPadding`
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->vertical_layout( class = `sapUiContentPadding`
                                           width = `100%` ).
     layout->label( 'ProgressIndicator'
         )->progress_indicator( percentvalue = mv_perc

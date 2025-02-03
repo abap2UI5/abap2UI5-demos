@@ -34,7 +34,7 @@ CLASS Z2UI5_CL_DEMO_APP_020 IMPLEMENTATION.
 
   METHOD factory.
 
-    result = NEW #( ).
+    CREATE OBJECT result.
 
     result->mv_text = i_text.
     result->mv_cancel_text = i_cancel_text.

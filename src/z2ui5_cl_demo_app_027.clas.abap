@@ -82,12 +82,16 @@ CLASS z2ui5_cl_demo_app_027 IMPLEMENTATION.
 
   METHOD z2ui5_on_render.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(lv_xml) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA lv_xml TYPE string.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    lv_xml = view->shell(
       )->page(
               title          = 'abap2UI5 - Binding Syntax'
               navbuttonpress = client->_event( 'BACK' )
-              shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+              shownavbutton  = temp1
           )->simple_form( title    = 'Binding Syntax'
                           editable = abap_true
               )->content( 'form'

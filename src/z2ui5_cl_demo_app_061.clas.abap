@@ -21,18 +21,23 @@ CLASS Z2UI5_CL_DEMO_APP_061 IMPLEMENTATION.
 
   METHOD set_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
                 title          = 'abap2UI5 - RTTI created Table'
                 navbuttonpress = client->_event( 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                shownavbutton  = temp1 ).
 
 
     FIELD-SYMBOLS <tab> TYPE table.
     ASSIGN t_tab->* TO <tab>.
 
-    DATA(tab) = page->table(
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = page->table(
             items = client->_bind_edit( <tab> )
             mode  = 'MultiSelect'
         )->header_toolbar(
@@ -75,12 +80,27 @@ CLASS Z2UI5_CL_DEMO_APP_061 IMPLEMENTATION.
 
       ASSIGN t_tab->* TO <tab>.
 
-      INSERT VALUE z2ui5_t_01( id = 'this is an uuid'  timestampl = '2023234243'  id_prev = 'previous' )
+      DATA temp1 TYPE z2ui5_t_01.
+      CLEAR temp1.
+      temp1-id = 'this is an uuid'.
+      temp1-timestampl = '2023234243'.
+      temp1-id_prev = 'previous'.
+      INSERT temp1
         INTO TABLE <tab>.
 
-      INSERT VALUE z2ui5_t_01( id = 'this is an uuid'  timestampl = '2023234243'  id_prev = 'previous' )
+      DATA temp2 TYPE z2ui5_t_01.
+      CLEAR temp2.
+      temp2-id = 'this is an uuid'.
+      temp2-timestampl = '2023234243'.
+      temp2-id_prev = 'previous'.
+      INSERT temp2
           INTO TABLE <tab>.
-      INSERT VALUE z2ui5_t_01( id = 'this is an uuid'  timestampl = '2023234243'  id_prev = 'previous' )
+      DATA temp3 TYPE z2ui5_t_01.
+      CLEAR temp3.
+      temp3-id = 'this is an uuid'.
+      temp3-timestampl = '2023234243'.
+      temp3-id_prev = 'previous'.
+      INSERT temp3
           INTO TABLE <tab>.
 
 

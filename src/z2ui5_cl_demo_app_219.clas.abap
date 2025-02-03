@@ -26,13 +26,17 @@ CLASS z2ui5_cl_demo_app_219 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Input List Item'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(layout) = page->list( headertext = `Input`
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->list( headertext = `Input`
                            )->input_list_item( label = `WLAN`
                                )->switch( state = `true` )->get_parent(
                            )->input_list_item( label = `Flight Mode`

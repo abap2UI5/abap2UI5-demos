@@ -75,25 +75,31 @@ CLASS Z2UI5_CL_DEMO_APP_258 IMPLEMENTATION.
 
   METHOD render_main_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
     "Custom CSS
     view->_generic( ns   = `html`
                     name = `style` )->_cc_plain_xml( `.sapMPage>section { height: 100% }` &&
       `#mainView--site_content { border-radius: 0.75em }` ).
 
-    DATA(page) = view->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->page(
             title           = 'abap2UI5 - Sample: Side Navigation'
             navbuttonpress  = client->_event( 'BACK' )
             enablescrolling = abap_false
             class           = 'sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer'
-            shownavbutton   = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton   = temp1 ).
 
-    DATA(content) = page->flex_box( width      = '100%'
+    DATA content TYPE REF TO z2ui5_cl_xml_view.
+    content = page->flex_box( width      = '100%'
                                     height     = '90%'
                                     alignitems = 'Start' ).
 
-    DATA(navlist) = content->flex_box( width     = '100%'
+    DATA navlist TYPE REF TO z2ui5_cl_xml_view.
+    navlist = content->flex_box( width     = '100%'
                                        height    = '100%'
                                        direction = 'Column' )->layout_data( )->flex_item_data( growfactor = '1'
       basesize                                                                                            = '0' )->get_parent( )->side_navigation( id                                           = 'sideNavigation'
@@ -144,7 +150,8 @@ CLASS Z2UI5_CL_DEMO_APP_258 IMPLEMENTATION.
                                icon = 'sap-icon://chain-link'
                                href = 'https://github.com/abap2UI5/abap2UI5' ).
 
-    DATA(site_content) = content->flex_box( id               = 'site_content'
+    DATA site_content TYPE REF TO z2ui5_cl_xml_view.
+    site_content = content->flex_box( id               = 'site_content'
                                             class            = 'sapUiTinyMarginTop sapUiTinyMarginBegin'
                                             width            = '100%'
                                             height           = '100%'

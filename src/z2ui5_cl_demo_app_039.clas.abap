@@ -73,7 +73,8 @@ CLASS Z2UI5_CL_DEMO_APP_039 IMPLEMENTATION.
 
   METHOD z2ui5_on_render_main.
 
-    DATA(lv_xml) = `<mvc:View` && |\n| &&
+    DATA lv_xml TYPE string.
+    lv_xml = `<mvc:View` && |\n| &&
                         `xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"` && |\n| &&
                         `       xmlns:form="sap.ui.layout.form">` && |\n| &&
                         `       <form:SimpleForm editable="true" width="40rem">` && |\n| &&

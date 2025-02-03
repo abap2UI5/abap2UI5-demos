@@ -32,11 +32,14 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page_01) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page_01 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp13 TYPE xsdboolean.
+    temp13 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page_01 = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = `abap2UI5 - Sample: InvisibleText`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp13 ).
 
     page_01->header_content(
        )->button( id = `button_hint_id`
@@ -50,18 +53,55 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.ui.core.InvisibleText/sample/sap.ui.core.sample.InvisibleText' ).
 
-    DATA(page_02) = page_01->page(
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `${$source>/id}` INTO TABLE temp1.
+    DATA temp2 TYPE string_table.
+    CLEAR temp2.
+    INSERT `${$source>/id}` INTO TABLE temp2.
+    DATA temp3 TYPE string_table.
+    CLEAR temp3.
+    INSERT `${$source>/id}` INTO TABLE temp3.
+    DATA temp4 TYPE string_table.
+    CLEAR temp4.
+    INSERT `${$source>/id}` INTO TABLE temp4.
+    DATA temp5 TYPE string_table.
+    CLEAR temp5.
+    INSERT `${$source>/id}` INTO TABLE temp5.
+    DATA temp6 TYPE string_table.
+    CLEAR temp6.
+    INSERT `${$source>/id}` INTO TABLE temp6.
+    DATA temp7 TYPE string_table.
+    CLEAR temp7.
+    INSERT `${$source>/id}` INTO TABLE temp7.
+    DATA temp8 TYPE string_table.
+    CLEAR temp8.
+    INSERT `${$source>/id}` INTO TABLE temp8.
+    DATA temp9 TYPE string_table.
+    CLEAR temp9.
+    INSERT `${$source>/id}` INTO TABLE temp9.
+    DATA temp10 TYPE string_table.
+    CLEAR temp10.
+    INSERT `${$source>/id}` INTO TABLE temp10.
+    DATA temp11 TYPE string_table.
+    CLEAR temp11.
+    INSERT `${$source>/id}` INTO TABLE temp11.
+    DATA temp12 TYPE string_table.
+    CLEAR temp12.
+    INSERT `${$source>/id}` INTO TABLE temp12.
+    DATA page_02 TYPE REF TO z2ui5_cl_xml_view.
+    page_02 = page_01->page(
                               title = `Page`
                               class = `sapUiContentPadding`
                               )->custom_header(
                                   )->toolbar(
                                       )->button( type  = `Back`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp1 )
                                       )->toolbar_spacer(
                                       )->title( text = `Title`
                                       )->toolbar_spacer(
                                       )->button( icon           = `sap-icon://edit`
-                                                 press          = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press          = client->_event( val = `onPress` t_arg = temp2 )
                                                  arialabelledby = `editButtonLabel`
                                   )->get_parent(
       )->get_parent(
@@ -69,12 +109,12 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
                                   )->toolbar(
                                       )->toolbar_spacer(
                                       )->button( text  = `Default`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp3 )
                                       )->button( type  = `Reject`
                                                  text  = `Reject`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp4 )
                                       )->button( icon           = `sap-icon://action`
-                                                 press          = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press          = client->_event( val = `onPress` t_arg = temp5 )
                                                  arialabelledby = `actionButtonLabel`
                                       )->toolbar_spacer(
                                   )->get_parent(
@@ -82,7 +122,7 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
                               )->content(
                                   )->hbox(
                                       )->button( text            = `Default`
-                                                 press           = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press           = client->_event( val = `onPress` t_arg = temp6 )
                                                  ariadescribedby = `defaultButtonDescription genericButtonDescription` )->get(
                                           )->layout_data(
                                               )->flex_item_data( growfactor = `1`
@@ -90,7 +130,7 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
                                       )->get_parent(
                                       )->button( type            = `Accept`
                                                  text            = `Accept`
-                                                 press           = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press           = client->_event( val = `onPress` t_arg = temp7 )
                                                  ariadescribedby = `acceptButtonDescription genericButtonDescription` )->get(
                                           )->layout_data(
                                               )->flex_item_data( growfactor = `1`
@@ -98,14 +138,14 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
                                       )->get_parent(
                                       )->button( type            = `Reject`
                                                  text            = `Reject`
-                                                 press           = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press           = client->_event( val = `onPress` t_arg = temp8 )
                                                  ariadescribedby = `rejectButtonDescription genericButtonDescription` )->get(
                                           )->layout_data(
                                               )->flex_item_data( growfactor = `1`
                                           )->get_parent(
                                       )->get_parent(
                                       )->button( text            = `Coming Soon`
-                                                 press           = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press           = client->_event( val = `onPress` t_arg = temp9 )
                                                  ariadescribedby = `comingSoonButtonDescription genericButtonDescription`
                                                  enabled         = abap_false )->get(
                                           )->layout_data(
@@ -141,11 +181,11 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
                                       )->toolbar_spacer(
                                       )->button( type  = `Emphasized`
                                                  text  = `Emphasized`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp10 )
                                       )->button( text  = `Default`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp11 )
                                       )->button( icon  = `sap-icon://action`
-                                                 press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                                 press = client->_event( val = `onPress` t_arg = temp12 )
                                   )->get_parent(
                               )->get_parent( ).
 
@@ -170,7 +210,8 @@ CLASS z2ui5_cl_demo_app_282 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

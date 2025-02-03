@@ -45,15 +45,23 @@ CLASS z2ui5_cl_demo_app_231 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    view->_generic_property( VALUE #( n = `core:require` v = `{Helper:'z2ui5/Util'}` ) ).
+    DATA temp1 TYPE z2ui5_if_types=>ty_s_name_value.
+    CLEAR temp1.
+    temp1-n = `core:require`.
+    temp1-v = `{Helper:'z2ui5/Util'}`.
+    view->_generic_property( temp1 ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp3 TYPE xsdboolean.
+    temp3 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
                     )->page(
                         title          = 'abap2UI5 - Sample: Date Range Selection'
                         navbuttonpress = client->_event( 'BACK' )
-                        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                        shownavbutton  = temp3 ).
 
     page->header_content(
        )->link(
@@ -61,56 +69,72 @@ CLASS z2ui5_cl_demo_app_231 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.m.DateRangeSelection/sample/sap.m.sample.DateRangeSelection' ).
 
-    DATA(vbox) = page->vbox( ).
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = page->vbox( ).
 
     " DRS1
+    DATA temp2 TYPE string_table.
+    CLEAR temp2.
+    INSERT `DRS2` INTO TABLE temp2.
     vbox->label( text     = `DateRangeSelection displayFormat 'yyyy/MM/dd', set via binding:`
                  labelfor = `DRS1`
        )->date_range_selection(
             id              = 'DRS1'
             displayformat   = 'yyyy/MM/dd'
-            change          = client->_event( val = 'handleChange' t_arg = VALUE #( ( `DRS2` ) ) )
+            change          = client->_event( val = 'handleChange' t_arg = temp2 )
             datevalue       = `{= Helper.DateCreateObject($` && client->_bind( drs1-start ) && ') }'
             seconddatevalue = `{= Helper.DateCreateObject($` && client->_bind( drs1-end ) && ') }' ).
 
     " DRS2
+    DATA temp4 TYPE string_table.
+    CLEAR temp4.
+    INSERT `DRS2` INTO TABLE temp4.
     vbox->label( text     = `DateRangeSelection with minDate=2016-01-01 and maxDate=2016-12-31:`
                  labelfor = `DRS2`
        )->date_range_selection(
             id              = 'DRS2'
             mindate         = `{= Helper.DateCreateObject($` && client->_bind( mindate ) && ') }'
             maxdate         = `{= Helper.DateCreateObject($` && client->_bind( maxdate ) && ') }'
-            change          = client->_event( val = 'handleChange' t_arg = VALUE #( ( `DRS2` ) ) )
+            change          = client->_event( val = 'handleChange' t_arg = temp4 )
             datevalue       = `{= Helper.DateCreateObject($` && client->_bind( drs2-start ) && ') }'
             seconddatevalue = `{= Helper.DateCreateObject($` && client->_bind( drs2-end ) && ') }' ).
 
     " DRS3
+    DATA temp6 TYPE string_table.
+    CLEAR temp6.
+    INSERT `DRS3` INTO TABLE temp6.
     vbox->label( text     = `DateRangeSelection with OK button in the footer and with shortcut for today:"`
                  labelfor = `DRS3`
        )->date_range_selection(
             id                    = 'DRS3'
             showcurrentdatebutton = abap_true
             showfooter            = abap_true
-            change                = client->_event( val = 'handleChange' t_arg = VALUE #( ( `DRS3` ) ) )
+            change                = client->_event( val = 'handleChange' t_arg = temp6 )
             datevalue             = `{= Helper.DateCreateObject($` && client->_bind( drs3-start ) && ') }'
             seconddatevalue       = `{= Helper.DateCreateObject($` && client->_bind( drs3-end ) && ') }' ).
 
     " DRS4
+    DATA temp8 TYPE string_table.
+    CLEAR temp8.
+    INSERT `DRS4` INTO TABLE temp8.
     vbox->label( text     = `DateRangeSelection with displayFormat 'MM/yyyy':`
                  labelfor = `DRS3`
        )->date_range_selection(
             id              = 'DRS4'
-            change          = client->_event( val = 'handleChange' t_arg = VALUE #( ( `DRS4` ) ) )
+            change          = client->_event( val = 'handleChange' t_arg = temp8 )
             displayformat   = 'MM/yyyy'
             datevalue       = `{= Helper.DateCreateObject($` && client->_bind( drs4-start ) && ') }'
             seconddatevalue = `{= Helper.DateCreateObject($` && client->_bind( drs4-end ) && ') }' ).
 
     " DRS5
+    DATA temp10 TYPE string_table.
+    CLEAR temp10.
+    INSERT `DRS5` INTO TABLE temp10.
     vbox->label( text     = `DateRangeSelection with displayFormat 'MM/yyyy':`
                  labelfor = `DRS3`
        )->date_range_selection(
             id              = 'DRS5'
-            change          = client->_event( val = 'handleChange' t_arg = VALUE #( ( `DRS5` ) ) )
+            change          = client->_event( val = 'handleChange' t_arg = temp10 )
             displayformat   = 'yyyy'
             datevalue       = `{= Helper.DateCreateObject($` && client->_bind( drs5-start ) && ') }'
             seconddatevalue = `{= Helper.DateCreateObject($` && client->_bind( drs5-end ) && ') }' ).
@@ -152,12 +176,27 @@ CLASS z2ui5_cl_demo_app_231 IMPLEMENTATION.
         client->nav_app_leave( ).
       WHEN 'handleChange'.
 
-        DATA(args) = client->get( )-t_event_arg.
-        DATA(source) = args[ 1 ].
+        DATA args TYPE string_table.
+        args = client->get( )-t_event_arg.
+        DATA source LIKE LINE OF args.
+        DATA temp1 LIKE LINE OF args.
+        DATA temp2 LIKE sy-tabix.
+        temp2 = sy-tabix.
+        READ TABLE args INDEX 1 INTO temp1.
+        sy-tabix = temp2.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        source = temp1.
 
-        ASSIGN me->(source) TO FIELD-SYMBOL(<drs>).
+        FIELD-SYMBOLS <drs> TYPE any.
+        ASSIGN me->(source) TO <drs>.
 
-        DATA(drs) = CORRESPONDING t_drs( <drs> ).
+        DATA temp12 TYPE t_drs.
+        CLEAR temp12.
+        MOVE-CORRESPONDING <drs> TO temp12.
+        DATA drs LIKE temp12.
+        drs = temp12.
 
         text = |Id: { source }\n|
             && |From: { drs-start }\n|

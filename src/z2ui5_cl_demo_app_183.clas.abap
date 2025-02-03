@@ -18,8 +18,9 @@ CLASS z2ui5_cl_demo_app_183 DEFINITION
         valuecolor TYPE string,
       END OF ty_row .
 
-    DATA
-      t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY .
+    TYPES temp1_2eadad6e11 TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
+DATA
+      t_tab TYPE temp1_2eadad6e11 .
     DATA check_initialized TYPE abap_bool .
     DATA check_ui5 TYPE abap_bool .
     DATA mv_key TYPE string .
@@ -62,7 +63,8 @@ CLASS z2ui5_cl_demo_app_183 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'GET_OPENED_COL'.
-        DATA(lt_arg) = client->get( )-t_event_arg.
+        DATA lt_arg TYPE string_table.
+        lt_arg = client->get( )-t_event_arg.
         RETURN.
 
       WHEN 'ONSORT'.
@@ -83,14 +85,19 @@ CLASS z2ui5_cl_demo_app_183 IMPLEMENTATION.
 
     ENDCASE.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
             title          = 'abap2UI5 - table with column menu (press a column header)'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp2 ).
 
-    DATA(tab) = page->scroll_container( height   = '70%'
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = page->scroll_container( height   = '70%'
                                         vertical = abap_true
         )->table(
             growing             = abap_true
@@ -126,9 +133,12 @@ CLASS z2ui5_cl_demo_app_183 IMPLEMENTATION.
                 press = client->_event( 'SORT_ASCENDING' ) ).
 
 *    column menu
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `$event.mParameters.openBy.getId()` INTO TABLE temp1.
     tab->dependents(
       )->column_menu( id         = `menu`
-                      beforeopen = client->_event( val = `GET_OPENED_COL` t_arg = VALUE #( ( `$event.mParameters.openBy.getId()` ) ) )
+                      beforeopen = client->_event( val = `GET_OPENED_COL` t_arg = temp1 )
 *      )->column_menu_quick_sort( change = client->_event( val = 'ONSORT' t_arg = VALUE #( ( `${$parameters>/item.getKey}` ) ) )
 *      )->column_menu_quick_sort( change = client->_event( val = 'ONSORT' t_arg = VALUE #( ( `$event` ) ) )
        )->column_menu_quick_sort( change = client->_event( 'ONSORT' )

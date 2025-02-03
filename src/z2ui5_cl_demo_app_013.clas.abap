@@ -19,7 +19,7 @@ CLASS z2ui5_cl_demo_app_013 DEFINITION PUBLIC.
         percent TYPE p LENGTH 3 DECIMALS 2,
       END OF ty_chart.
 
-    DATA counts TYPE STANDARD TABLE OF ty_chart WITH EMPTY KEY.
+    DATA counts TYPE STANDARD TABLE OF ty_chart WITH DEFAULT KEY.
 
     METHODS render_tab_donut.
     DATA client TYPE REF TO z2ui5_if_client.
@@ -35,7 +35,8 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
 
   METHOD render_tab_donut.
 
-    DATA(container) = z2ui5_cl_xml_view=>factory(
+    DATA container TYPE REF TO z2ui5_cl_xml_view.
+    container = z2ui5_cl_xml_view=>factory(
         )->shell(
         )->page(
             title          = 'abap2UI5 - Visualization'
@@ -43,7 +44,8 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
             shownavbutton  = abap_true
         )->tab_container( ).
 
-    DATA(grid) = container->tab(
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = container->tab(
             text     = 'Donut Chart'
             selected = client->_bind( mv_tab_donut_active )
          )->grid( 'XL6 L6 M6 S12' ).
@@ -59,7 +61,8 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
                 )->grid_data( 'XL12 L12 M12 S12' ).
 
 
-    DATA(seg) = grid->flex_box(
+    DATA seg TYPE REF TO z2ui5_cl_xml_view.
+    seg = grid->flex_box(
             width          = '22rem'
             height         = '13rem'
             alignitems     = 'Start'
@@ -142,7 +145,8 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
         )->get( )->layout_data(
             )->grid_data( 'XL12 L12 M12 S12' ).
 
-    DATA(donut_chart) = grid->button( text  = `update chart`
+    DATA donut_chart TYPE REF TO z2ui5_cl_xml_view.
+    donut_chart = grid->button( text  = `update chart`
                                       press = client->_event( 'UPDATE_CHART_DATA' ) )->get_parent(
       )->flex_box(
         width          = '30rem'
@@ -172,10 +176,19 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
       check_initialized = abap_true.
 
 
-      counts = VALUE #(
-                        ( text = '1st' percent = '10.0' )
-                        ( text = '2nd' percent = '60.0' )
-                        ( text = '3rd' percent = '30.0' ) ).
+      DATA temp1 LIKE counts.
+      CLEAR temp1.
+      DATA temp2 LIKE LINE OF temp1.
+      temp2-text = '1st'.
+      temp2-percent = '10.0'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-text = '2nd'.
+      temp2-percent = '60.0'.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-text = '3rd'.
+      temp2-percent = '30.0'.
+      INSERT temp2 INTO TABLE temp1.
+      counts = temp1.
 
       total_count = lines( counts ).
 
@@ -187,11 +200,22 @@ CLASS Z2UI5_CL_DEMO_APP_013 IMPLEMENTATION.
     CASE client->get( )-event.
       WHEN 'UPDATE_CHART_DATA'.
         CLEAR counts.
-        counts = VALUE #(
-                          ( text = '1st' percent = '60.0' )
-                          ( text = '2nd' percent = '10.0' )
-                          ( text = '3rd' percent = '15.0' )
-                          ( text = '4th' percent = '15.0' ) ).
+        DATA temp3 LIKE counts.
+        CLEAR temp3.
+        DATA temp4 LIKE LINE OF temp3.
+        temp4-text = '1st'.
+        temp4-percent = '60.0'.
+        INSERT temp4 INTO TABLE temp3.
+        temp4-text = '2nd'.
+        temp4-percent = '10.0'.
+        INSERT temp4 INTO TABLE temp3.
+        temp4-text = '3rd'.
+        temp4-percent = '15.0'.
+        INSERT temp4 INTO TABLE temp3.
+        temp4-text = '4th'.
+        temp4-percent = '15.0'.
+        INSERT temp4 INTO TABLE temp3.
+        counts = temp3.
 
         total_count = lines( counts ).
 

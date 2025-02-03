@@ -31,11 +31,14 @@ CLASS z2ui5_cl_demo_app_240 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = `abap2UI5 - Sample: Switch`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `hint_icon`
@@ -49,7 +52,8 @@ CLASS z2ui5_cl_demo_app_240 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.m.Switch/sample/sap.m.sample.Switch' ).
 
-    DATA(layout) = page->vbox(
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->vbox(
                             class = `sapUiSmallMargin`
                             )->hbox(
                                 )->switch( state = abap_true )->get(
@@ -129,7 +133,8 @@ CLASS z2ui5_cl_demo_app_240 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

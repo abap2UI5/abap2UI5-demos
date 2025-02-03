@@ -13,8 +13,10 @@ CLASS z2ui5_cl_demo_app_299 DEFINITION
       END OF ty_product_collection.
 
     DATA check_initialized TYPE abap_bool.
-    DATA lt_product_collection  TYPE TABLE OF ty_product_collection.
-    DATA lt_product_collection2 TYPE TABLE OF ty_product_collection.
+    TYPES temp1_3750dc126e TYPE TABLE OF ty_product_collection.
+DATA lt_product_collection  TYPE temp1_3750dc126e.
+    TYPES temp2_3750dc126e TYPE TABLE OF ty_product_collection.
+DATA lt_product_collection2 TYPE temp2_3750dc126e.
 
   PROTECTED SECTION.
 
@@ -41,11 +43,14 @@ CLASS z2ui5_cl_demo_app_299 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page_01) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page_01 TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page_01 = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = `abap2UI5 - Sample: Select - Wrapping text`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page_01->header_content(
        )->button( id = `button_hint_id`
@@ -95,7 +100,8 @@ CLASS z2ui5_cl_demo_app_299 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`
@@ -130,21 +136,47 @@ CLASS z2ui5_cl_demo_app_299 IMPLEMENTATION.
     CLEAR lt_product_collection2.
 
     " Populating lt_product_collection
-    lt_product_collection = VALUE #(
-      ( product_id = 'HT-1001' name = 'Select option 1' )
-      ( product_id = 'HT-1002' name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' )
-      ( product_id = 'HT-1003' name = 'Select option 3' )
-      ( product_id = 'HT-1007' name = 'Select option 4' )
-      ( product_id = 'HT-1010' name = 'Select option 5' ) ).
+    DATA temp1 LIKE lt_product_collection.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-product_id = 'HT-1001'.
+    temp2-name = 'Select option 1'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product_id = 'HT-1002'.
+    temp2-name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product_id = 'HT-1003'.
+    temp2-name = 'Select option 3'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product_id = 'HT-1007'.
+    temp2-name = 'Select option 4'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-product_id = 'HT-1010'.
+    temp2-name = 'Select option 5'.
+    INSERT temp2 INTO TABLE temp1.
+    lt_product_collection = temp1.
     SORT lt_product_collection BY name.
 
     " Populating lt_product_collection2
-    lt_product_collection2 = VALUE #(
-      ( product_id = 'key1' name = 'Select option 1' )
-      ( product_id = 'key2' name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.' )
-      ( product_id = 'key3' name = 'Select option 3' )
-      ( product_id = 'key4' name = 'Select option 4' )
-      ( product_id = 'key5' name = 'Select option 5' ) ).
+    DATA temp3 LIKE lt_product_collection2.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-product_id = 'key1'.
+    temp4-name = 'Select option 1'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-product_id = 'key2'.
+    temp4-name = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-product_id = 'key3'.
+    temp4-name = 'Select option 3'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-product_id = 'key4'.
+    temp4-name = 'Select option 4'.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-product_id = 'key5'.
+    temp4-name = 'Select option 5'.
+    INSERT temp4 INTO TABLE temp3.
+    lt_product_collection2 = temp3.
     SORT lt_product_collection2 BY name.
 
   ENDMETHOD.

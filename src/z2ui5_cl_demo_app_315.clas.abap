@@ -13,16 +13,21 @@ CLASS z2ui5_cl_demo_app_315 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
 
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
-      DATA(page) = view->shell(
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      DATA temp2 TYPE xsdboolean.
+      temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+      page = view->shell(
           )->page(
               title          = 'abap2UI5 - Table with odata source'
               navbuttonpress = client->_event( 'BACK' )
-              shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+              shownavbutton  = temp2 ).
 
-     data(tab) = page->table(
+     DATA tab TYPE REF TO z2ui5_cl_xml_view.
+     tab = page->table(
         items = `{TRAVEL>/Currency}`
         growing = abap_true ).
 
@@ -64,17 +69,21 @@ CLASS z2ui5_cl_demo_app_315 IMPLEMENTATION.
 
     client->view_display( val = view->stringify( ) switch_default_model_path = `` ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `/sap/opu/odata/DMO/API_TRAVEL_U_V2/` INTO TABLE temp1.
+    INSERT `TRAVEL` INTO TABLE temp1.
     client->follow_up_action( client->_event_client(
       val = z2ui5_if_client=>cs_event-set_odata_model
-      t_arg = value #(
-        ( `/sap/opu/odata/DMO/API_TRAVEL_U_V2/` )
-        ( `TRAVEL` ) ) ) ).
+      t_arg = temp1 ) ).
 
+    DATA temp3 TYPE string_table.
+    CLEAR temp3.
+    INSERT `/sap/opu/odata/DMO/ui_flight_r_v2/` INTO TABLE temp3.
+    INSERT `FLIGHT` INTO TABLE temp3.
     client->follow_up_action( client->_event_client(
       val = z2ui5_if_client=>cs_event-set_odata_model
-      t_arg = value #(
-        ( `/sap/opu/odata/DMO/ui_flight_r_v2/` )
-        ( `FLIGHT` )  ) ) ).
+      t_arg = temp3 ) ).
 
     ENDIF.
 

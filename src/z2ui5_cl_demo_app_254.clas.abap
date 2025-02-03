@@ -31,7 +31,8 @@ CLASS z2ui5_cl_demo_app_254 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(css) = `.nestedFlexboxes .item1 {`      &&
+    DATA css TYPE string.
+    css = `.nestedFlexboxes .item1 {`      &&
                 `    padding: 1rem;`             &&
                 `    background-color: #d1dbbd;` &&
                 `}`                              &&
@@ -59,15 +60,19 @@ CLASS z2ui5_cl_demo_app_254 IMPLEMENTATION.
                 `    color: #32363a;`            &&
                 `}`.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `style`
                     ns   = `html` )->_cc_plain_xml( css )->get_parent( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
          )->page(
             title          = `abap2UI5 - Sample: Flex Box - Nested`
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
     page->header_content(
        )->button( id = `hint_icon`
@@ -81,7 +86,8 @@ CLASS z2ui5_cl_demo_app_254 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.m.FlexBox/sample/sap.m.sample.FlexBoxNested' ).
 
-    DATA(layout) = page->hbox(
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->hbox(
                           fitcontainer = `abap_true`
                           alignitems   = `Stretch`
                           class        = `sapUiSmallMargin nestedFlexboxes`
@@ -136,7 +142,8 @@ CLASS z2ui5_cl_demo_app_254 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

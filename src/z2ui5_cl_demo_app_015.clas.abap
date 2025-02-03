@@ -34,12 +34,15 @@ CLASS Z2UI5_CL_DEMO_APP_015 IMPLEMENTATION.
 
         ENDCASE.
 
-        data(view) = z2ui5_cl_xml_view=>factory( ).
+        DATA view TYPE REF TO z2ui5_cl_xml_view.
+        view = z2ui5_cl_xml_view=>factory( ).
+        DATA temp1 TYPE xsdboolean.
+        temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
         view->shell(
         )->page(
             title          = 'abap2UI5 - Formatted Text'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton = temp1
             )->header_content(
                 )->toolbar_spacer(
                 )->link(

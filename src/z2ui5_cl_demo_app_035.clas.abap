@@ -23,24 +23,41 @@ ENDCLASS.
 CLASS z2ui5_cl_demo_app_035 IMPLEMENTATION.
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell( )->page( title          = 'abap2UI5 - File Editor'
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp6 TYPE xsdboolean.
+    temp6 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell( )->page( title          = 'abap2UI5 - File Editor'
                                        navbuttonpress = client->_event( 'BACK' )
-                                       shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                                       shownavbutton  = temp6 ).
 
-    DATA(temp) = page->simple_form( title    = 'File'
+    DATA temp TYPE REF TO z2ui5_cl_xml_view.
+    temp = page->simple_form( title    = 'File'
                                     editable = abap_true )->content( `form`
          )->label( 'path'
          )->input( client->_bind_edit( mv_path )
          )->label( 'Option' ).
 
-    lt_types = VALUE z2ui5_if_types=>ty_t_name_value( ).
-    LT_TYPES = VALUE #( FOR row IN z2ui5_cl_util=>source_get_file_types( )  (
-            n = shift_right( shift_left( row ) )
-            v = shift_right( shift_left( row ) ) ) ).
+    DATA temp1 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp1.
+    lt_types = temp1.
+    DATA temp2 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp2.
+    DATA temp5 TYPE string_table.
+    temp5 = z2ui5_cl_util=>source_get_file_types( ).
+    DATA row LIKE LINE OF temp5.
+    LOOP AT temp5 INTO row.
+      DATA temp4 LIKE LINE OF temp2.
+      temp4-n = shift_right( shift_left( row ) ).
+      temp4-v = shift_right( shift_left( row ) ).
+      INSERT temp4 INTO TABLE temp2.
+    ENDLOOP.
+    LT_TYPES = temp2.
 
-    DATA(temp3) = temp->input( value = client->_bind_edit( mv_type )
+    DATA temp3 TYPE REF TO z2ui5_cl_xml_view.
+    temp3 = temp->input( value = client->_bind_edit( mv_type )
                    suggestionitems   = client->_bind_local( LT_TYPES )
                     )->get( ).
 
@@ -56,6 +73,8 @@ CLASS z2ui5_cl_demo_app_035 IMPLEMENTATION.
                        editable = client->_bind( mv_check_editable )
                        value    = client->_bind( mv_editor ) ).
 
+    DATA temp7 TYPE xsdboolean.
+    temp7 = boolc( mv_editor IS NOT INITIAL ).
     page->footer( )->overflow_toolbar(
         )->button( text  = 'Clear'
                    press = client->_event( 'CLEAR' )
@@ -68,7 +87,7 @@ CLASS z2ui5_cl_demo_app_035 IMPLEMENTATION.
                    press   = client->_event( 'DB_SAVE' )
                    type    = 'Emphasized'
                    icon    = 'sap-icon://upload-to-cloud'
-                   enabled = xsdbool( mv_editor IS NOT INITIAL ) ).
+                   enabled = temp7 ).
 
     client->view_display( page->stringify( ) ).
   ENDMETHOD.
@@ -87,12 +106,21 @@ CLASS z2ui5_cl_demo_app_035 IMPLEMENTATION.
 
       WHEN 'DB_LOAD'.
 
-        mv_editor = COND #(
-            WHEN mv_path CS 'abap' THEN lcl_file_api=>read_abap( )
-            WHEN mv_path CS 'json' THEN lcl_file_api=>read_json( )
-            WHEN mv_path CS 'yaml' THEN lcl_file_api=>read_yaml( )
-            WHEN mv_path CS 'text' THEN lcl_file_api=>read_text( )
-            WHEN mv_path CS 'js'   THEN lcl_file_api=>read_js( ) ).
+        DATA temp5 TYPE string.
+        IF mv_path CS 'abap'.
+          temp5 = lcl_file_api=>read_abap( ).
+        ELSEIF mv_path CS 'json'.
+          temp5 = lcl_file_api=>read_json( ).
+        ELSEIF mv_path CS 'yaml'.
+          temp5 = lcl_file_api=>read_yaml( ).
+        ELSEIF mv_path CS 'text'.
+          temp5 = lcl_file_api=>read_text( ).
+        ELSEIF mv_path CS 'js'.
+          temp5 = lcl_file_api=>read_js( ).
+        ELSE.
+          CLEAR temp5.
+        ENDIF.
+        mv_editor = temp5.
 
         client->message_toast_display( 'Download successfull' ).
 
@@ -102,7 +130,9 @@ CLASS z2ui5_cl_demo_app_035 IMPLEMENTATION.
         client->message_box_display( text = 'Upload successfull. File saved!'
                                      type = 'success' ).
       WHEN 'EDIT'.
-        mv_check_editable = xsdbool( mv_check_editable = abap_false ).
+        DATA temp8 TYPE xsdboolean.
+        temp8 = boolc( mv_check_editable = abap_false ).
+        mv_check_editable = temp8.
         client->view_model_update( ).
 
       WHEN 'CLEAR'.

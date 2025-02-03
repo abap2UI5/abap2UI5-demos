@@ -62,7 +62,7 @@ CLASS Z2UI5_CL_DEMO_APP_094 IMPLEMENTATION.
 
     ms_screen-ty_s_02-ty_s_03-ty_s_04-input = `struc deep switch guid name - working`.
 
-    mo_app = NEW #( ).
+    CREATE OBJECT mo_app.
     mo_app->mv_val = `instance attribute val - working`.
     mo_app->ms_screen-input = `instance attribute struc - working`.
 
@@ -81,10 +81,12 @@ CLASS Z2UI5_CL_DEMO_APP_094 IMPLEMENTATION.
     page = z2ui5_cl_xml_view=>factory( )->shell(
           )->page( title = `test` ).
 
-    DATA(o_grid) = page->grid( 'L6 M12 S12'
+    DATA o_grid TYPE REF TO z2ui5_cl_xml_view.
+    o_grid = page->grid( 'L6 M12 S12'
         )->content( 'layout' ).
 
-    DATA(content) = o_grid->simple_form( title = 'Input'
+    DATA content TYPE REF TO z2ui5_cl_xml_view.
+    content = o_grid->simple_form( title = 'Input'
           )->content( 'form' ).
 
     content->label( 'structure level 01'

@@ -27,13 +27,20 @@ CLASS Z2UI5_CL_DEMO_APP_025 IMPLEMENTATION.
         client->message_box_display( 'server-client roundtrip, method on_event of the abap controller was called' ).
 
       WHEN 'BUTTON_RESTART'.
-        client->nav_app_call( NEW z2ui5_cl_demo_app_025( ) ).
+        DATA temp1 TYPE REF TO z2ui5_cl_demo_app_025.
+        CREATE OBJECT temp1 TYPE z2ui5_cl_demo_app_025.
+        client->nav_app_call( temp1 ).
 
       WHEN 'BUTTON_CHANGE_APP'.
-        client->nav_app_call( NEW z2ui5_cl_demo_app_001( ) ).
+        DATA temp2 TYPE REF TO z2ui5_cl_demo_app_001.
+        CREATE OBJECT temp2 TYPE z2ui5_cl_demo_app_001.
+        client->nav_app_call( temp2 ).
 
       WHEN 'BUTTON_READ_PREVIOUS'.
-        DATA(lo_previous_app) = CAST z2ui5_cl_demo_app_024( client->get_app( client->get( )-s_draft-id_prev_app ) ).
+        DATA temp3 TYPE REF TO z2ui5_cl_demo_app_024.
+        temp3 ?= client->get_app( client->get( )-s_draft-id_prev_app ).
+        DATA lo_previous_app LIKE temp3.
+        lo_previous_app = temp3.
         mv_input_previous = lo_previous_app->mv_input2.
         client->message_toast_display( `data of previous app read` ).
 
@@ -41,7 +48,9 @@ CLASS Z2UI5_CL_DEMO_APP_025 IMPLEMENTATION.
         mv_show_view = 'MAIN'.
 
       WHEN 'BACK_WITH_EVENT'.
-        lo_previous_app = CAST z2ui5_cl_demo_app_024( client->get_app( client->get( )-s_draft-id_prev_app_stack ) ).
+        DATA temp4 TYPE REF TO z2ui5_cl_demo_app_024.
+        temp4 ?= client->get_app( client->get( )-s_draft-id_prev_app_stack ).
+        lo_previous_app = temp4.
         lo_previous_app->mv_backend_event = 'CALL_PREVIOUS_APP_INPUT_RETURN'.
         client->nav_app_leave( lo_previous_app ).
 
@@ -64,8 +73,10 @@ CLASS Z2UI5_CL_DEMO_APP_025 IMPLEMENTATION.
 
       WHEN 'MAIN' OR ''.
 
-        DATA(view) = z2ui5_cl_xml_view=>factory( ).
-        DATA(page) = view->shell(
+        DATA view TYPE REF TO z2ui5_cl_xml_view.
+        view = z2ui5_cl_xml_view=>factory( ).
+        DATA page TYPE REF TO z2ui5_cl_xml_view.
+        page = view->shell(
             )->page(
                    title          = 'abap2UI5 - flow logic - APP 02'
                    navbuttonpress = client->_event( 'BACK' )

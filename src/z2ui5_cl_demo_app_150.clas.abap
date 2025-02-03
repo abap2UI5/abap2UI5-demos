@@ -24,7 +24,8 @@ CLASS Z2UI5_CL_DEMO_APP_150 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'POPUP'.
-        DATA(lo_app) = z2ui5_cl_pop_to_confirm=>factory( `this is a question` ).
+        DATA lo_app TYPE REF TO z2ui5_cl_pop_to_confirm.
+        lo_app = z2ui5_cl_pop_to_confirm=>factory( `this is a question` ).
         client->nav_app_call( lo_app ).
 
       WHEN 'BACK'.
@@ -37,8 +38,12 @@ CLASS Z2UI5_CL_DEMO_APP_150 IMPLEMENTATION.
   METHOD ui5_callback.
 
     TRY.
-        DATA(lo_prev) = client->get_app( client->get( )-s_draft-id_prev_app ).
-        DATA(lv_confirm_result) = CAST z2ui5_cl_pop_to_confirm( lo_prev )->result( ).
+        DATA lo_prev TYPE REF TO z2ui5_if_app.
+        lo_prev = client->get_app( client->get( )-s_draft-id_prev_app ).
+        DATA temp1 TYPE REF TO z2ui5_cl_pop_to_confirm.
+        temp1 ?= lo_prev.
+        DATA lv_confirm_result TYPE abap_bool.
+        lv_confirm_result = temp1->result( ).
         client->message_box_display( `the result is ` && lv_confirm_result ).
       CATCH cx_root.
     ENDTRY.
@@ -47,12 +52,15 @@ CLASS Z2UI5_CL_DEMO_APP_150 IMPLEMENTATION.
 
   METHOD ui5_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     view->shell(
         )->page(
                 title          = 'abap2UI5 - Popup To Confirm'
                 navbuttonpress = client->_event( val = 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                shownavbutton  = temp1
            )->button(
             text  = 'Open Popup...'
             press = client->_event( 'POPUP' ) ).

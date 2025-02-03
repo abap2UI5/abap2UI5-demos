@@ -32,11 +32,14 @@ CLASS Z2UI5_CL_DEMO_APP_292 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp8 TYPE xsdboolean.
+    temp8 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: Breadcrumbs sample with current page link'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp8 ).
 
     page->header_content(
        )->button( id = `button_hint_id`
@@ -50,6 +53,27 @@ CLASS Z2UI5_CL_DEMO_APP_292 IMPLEMENTATION.
            target = '_blank'
            href   = 'https://sapui5.hana.ondemand.com/sdk/#/entity/sap.m.Breadcrumbs/sample/sap.m.sample.BreadcrumbsWithCurrentPageLink' ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `${$source>/text}` INTO TABLE temp1.
+    DATA temp2 TYPE string_table.
+    CLEAR temp2.
+    INSERT `${$source>/text}` INTO TABLE temp2.
+    DATA temp3 TYPE string_table.
+    CLEAR temp3.
+    INSERT `${$source>/text}` INTO TABLE temp3.
+    DATA temp4 TYPE string_table.
+    CLEAR temp4.
+    INSERT `${$source>/text}` INTO TABLE temp4.
+    DATA temp5 TYPE string_table.
+    CLEAR temp5.
+    INSERT `${$source>/text}` INTO TABLE temp5.
+    DATA temp6 TYPE string_table.
+    CLEAR temp6.
+    INSERT `${$source>/text}` INTO TABLE temp6.
+    DATA temp7 TYPE string_table.
+    CLEAR temp7.
+    INSERT `${$source>/text}` INTO TABLE temp7.
     page->vertical_layout(
             class = `sapUiContentPadding`
             width = `100%`
@@ -58,19 +82,19 @@ CLASS Z2UI5_CL_DEMO_APP_292 IMPLEMENTATION.
                            separatorstyle = `{/selected}`
                            currentlocationtext = `Page 7`
                )->link( text  = `Home`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp1 )
                )->link( text  = `Page 1`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp2 )
                )->link( text  = `Page 2`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp3 )
                )->link( text  = `Page 3`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp4 )
                )->link( text  = `Page 4`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp5 )
                )->link( text  = `Page 5`
-                        press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                        press = client->_event( val = `onPress` t_arg = temp6 )
                    )->link( text  = `Page 6`
-                            press = client->_event( val = `onPress` t_arg = VALUE #( ( `${$source>/text}` ) ) )
+                            press = client->_event( val = `onPress` t_arg = temp7 )
                )->get_parent(
            )->get_parent( ).
 
@@ -111,7 +135,8 @@ CLASS Z2UI5_CL_DEMO_APP_292 IMPLEMENTATION.
 
   METHOD z2ui5_display_popover.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory_popup( ).
     view->quick_view( placement = `Bottom`
                       width     = `auto`
               )->quick_view_page( pageid      = `sampleInformationId`

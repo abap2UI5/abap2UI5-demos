@@ -11,7 +11,7 @@ CLASS z2ui5_cl_demo_app_134 DEFINITION PUBLIC.
         descr TYPE string,
         info  TYPE string,
       END OF ty_row.
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
 
     DATA mv_scrollupdate TYPE abap_bool.
 
@@ -44,13 +44,22 @@ CLASS z2ui5_cl_demo_app_134 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(ls_row) = VALUE ty_row( title = 'Peter'  value = 'red' info = 'completed'  descr = 'this is a description' ).
+    DATA temp1 TYPE ty_row.
+    CLEAR temp1.
+    temp1-title = 'Peter'.
+    temp1-value = 'red'.
+    temp1-info = 'completed'.
+    temp1-descr = 'this is a description'.
+    DATA ls_row LIKE temp1.
+    ls_row = temp1.
     DO 100 TIMES.
       INSERT ls_row INTO TABLE t_tab.
     ENDDO.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( )->shell( ).
-    DATA(page) = view->page(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( )->shell( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->page(
         id             = 'id_page'
         title          = 'abap2ui5 - Scrolling (use Chrome to avoid incompatibilities)'
         navbuttonpress = client->_event( 'BACK' )
@@ -60,7 +69,8 @@ CLASS z2ui5_cl_demo_app_134 IMPLEMENTATION.
           setupdate = client->_bind_edit( mv_scrollupdate )
           items     = client->_bind_edit( mt_scroll ) ).
 
-    DATA(tab) = page->table( sticky     = 'ColumnHeaders,HeaderToolbar'
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = page->table( sticky     = 'ColumnHeaders,HeaderToolbar'
                              headertext = 'Table with some entries'
                              items      = client->_bind( t_tab ) ).
 
@@ -98,7 +108,10 @@ CLASS z2ui5_cl_demo_app_134 IMPLEMENTATION.
     selstart = `3`.
     selend = `7`.
 
-    INSERT VALUE #( n = 'id_page' ) INTO TABLE mt_scroll.
+    DATA temp2 TYPE z2ui5_if_types=>ty_s_name_value.
+    CLEAR temp2.
+    temp2-n = 'id_page'.
+    INSERT temp2 INTO TABLE mt_scroll.
     display_view( client ).
 
   ENDMETHOD.
@@ -119,35 +132,82 @@ CLASS z2ui5_cl_demo_app_134 IMPLEMENTATION.
 
       WHEN 'BUTTON_SCROLL_TOP'.
         CLEAR mt_scroll.
-        INSERT VALUE #( n = 'id_page' v = '0' ) INTO TABLE mt_scroll.
+        DATA temp3 TYPE z2ui5_if_types=>ty_s_name_value.
+        CLEAR temp3.
+        temp3-n = 'id_page'.
+        temp3-v = '0'.
+        INSERT temp3 INTO TABLE mt_scroll.
         mv_scrollupdate = abap_true.
         client->view_model_update( ).
 
       WHEN 'BUTTON_SCROLL_UP'.
 
-        DATA(lv_pos) = CONV i( mt_scroll[ n = 'id_page' ]-v ).
+        DATA temp4 TYPE i.
+        DATA temp1 LIKE LINE OF mt_scroll.
+        DATA temp2 LIKE sy-tabix.
+        temp2 = sy-tabix.
+        READ TABLE mt_scroll WITH KEY n = 'id_page' INTO temp1.
+        sy-tabix = temp2.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        temp4 = temp1-v.
+        DATA lv_pos LIKE temp4.
+        lv_pos = temp4.
         lv_pos = lv_pos - 500.
         IF lv_pos < 0.
           lv_pos = 0.
         ENDIF.
-        mt_scroll[ n = 'id_page' ]-v = shift_left( shift_right( CONV string( lv_pos ) ) ).
+        FIELD-SYMBOLS <temp5> LIKE LINE OF mt_scroll.
+        DATA temp6 LIKE sy-tabix.
+        temp6 = sy-tabix.
+        READ TABLE mt_scroll WITH KEY n = 'id_page' ASSIGNING <temp5>.
+        sy-tabix = temp6.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        DATA temp5 TYPE string.
+        temp5 = lv_pos.
+        <temp5>-v = shift_left( shift_right( temp5 ) ).
         mv_scrollupdate = abap_true.
         client->view_model_update( ).
 
       WHEN 'BUTTON_SCROLL_DOWN'.
 
-        lv_pos = mt_scroll[ n = 'id_page' ]-v.
+        DATA temp7 LIKE LINE OF mt_scroll.
+        DATA temp8 LIKE sy-tabix.
+        temp8 = sy-tabix.
+        READ TABLE mt_scroll WITH KEY n = 'id_page' INTO temp7.
+        sy-tabix = temp8.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        lv_pos = temp7-v.
         lv_pos = lv_pos + 500.
         IF lv_pos < 0.
           lv_pos = 0.
         ENDIF.
-        mt_scroll[ n = 'id_page' ]-v = shift_left( shift_right( CONV string( lv_pos ) ) ).
+        FIELD-SYMBOLS <temp9> LIKE LINE OF mt_scroll.
+        DATA temp10 LIKE sy-tabix.
+        temp10 = sy-tabix.
+        READ TABLE mt_scroll WITH KEY n = 'id_page' ASSIGNING <temp9>.
+        sy-tabix = temp10.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        DATA temp9 TYPE string.
+        temp9 = lv_pos.
+        <temp9>-v = shift_left( shift_right( temp9 ) ).
         mv_scrollupdate = abap_true.
         client->view_model_update( ).
 
       WHEN 'BUTTON_SCROLL_BOTTOM'.
         CLEAR mt_scroll.
-        INSERT VALUE #( n = 'id_page' v = '99999' ) INTO TABLE mt_scroll.
+        DATA temp11 TYPE z2ui5_if_types=>ty_s_name_value.
+        CLEAR temp11.
+        temp11-n = 'id_page'.
+        temp11-v = '99999'.
+        INSERT temp11 INTO TABLE mt_scroll.
         mv_scrollupdate = abap_true.
         client->view_model_update( ).
 

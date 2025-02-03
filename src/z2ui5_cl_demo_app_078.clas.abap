@@ -16,9 +16,12 @@ CLASS z2ui5_cl_demo_app_078 DEFINITION
       END OF ty_s_token.
 
     DATA mv_value          TYPE string.
-    DATA mt_token          TYPE STANDARD TABLE OF ty_s_token WITH EMPTY KEY.
-    DATA mt_tokens_added TYPE STANDARD TABLE OF ty_s_token WITH EMPTY KEY.
-    DATA mt_tokens_removed TYPE STANDARD TABLE OF ty_s_token WITH EMPTY KEY.
+    TYPES temp1_b1e501edeb TYPE STANDARD TABLE OF ty_s_token WITH DEFAULT KEY.
+DATA mt_token          TYPE temp1_b1e501edeb.
+    TYPES temp2_b1e501edeb TYPE STANDARD TABLE OF ty_s_token WITH DEFAULT KEY.
+DATA mt_tokens_added TYPE temp2_b1e501edeb.
+    TYPES temp3_b1e501edeb TYPE STANDARD TABLE OF ty_s_token WITH DEFAULT KEY.
+DATA mt_tokens_removed TYPE temp3_b1e501edeb.
     DATA check_initialized TYPE abap_bool.
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -34,12 +37,15 @@ CLASS z2ui5_cl_demo_app_078 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
 
+      DATA temp2 TYPE xsdboolean.
+      temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
       view = view->shell( )->page( id = `page_main`
                title                  = 'abap2UI5 - Select-Options'
                navbuttonpress         = client->_event( 'BACK' )
-               shownavbutton          = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+               shownavbutton          = temp2 ).
 
       view->_z2ui5( )->multiinput_ext(
                             addedtokens   = client->_bind_edit( mt_tokens_added )
@@ -58,7 +64,8 @@ CLASS z2ui5_cl_demo_app_078 IMPLEMENTATION.
                                      selected = `{SELKZ}`
                                      editable = `{EDITABLE}` ).
 
-      DATA(tab) = view->table(
+      DATA tab TYPE REF TO z2ui5_cl_xml_view.
+      tab = view->table(
         items = client->_bind_edit( mt_token )
         mode  = 'MultiSelect' ).
 
@@ -84,12 +91,19 @@ CLASS z2ui5_cl_demo_app_078 IMPLEMENTATION.
 
       WHEN 'UPDATE_BACKEND'.
 
-        LOOP AT mt_tokens_removed INTO DATA(ls_token).
+        DATA ls_token LIKE LINE OF mt_tokens_removed.
+        LOOP AT mt_tokens_removed INTO ls_token.
           DELETE mt_token WHERE key = ls_token-key.
         ENDLOOP.
 
         LOOP AT mt_tokens_added INTO ls_token.
-          INSERT VALUE #( key = ls_token-key text = ls_token-text visible = abap_true editable = abap_true ) INTO TABLE mt_token.
+          DATA temp1 TYPE z2ui5_cl_demo_app_078=>ty_s_token.
+          CLEAR temp1.
+          temp1-key = ls_token-key.
+          temp1-text = ls_token-text.
+          temp1-visible = abap_true.
+          temp1-editable = abap_true.
+          INSERT temp1 INTO TABLE mt_token.
         ENDLOOP.
 
         CLEAR mt_tokens_removed.

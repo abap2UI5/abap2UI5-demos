@@ -23,16 +23,19 @@ CLASS Z2UI5_CL_DEMO_APP_029 IMPLEMENTATION.
 
   METHOD render_tab_radial.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(container) = view->shell(
+    DATA container TYPE REF TO z2ui5_cl_xml_view.
+    container = view->shell(
         )->page(
             title          = 'abap2UI5 - Visualization'
             navbuttonpress = client->_event( 'BACK' )
             shownavbutton  = abap_true
         )->tab_container( ).
 
-    DATA(grid) = container->tab(
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = container->tab(
             text     = 'Radial Chart'
             selected = client->_bind( mv_tab_radial_active )
         )->grid( 'XL12 L12 M12 S12' ).

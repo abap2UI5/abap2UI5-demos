@@ -16,7 +16,8 @@ CLASS z2ui5_cl_demo_app_006 DEFINITION PUBLIC.
         valuecolor TYPE string,
       END OF ty_row.
 
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    TYPES temp1_9d87ec7b26 TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
+DATA t_tab TYPE temp1_9d87ec7b26.
     DATA check_initialized TYPE abap_bool.
     DATA check_ui5 TYPE abap_bool.
     DATA mv_key TYPE string.
@@ -67,14 +68,19 @@ CLASS z2ui5_cl_demo_app_006 IMPLEMENTATION.
 
     ENDCASE.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
             title          = 'abap2UI5 - Scroll Container with Table and Toolbar'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(tab) = page->scroll_container( height   = '70%'
+    DATA tab TYPE REF TO z2ui5_cl_xml_view.
+    tab = page->scroll_container( height   = '70%'
                                         vertical = abap_true
         )->table(
             growing             = abap_true

@@ -63,17 +63,20 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
 
 
   METHOD add_node.
-    LOOP AT prodh_nodes ASSIGNING FIELD-SYMBOL(<fs1>).
+    FIELD-SYMBOLS <fs1> LIKE LINE OF prodh_nodes.
+    LOOP AT prodh_nodes ASSIGNING <fs1>.
       IF <fs1>-prodh = p_prodh.
         <fs1>-counter = <fs1>-counter + 1.
         EXIT.
       ELSE.
-        LOOP AT <fs1>-nodes ASSIGNING FIELD-SYMBOL(<fs2>).
+        FIELD-SYMBOLS <fs2> LIKE LINE OF <fs1>-nodes.
+        LOOP AT <fs1>-nodes ASSIGNING <fs2>.
           IF <fs2>-prodh = p_prodh.
             <fs2>-counter = <fs2>-counter + 1.
             EXIT.
           ELSE.
-            LOOP AT <fs2>-nodes ASSIGNING FIELD-SYMBOL(<fs3>).
+            FIELD-SYMBOLS <fs3> LIKE LINE OF <fs2>-nodes.
+            LOOP AT <fs2>-nodes ASSIGNING <fs3>.
               IF <fs3>-prodh = p_prodh.
                 <fs3>-counter = <fs3>-counter + 1.
                 EXIT.
@@ -88,7 +91,8 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
 
 
   METHOD ui5_display_popover.
-    DATA(lo_popover) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA lo_popover TYPE REF TO z2ui5_cl_xml_view.
+    lo_popover = z2ui5_cl_xml_view=>factory_popup( ).
     lo_popover->popover( placement = `Right`
                          title     = 'SS' "text-028 "`Stock - Details:`
                                                          "&& '-' && gv_matnr  "contentwidth = `32%`
@@ -110,20 +114,24 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
   METHOD ui5_display_view.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
 
 
-    DATA(page) = view->object_page_layout(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    page = view->object_page_layout(
             showtitleinheadercontent = abap_true
             uppercaseanchorbar       = abap_false ).
 
-    DATA(header_title) = page->header_title( )->object_page_dyn_header_title( ).
+    DATA header_title TYPE REF TO z2ui5_cl_xml_view.
+    header_title = page->header_title( )->object_page_dyn_header_title( ).
     header_title->expanded_heading(
             )->hbox(
                 )->title( text = 'PriceList' ).
 
-    DATA(header_content) = page->header_content( ns = 'uxap').
+    DATA header_content TYPE REF TO z2ui5_cl_xml_view.
+    header_content = page->header_content( ns = 'uxap').
     header_content->block_layout(
       )->block_layout_row(
       )->block_layout_cell( backgroundcolorset   = 'ColorSet10'
@@ -149,11 +157,19 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
         )->text( text = client->_bind( gv_date ) ).
 
 
-    DATA(sections) = page->sections( ).
+    DATA sections TYPE REF TO z2ui5_cl_xml_view.
+    sections = page->sections( ).
 
 
 
-    DATA(cont) = sections->object_page_section( titleuppercase = abap_false
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `${$source>/id}` INTO TABLE temp1.
+    DATA temp2 TYPE string_table.
+    CLEAR temp2.
+    INSERT `${PRODH}` INTO TABLE temp2.
+    DATA cont TYPE REF TO z2ui5_cl_xml_view.
+    cont = sections->object_page_section( titleuppercase = abap_false
                                                 id             = 'Sets'
                                                 title          = 'Sets'
         )->heading( ns = `uxap`
@@ -178,12 +194,12 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
                           )->tree_column( label = 'Counter'
                           )->tree_template(
                            )->link( text    = `{COUNTER}`
-                                      press = client->_event( val = 'POPOVER' t_arg = VALUE #( ( `${$source>/id}` ) ) )
+                                      press = client->_event( val = 'POPOVER' t_arg = temp1 )
       )->get_parent( )->get_parent(
                           )->tree_column( label = 'ADD'
                           )->tree_template(
                            )->button( icon = 'sap-icon://add'
-                                 press     = client->_event( val = 'ROW_ADD' t_arg = VALUE #( ( `${PRODH}` ) ) )
+                                 press     = client->_event( val = 'ROW_ADD' t_arg = temp2 )
                                  tooltip   = 'ADD'
                           )->get_parent( )->get_parent( ).
     client->view_display( page->get_root( )->xml_get( ) ).
@@ -191,29 +207,51 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
 
 
   METHOD ui5_initialize.
+    DATA temp3 TYPE z2ui5_cl_demo_app_116=>ty_prodh_nodes.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-text = 'Machines'.
+    temp4-prodh = '00100'.
+    DATA temp5 TYPE z2ui5_cl_demo_app_116=>ty_prodh_node_level1-nodes.
+    CLEAR temp5.
+    DATA temp6 LIKE LINE OF temp5.
+    temp6-text = 'Pumps'.
+    temp6-prodh = '0010000100'.
+    DATA temp1 TYPE z2ui5_cl_demo_app_116=>ty_prodh_node_level2-nodes.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-text = 'Pump 001'.
+    temp2-prodh = '001000010000000100'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-text = 'Pump 002'.
+    temp2-prodh = '001000010000000105'.
+    INSERT temp2 INTO TABLE temp1.
+    temp6-nodes = temp1.
+    INSERT temp6 INTO TABLE temp5.
+    temp4-nodes = temp5.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-text = 'Paints'.
+    temp4-prodh = '00110'.
+    DATA temp7 TYPE z2ui5_cl_demo_app_116=>ty_prodh_node_level1-nodes.
+    CLEAR temp7.
+    DATA temp8 LIKE LINE OF temp7.
+    temp8-text = 'Gloss paints'.
+    temp8-prodh = '0011000105'.
+    DATA temp9 TYPE z2ui5_cl_demo_app_116=>ty_prodh_node_level2-nodes.
+    CLEAR temp9.
+    DATA temp10 LIKE LINE OF temp9.
+    temp10-text = 'Paint 001'.
+    temp10-prodh = '001100010500000100'.
+    INSERT temp10 INTO TABLE temp9.
+    temp10-text = 'Paint 002'.
+    temp10-prodh = '001100010500000105'.
+    INSERT temp10 INTO TABLE temp9.
+    temp8-nodes = temp9.
+    INSERT temp8 INTO TABLE temp7.
+    temp4-nodes = temp7.
+    INSERT temp4 INTO TABLE temp3.
     prodh_nodes =
-      VALUE #( ( text = 'Machines'
-               prodh  = '00100'
-               nodes  = VALUE #( ( text = 'Pumps'
-                                  prodh = '0010000100'
-                                  nodes = VALUE #( ( text  = 'Pump 001'
-                                                     prodh = '001000010000000100' )
-                                                   ( text  = 'Pump 002'
-                                                     prodh = '001000010000000105' )
-                                          )
-                       ) )
-             )
-             ( text  = 'Paints'
-               prodh = '00110'
-               nodes = VALUE #( ( text  = 'Gloss paints'
-                                  prodh = '0011000105'
-                                  nodes = VALUE #( ( text  = 'Paint 001'
-                                                     prodh = '001100010500000100' )
-                                                   ( text  = 'Paint 002'
-                                                     prodh = '001100010500000105' )
-                                          )
-                       ) )
-             ) ).
+      temp3.
 
     gv_user = sy-uname.
     gv_date = sy-datum.
@@ -229,12 +267,14 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
       is_initialized = abap_true.
       ui5_initialize( ).
 
-      DATA(lv_save_state_js) = `function saveState() {debugger;` && |\n| &&
+      DATA lv_save_state_js TYPE string.
+      lv_save_state_js = `function saveState() {debugger;` && |\n| &&
                          `  var treeTable = sap.z2ui5.oView.byId("treeTable");` && |\n| &&
                          `  sap.z2ui5.treeState = treeTable.getBinding('rows').getCurrentTreeState();` && |\n| &&
                          ` }; `.
 
-      DATA(lv_reset_state_js) = `function setState() {debugger;` && |\n| &&
+      DATA lv_reset_state_js TYPE string.
+      lv_reset_state_js = `function setState() {debugger;` && |\n| &&
                                 ` var treeTable = sap.z2ui5.oView.byId("treeTable");` && |\n| &&
                                 ` if( sap.z2ui5.treeState == undefined ) {` && |\n| &&
                                 `     sap.z2ui5.treeState = treeTable.getBinding('rows').getCurrentTreeState();` && |\n| &&
@@ -271,11 +311,28 @@ CLASS Z2UI5_CL_DEMO_APP_116 IMPLEMENTATION.
         client->popup_destroy( ).
       WHEN 'POPOVER'.
         lt_event_arg = client->get( )-t_event_arg.
-        DATA(lv_open_by_id) = lt_event_arg[ 1 ].
+        DATA lv_open_by_id LIKE LINE OF lt_event_arg.
+        DATA temp9 LIKE LINE OF lt_event_arg.
+        DATA temp10 LIKE sy-tabix.
+        temp10 = sy-tabix.
+        READ TABLE lt_event_arg INDEX 1 INTO temp9.
+        sy-tabix = temp10.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        lv_open_by_id = temp9.
         ui5_display_popover( lv_open_by_id ).
 
       WHEN 'ROW_ADD'.
-        add_node( lt_event_arg[ 1 ] ).
+        DATA temp5 LIKE LINE OF lt_event_arg.
+        DATA temp6 LIKE sy-tabix.
+        temp6 = sy-tabix.
+        READ TABLE lt_event_arg INDEX 1 INTO temp5.
+        sy-tabix = temp6.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        add_node( temp5 ).
 
         mv_run_js = abap_true.
 

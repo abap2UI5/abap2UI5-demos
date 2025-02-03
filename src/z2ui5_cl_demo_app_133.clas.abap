@@ -29,12 +29,15 @@ CLASS z2ui5_cl_demo_app_133 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
     client->view_display( view->shell(
       )->page(
                   title          = 'abap2UI5 - Focus'
                   navbuttonpress = client->_event( val = 'BACK' )
-                  shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+                  shownavbutton  = temp1
                         )->_z2ui5( )->focus(
                               focusid          = client->_bind_edit( focus_id )
                                 selectionstart = client->_bind_edit( selstart )

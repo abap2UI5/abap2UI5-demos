@@ -19,8 +19,10 @@ CLASS z2ui5_cl_demo_app_lp_01 IMPLEMENTATION.
         client->message_box_display( `No Launchpad Active, Sample not working!` ).
       ENDIF.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
-      DATA(page) = view->shell( )->page( showheader = abap_false ).
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      page = view->shell( )->page( showheader = abap_false ).
       client->view_display( page->simple_form( title    = 'Laucnhpad I - Read Startup Parameters' editable = abap_true
                      )->content( 'form'
                          )->label( ``
@@ -35,9 +37,12 @@ CLASS z2ui5_cl_demo_app_lp_01 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'READ_PARAMS'.
-        DATA(lv_text) = `Start Parameter: `.
-        DATA(lt_params) = client->get( )-t_comp_params.
-        LOOP AT lt_params INTO DATA(ls_param).
+        DATA lv_text TYPE string.
+        lv_text = `Start Parameter: `.
+        DATA lt_params TYPE z2ui5_if_types=>ty_t_name_value.
+        lt_params = client->get( )-t_comp_params.
+        DATA ls_param LIKE LINE OF lt_params.
+        LOOP AT lt_params INTO ls_param.
           lv_text = |{ lv_text } / { ls_param-n } = { ls_param-v }|.
         ENDLOOP.
         client->message_box_display( lv_text ).

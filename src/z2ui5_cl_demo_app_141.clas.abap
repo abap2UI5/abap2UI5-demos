@@ -15,7 +15,8 @@ CLASS z2ui5_cl_demo_app_141 DEFINITION PUBLIC.
         checkbox TYPE abap_bool,
       END OF ty_row.
 
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    TYPES temp1_4540ab214f TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
+DATA t_tab TYPE temp1_4540ab214f.
 
     DATA mv_textarea TYPE string.
     DATA mv_stretch_active TYPE abap_bool.
@@ -66,22 +67,51 @@ CLASS Z2UI5_CL_DEMO_APP_141 IMPLEMENTATION.
 
   METHOD ui5_init.
 
-    t_bapiret = VALUE #(
-      ( message = 'An empty Report field causes an empty XML Message to be sent' type = 'E' id = 'MSG1' number = '001' )
-      ( message = 'Check was executed for wrong Scenario' type = 'E' id = 'MSG1' number = '002' )
-      ( message = 'Request was handled without errors' type = 'S' id = 'MSG1' number = '003' )
-      ( message = 'product activated' type = 'S' id = 'MSG4' number = '375' )
-      ( message = 'check the input values' type = 'W' id = 'MSG2' number = '375' )
-      ( message = 'product already in use' type = 'I' id = 'MSG2' number = '375' ) ).
+    DATA temp1 TYPE bapirettab.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-message = 'An empty Report field causes an empty XML Message to be sent'.
+    temp2-type = 'E'.
+    temp2-id = 'MSG1'.
+    temp2-number = '001'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-message = 'Check was executed for wrong Scenario'.
+    temp2-type = 'E'.
+    temp2-id = 'MSG1'.
+    temp2-number = '002'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-message = 'Request was handled without errors'.
+    temp2-type = 'S'.
+    temp2-id = 'MSG1'.
+    temp2-number = '003'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-message = 'product activated'.
+    temp2-type = 'S'.
+    temp2-id = 'MSG4'.
+    temp2-number = '375'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-message = 'check the input values'.
+    temp2-type = 'W'.
+    temp2-id = 'MSG2'.
+    temp2-number = '375'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-message = 'product already in use'.
+    temp2-type = 'I'.
+    temp2-id = 'MSG2'.
+    temp2-number = '375'.
+    INSERT temp2 INTO TABLE temp1.
+    t_bapiret = temp1.
 
   ENDMETHOD.
 
 
   METHOD ui5_popup_input.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(dialog) = popup->dialog(
+    DATA dialog TYPE REF TO z2ui5_cl_xml_view.
+    dialog = popup->dialog(
        contentheight = '500px'
        contentwidth  = '500px'
        title         = 'Title' ).
@@ -109,11 +139,18 @@ CLASS Z2UI5_CL_DEMO_APP_141 IMPLEMENTATION.
                press = client->_event_client( client->cs_event-popup_close )
                type  = 'Emphasized' ).
 
+    DATA temp3 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp3.
+    DATA temp4 LIKE LINE OF temp3.
+    temp4-n = `content`.
+    temp4-v = `<script> sap.z2ui5.setBlackColor();  </script>`.
+    INSERT temp4 INTO TABLE temp3.
+    temp4-n = `preferDOM`.
+    temp4-v = `true`.
+    INSERT temp4 INTO TABLE temp3.
     dialog->_generic( name   = `HTML`
                       ns     = `core`
-                      t_prop = VALUE #( ( n = `content` v = `<script> sap.z2ui5.setBlackColor();  </script>` )
-                                                                   ( n = `preferDOM`  v = `true` )
-                                                                  ) )->get_parent( ).
+                      t_prop = temp3 )->get_parent( ).
 
     client->popup_display( popup->stringify( ) ).
 
@@ -122,10 +159,12 @@ CLASS Z2UI5_CL_DEMO_APP_141 IMPLEMENTATION.
 
   METHOD ui5_view_display.
 
-    DATA(css) = `` &&
+    DATA css TYPE string.
+    css = `` &&
                 `.lbl-color { color: red !important; font-size: 30px !important; }`.
 
-    DATA(script) = `` &&
+    DATA script TYPE string.
+    script = `` &&
                    `sap.z2ui5.setBlackColor = function() {` && |\n| &&
                    `  var lbl = sap.ui.getCore().byId('popupId--lbl1');` && |\n| &&
                    `  lbl.setText('changed from js');` && |\n| &&
@@ -133,18 +172,23 @@ CLASS Z2UI5_CL_DEMO_APP_141 IMPLEMENTATION.
                    `};`.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
     view->_generic( name = `style`
                     ns   = `html` )->_cc_plain_xml( css )->get_parent( ).
     view->_generic( name = `script`
                     ns   = `html` )->_cc_plain_xml( script )->get_parent( ).
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
         )->page(
                 title          = 'abap2UI5 - Popups'
                 navbuttonpress = client->_event( val = 'BACK' )
-                shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                shownavbutton  = temp1 ).
 
-    DATA(grid) = page->grid( 'L8 M12 S12' )->content( 'layout' ).
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L8 M12 S12' )->content( 'layout' ).
 
 
     grid->simple_form( 'Inputs' )->content( 'form'

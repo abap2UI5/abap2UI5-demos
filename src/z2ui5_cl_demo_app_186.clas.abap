@@ -54,7 +54,11 @@ CLASS Z2UI5_CL_DEMO_APP_186 IMPLEMENTATION.
 
 
 
-        client->follow_up_action( val = client->_event_client( val = client->cs_event-download_b64_file t_arg = VALUE #( ( file_content_64 ) ( file_name ) ) ) ).
+        DATA temp1 TYPE string_table.
+        CLEAR temp1.
+        INSERT file_content_64 INTO TABLE temp1.
+        INSERT file_name INTO TABLE temp1.
+        client->follow_up_action( val = client->_event_client( val = client->cs_event-download_b64_file t_arg = temp1 ) ).
 
 
       WHEN 'BACK'.
@@ -70,14 +74,20 @@ CLASS Z2UI5_CL_DEMO_APP_186 IMPLEMENTATION.
     DATA lv_script TYPE string.
 
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
 
-    DATA(page) = view->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( abap_false = client->get( )-check_launchpad_active ).
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = view->shell(
          )->page(
-            showheader     = xsdbool( abap_false = client->get( )-check_launchpad_active )
+            showheader     = temp1
             title          = 'abap2UI5 - Download Base64 File'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp2 ).
 
     page->flex_box( width          = `100%`
                     height         = `600px`

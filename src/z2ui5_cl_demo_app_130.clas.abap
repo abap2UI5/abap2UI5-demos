@@ -16,7 +16,7 @@ CLASS z2ui5_cl_demo_app_130 DEFINITION
         editable TYPE abap_bool,
       END OF ty_s_token .
     TYPES
-      ty_t_token TYPE STANDARD TABLE OF ty_s_token WITH EMPTY KEY .
+      ty_t_token TYPE STANDARD TABLE OF ty_s_token WITH DEFAULT KEY .
     TYPES
       ty_t_range    TYPE RANGE OF string .
     TYPES
@@ -29,7 +29,7 @@ CLASS z2ui5_cl_demo_app_130 DEFINITION
         key    TYPE string,
       END OF ty_s_filter_pop .
     TYPES
-      ty_t_filter_pop TYPE STANDARD TABLE OF ty_s_filter_pop WITH EMPTY KEY .
+      ty_t_filter_pop TYPE STANDARD TABLE OF ty_s_filter_pop WITH DEFAULT KEY .
     TYPES:
       BEGIN OF ty_s_fieldsdb,
         screen_name TYPE char10,
@@ -76,15 +76,19 @@ CLASS z2ui5_cl_demo_app_130 DEFINITION
         descr       TYPE string,
       END OF ty_s_screens .
 
-    DATA
-      mt_filter       TYPE STANDARD TABLE OF ty_s_filter_pop WITH EMPTY KEY .
+    TYPES temp1_279441b868 TYPE STANDARD TABLE OF ty_s_filter_pop WITH DEFAULT KEY.
+DATA
+      mt_filter       TYPE temp1_279441b868 .
     DATA mt_mapping TYPE z2ui5_if_types=>ty_t_name_value .
-    DATA
-      mt_screens      TYPE STANDARD TABLE OF ty_s_screens WITH EMPTY KEY .
-    DATA
-      mt_variants     TYPE STANDARD TABLE OF ty_s_variants WITH EMPTY KEY .
-    DATA
-      mt_variants_pop TYPE STANDARD TABLE OF ty_s_var_pop WITH EMPTY KEY .
+    TYPES temp2_279441b868 TYPE STANDARD TABLE OF ty_s_screens WITH DEFAULT KEY.
+DATA
+      mt_screens      TYPE temp2_279441b868 .
+    TYPES temp3_279441b868 TYPE STANDARD TABLE OF ty_s_variants WITH DEFAULT KEY.
+DATA
+      mt_variants     TYPE temp3_279441b868 .
+    TYPES temp4_279441b868 TYPE STANDARD TABLE OF ty_s_var_pop WITH DEFAULT KEY.
+DATA
+      mt_variants_pop TYPE temp4_279441b868 .
     DATA mv_activ_elemnt TYPE string .
     DATA mv_screen TYPE string .
     DATA mv_button_active TYPE abap_bool .
@@ -140,7 +144,8 @@ CLASS z2ui5_cl_demo_app_130 DEFINITION
   PRIVATE SECTION.
 
     DATA client            TYPE REF TO z2ui5_if_client.
-    DATA mt_fields         TYPE STANDARD TABLE OF ty_s_fields WITH EMPTY KEY.
+    TYPES temp5_279441b868 TYPE STANDARD TABLE OF ty_s_fields WITH DEFAULT KEY.
+DATA mt_fields         TYPE temp5_279441b868.
     DATA check_initialized TYPE abap_bool.
 
 ENDCLASS.
@@ -152,26 +157,72 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD get_fields.
 
-    DATA(db_fields) = VALUE ty_t_fieldsdb(
-      ( screen_name = 'INV'        field = 'LGNUM'   field_doma = '/SCWM/LGNUM' )
-      ( screen_name = 'LAGP'       field = 'LGNUM'   field_doma = '/SCWM/LGNUM' )
-      ( screen_name = 'LAGP'       field = 'LGPLA'   field_doma = '/SCWM/DE_LGPLA' )
-      ( screen_name = 'LAGP'       field = 'LGTYP'   field_doma = '/SCWM/DE_LGTYP' )
-      ( screen_name = 'QUAN'       field = 'LGNUM'   field_doma = '/SCWM/LGNUM' )
-      ( screen_name = 'QUAN'       field = 'LGPLA'   field_doma = '/SCWM/DE_LGPLA' )
-      ( screen_name = 'QUAN'       field = 'MATNR'   field_doma = '/SCWM/DE_MATNR' )
-      ( screen_name = 'QUAN'       field = 'OWNER'   field_doma = '/SCWM/DE_OWNER' )
-      ( screen_name = 'TO'         field = 'LGNUM'   field_doma = '/SCWM/LGNUM' )
-      ( screen_name = 'TO'         field = 'MATNR'   field_doma = '/SCWM/DE_MATNR' )
-      ( screen_name = 'TO'         field = 'PROCTY'  field_doma = '/SCWM/DE_PROCTY' )
-      ( screen_name = 'TO'         field = 'TOSTAT'  field_doma = '/SCWM/DE_TOSTAT' )
-      ( screen_name = 'TO'         field = 'VLPLA'   field_doma = '/SCWM/LTAP_VLPLA' ) ).
+    DATA temp1 TYPE ty_t_fieldsdb.
+    CLEAR temp1.
+    DATA temp2 LIKE LINE OF temp1.
+    temp2-screen_name = 'INV'.
+    temp2-field = 'LGNUM'.
+    temp2-field_doma = '/SCWM/LGNUM'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'LAGP'.
+    temp2-field = 'LGNUM'.
+    temp2-field_doma = '/SCWM/LGNUM'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'LAGP'.
+    temp2-field = 'LGPLA'.
+    temp2-field_doma = '/SCWM/DE_LGPLA'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'LAGP'.
+    temp2-field = 'LGTYP'.
+    temp2-field_doma = '/SCWM/DE_LGTYP'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'QUAN'.
+    temp2-field = 'LGNUM'.
+    temp2-field_doma = '/SCWM/LGNUM'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'QUAN'.
+    temp2-field = 'LGPLA'.
+    temp2-field_doma = '/SCWM/DE_LGPLA'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'QUAN'.
+    temp2-field = 'MATNR'.
+    temp2-field_doma = '/SCWM/DE_MATNR'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'QUAN'.
+    temp2-field = 'OWNER'.
+    temp2-field_doma = '/SCWM/DE_OWNER'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'TO'.
+    temp2-field = 'LGNUM'.
+    temp2-field_doma = '/SCWM/LGNUM'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'TO'.
+    temp2-field = 'MATNR'.
+    temp2-field_doma = '/SCWM/DE_MATNR'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'TO'.
+    temp2-field = 'PROCTY'.
+    temp2-field_doma = '/SCWM/DE_PROCTY'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'TO'.
+    temp2-field = 'TOSTAT'.
+    temp2-field_doma = '/SCWM/DE_TOSTAT'.
+    INSERT temp2 INTO TABLE temp1.
+    temp2-screen_name = 'TO'.
+    temp2-field = 'VLPLA'.
+    temp2-field_doma = '/SCWM/LTAP_VLPLA'.
+    INSERT temp2 INTO TABLE temp1.
+    DATA db_fields LIKE temp1.
+    db_fields = temp1.
 
     CLEAR mt_fields.
-    LOOP AT db_fields REFERENCE INTO DATA(lr_fields) WHERE screen_name = mv_screen.
+    DATA temp3 LIKE LINE OF db_fields.
+    DATA lr_fields LIKE REF TO temp3.
+    LOOP AT db_fields REFERENCE INTO lr_fields WHERE screen_name = mv_screen.
 
-      APPEND INITIAL LINE TO mt_fields REFERENCE INTO DATA(field).
-      field->* = CORRESPONDING #( lr_fields->* ).
+      DATA field TYPE REF TO z2ui5_cl_demo_app_130=>ty_s_fields.
+      APPEND INITIAL LINE TO mt_fields REFERENCE INTO field.
+      MOVE-CORRESPONDING lr_fields->* TO field->*.
 
     ENDLOOP.
 
@@ -194,53 +245,146 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD get_values.
 
-    DATA(l_variants) = VALUE ty_t_variants(
-      ( screen_name = 'QUAN'        var = 'E001 - ALL' descr = '123' )
-      ( screen_name = 'TO'          var = 'E001'       descr = '123' )
-      ( screen_name = 'TO'          var = 'E001 - All' descr = '123' ) ).
+    DATA temp4 TYPE ty_t_variants.
+    CLEAR temp4.
+    DATA temp5 LIKE LINE OF temp4.
+    temp5-screen_name = 'QUAN'.
+    temp5-var = 'E001 - ALL'.
+    temp5-descr = '123'.
+    INSERT temp5 INTO TABLE temp4.
+    temp5-screen_name = 'TO'.
+    temp5-var = 'E001'.
+    temp5-descr = '123'.
+    INSERT temp5 INTO TABLE temp4.
+    temp5-screen_name = 'TO'.
+    temp5-var = 'E001 - All'.
+    temp5-descr = '123'.
+    INSERT temp5 INTO TABLE temp4.
+    DATA l_variants LIKE temp4.
+    l_variants = temp4.
 
     DATA var TYPE ty_t_variants.
     DATA var_val TYPE ty_t_var_val.
-    LOOP AT l_variants INTO DATA(a)  WHERE screen_name = mv_screen
+    DATA a LIKE LINE OF l_variants.
+    LOOP AT l_variants INTO a  WHERE screen_name = mv_screen
                                      AND var         = mv_variant.
 
       APPEND a TO var.
       mv_description = a-descr.
     ENDLOOP.
 
-    DATA(var_vall_all) = VALUE ty_t_var_val(
-      ( screen_name = 'LTAP'         var = 'E001 - All' field = 'LGNUM'      guid = '663192E9D70C1EEE8CC06B0F98CD81A3' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'LTAP'         var = 'E001 - All' field = 'MATNR'      guid = '663192E9D70C1EEE8CD4E9389CB11403' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'LTAP'         var = 'E001 - All' field = 'TOSTAT'     guid = '663192E9D70C1EEE8CC06BC66AD581A3' sign = 'I'   opt = 'NE' )
-      ( screen_name = 'LTAP'         var = 'E002 - All' field = 'LGNUM'      guid = '663192E9D70C1EEE8CC06B0F98CD81A3' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'LTAP'         var = 'E002 - All' field = 'MATNR'      guid = '663192E9D70C1EEE8CD4E9389CB11403' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'LTAP'         var = 'E002 - All' field = 'TOSTAT'     guid = '663192E9D70C1EEE8CC06BC66AD581A3' sign = 'I'   opt = 'NE' )
-      ( screen_name = 'QUAN'         var = 'E001 - ALL' field = 'LGNUM'      guid = '663192E9D70C1EEE90CEE2FA658C51EE' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'QUAN'         var = 'E001 - ALL' field = 'LGPLA'      guid = '663192E9D70C1EEE90CEEF4750FD91EE' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'TO'           var = 'E001      ' field = 'LGNUM'      guid = '663192E9D70C1EEE8E87DE5FF8CC512A' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'TO'           var = 'E001      ' field = 'PROCTY'     guid = '663192E9D70C1EEE8E87DD8D1EB8C7F5' sign = 'I'   opt = 'EQ' )
-      ( screen_name = 'TO'           var = 'E001 - All' field = 'LGNUM'      guid = '663192E9D70C1EEE8E86552847635198' sign = 'I'   opt = 'EQ' ) ).
+    DATA temp6 TYPE ty_t_var_val.
+    CLEAR temp6.
+    DATA temp7 LIKE LINE OF temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E001 - All'.
+    temp7-field = 'LGNUM'.
+    temp7-guid = '663192E9D70C1EEE8CC06B0F98CD81A3'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E001 - All'.
+    temp7-field = 'MATNR'.
+    temp7-guid = '663192E9D70C1EEE8CD4E9389CB11403'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E001 - All'.
+    temp7-field = 'TOSTAT'.
+    temp7-guid = '663192E9D70C1EEE8CC06BC66AD581A3'.
+    temp7-sign = 'I'.
+    temp7-opt = 'NE'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E002 - All'.
+    temp7-field = 'LGNUM'.
+    temp7-guid = '663192E9D70C1EEE8CC06B0F98CD81A3'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E002 - All'.
+    temp7-field = 'MATNR'.
+    temp7-guid = '663192E9D70C1EEE8CD4E9389CB11403'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'LTAP'.
+    temp7-var = 'E002 - All'.
+    temp7-field = 'TOSTAT'.
+    temp7-guid = '663192E9D70C1EEE8CC06BC66AD581A3'.
+    temp7-sign = 'I'.
+    temp7-opt = 'NE'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'QUAN'.
+    temp7-var = 'E001 - ALL'.
+    temp7-field = 'LGNUM'.
+    temp7-guid = '663192E9D70C1EEE90CEE2FA658C51EE'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'QUAN'.
+    temp7-var = 'E001 - ALL'.
+    temp7-field = 'LGPLA'.
+    temp7-guid = '663192E9D70C1EEE90CEEF4750FD91EE'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'TO'.
+    temp7-var = 'E001      '.
+    temp7-field = 'LGNUM'.
+    temp7-guid = '663192E9D70C1EEE8E87DE5FF8CC512A'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'TO'.
+    temp7-var = 'E001      '.
+    temp7-field = 'PROCTY'.
+    temp7-guid = '663192E9D70C1EEE8E87DD8D1EB8C7F5'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    temp7-screen_name = 'TO'.
+    temp7-var = 'E001 - All'.
+    temp7-field = 'LGNUM'.
+    temp7-guid = '663192E9D70C1EEE8E86552847635198'.
+    temp7-sign = 'I'.
+    temp7-opt = 'EQ'.
+    INSERT temp7 INTO TABLE temp6.
+    DATA var_vall_all LIKE temp6.
+    var_vall_all = temp6.
 
 
 
-    LOOP AT var_vall_all INTO DATA(b) WHERE screen_name = mv_screen
+    DATA b LIKE LINE OF var_vall_all.
+    LOOP AT var_vall_all INTO b WHERE screen_name = mv_screen
         AND var         = mv_variant.
 
       APPEND b TO var_val.
     ENDLOOP.
 
-    LOOP AT mt_fields REFERENCE INTO DATA(field).
+    DATA temp8 LIKE LINE OF mt_fields.
+    DATA field LIKE REF TO temp8.
+    LOOP AT mt_fields REFERENCE INTO field.
 
       CLEAR field->t_filter.
       CLEAR field->t_token.
 
-      LOOP AT var_val REFERENCE INTO DATA(val)
+      DATA temp9 LIKE LINE OF var_val.
+      DATA val LIKE REF TO temp9.
+      LOOP AT var_val REFERENCE INTO val
           WHERE field = field->field.
 
-        DATA(filter) = VALUE ty_s_filter_pop( key    = val->guid
-                                              option = val->opt
-                                              low    = val->low
-                                              high   = val->high ).
+        DATA temp10 TYPE ty_s_filter_pop.
+        CLEAR temp10.
+        temp10-key = val->guid.
+        temp10-option = val->opt.
+        temp10-low = val->low.
+        temp10-high = val->high.
+        DATA filter LIKE temp10.
+        filter = temp10.
 
         APPEND filter TO field->t_filter.
 
@@ -254,10 +398,22 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD get_variants.
 
-    mt_variants = VALUE #(
-      ( screen_name = 'QUAN'        var = 'E001 - ALL' descr = '123' )
-      ( screen_name = 'TO'          var = 'E001'       descr = '123' )
-      ( screen_name = 'TO'          var = 'E001 - All' descr = '123' ) ).
+    DATA temp11 LIKE mt_variants.
+    CLEAR temp11.
+    DATA temp12 LIKE LINE OF temp11.
+    temp12-screen_name = 'QUAN'.
+    temp12-var = 'E001 - ALL'.
+    temp12-descr = '123'.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-screen_name = 'TO'.
+    temp12-var = 'E001'.
+    temp12-descr = '123'.
+    INSERT temp12 INTO TABLE temp11.
+    temp12-screen_name = 'TO'.
+    temp12-var = 'E001 - All'.
+    temp12-descr = '123'.
+    INSERT temp12 INTO TABLE temp11.
+    mt_variants = temp11.
 
   ENDMETHOD.
 
@@ -270,25 +426,59 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD on_init.
 
-    mt_screens = VALUE #(
-      ( screen_name = 'INV'      descr = '123' )
-      ( screen_name = 'LAGP'     descr = '123' )
-      ( screen_name = 'PO'       descr = '123' )
-      ( screen_name = 'QUAN'     descr = '123' )
-      ( screen_name = 'TO'       descr = '123' ) ).
+    DATA temp13 LIKE mt_screens.
+    CLEAR temp13.
+    DATA temp14 LIKE LINE OF temp13.
+    temp14-screen_name = 'INV'.
+    temp14-descr = '123'.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-screen_name = 'LAGP'.
+    temp14-descr = '123'.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-screen_name = 'PO'.
+    temp14-descr = '123'.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-screen_name = 'QUAN'.
+    temp14-descr = '123'.
+    INSERT temp14 INTO TABLE temp13.
+    temp14-screen_name = 'TO'.
+    temp14-descr = '123'.
+    INSERT temp14 INTO TABLE temp13.
+    mt_screens = temp13.
 
     render_main( ).
 
-    mt_mapping = VALUE #(
-      (   n = `EQ`     v = `={LOW}` )
-      (   n = `LT`     v = `<{LOW}` )
-      (   n = `LE`     v = `<={LOW}` )
-      (   n = `GT`     v = `>{LOW}` )
-      (   n = `GE`     v = `>={LOW}` )
-      (   n = `CP`     v = `*{LOW}*` )
-      (   n = `BT`     v = `{LOW}...{HIGH}` )
-      (   n = `NE`     v = `!(={LOW})` )
-      (   n = `<leer>` v = `<leer>` ) ).
+    DATA temp15 TYPE z2ui5_if_types=>ty_t_name_value.
+    CLEAR temp15.
+    DATA temp16 LIKE LINE OF temp15.
+    temp16-n = `EQ`.
+    temp16-v = `={LOW}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `LT`.
+    temp16-v = `<{LOW}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `LE`.
+    temp16-v = `<={LOW}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `GT`.
+    temp16-v = `>{LOW}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `GE`.
+    temp16-v = `>={LOW}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `CP`.
+    temp16-v = `*{LOW}*`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `BT`.
+    temp16-v = `{LOW}...{HIGH}`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `NE`.
+    temp16-v = `!(={LOW})`.
+    INSERT temp16 INTO TABLE temp15.
+    temp16-n = `<leer>`.
+    temp16-v = `<leer>`.
+    INSERT temp16 INTO TABLE temp15.
+    mt_mapping = temp15.
 
 
 
@@ -307,7 +497,8 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD popup_filter_ok.
 
-    READ TABLE mt_fields REFERENCE INTO DATA(lr_field)
+    DATA lr_field TYPE REF TO z2ui5_cl_demo_app_130=>ty_s_fields.
+    READ TABLE mt_fields REFERENCE INTO lr_field
       WITH KEY field = mv_activ_elemnt.
 
     IF sy-subrc = 0.
@@ -334,9 +525,11 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
     IF mo_parent_view IS INITIAL.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
 
-      DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+      DATA page TYPE REF TO z2ui5_cl_xml_view.
+      page = z2ui5_cl_xml_view=>factory( )->shell(
                )->page(
                   title          = get_txt( '/SCWM/DE_TW_COND_CHECK_SELECT' )
                   navbuttonpress = client->_event( 'BACK' )
@@ -353,7 +546,8 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
     page->header_content(
        )->get_parent( ).
 
-    DATA(grid) = page->grid( 'L6 M12 S12'
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = page->grid( 'L6 M12 S12'
         )->content( 'layout' ).
 
     grid->simple_form( get_txt( 'BU_DYNID' )
@@ -387,21 +581,32 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
             value         = client->_bind_edit( mv_description )
             showvaluehelp = abap_false ).
 
-    DATA(content) = grid->simple_form( get_txt( 'CLASSFEL' )
+    DATA content TYPE REF TO z2ui5_cl_xml_view.
+    content = grid->simple_form( get_txt( 'CLASSFEL' )
          )->content( 'form' ).
 
     IF mt_fields IS NOT INITIAL.
 
-      LOOP AT mt_fields REFERENCE INTO DATA(lr_tab).
+      DATA temp17 LIKE LINE OF mt_fields.
+      DATA lr_tab LIKE REF TO temp17.
+      LOOP AT mt_fields REFERENCE INTO lr_tab.
 
-        DATA(scrtext) = get_txt( CONV #( lr_tab->field_doma ) ).
+        DATA temp18 TYPE string.
+        temp18 = lr_tab->field_doma.
+        DATA scrtext TYPE string.
+        scrtext = get_txt( temp18 ).
 
+        DATA temp19 TYPE string_table.
+        CLEAR temp19.
+        DATA temp1 TYPE string.
+        temp1 = lr_tab->field.
+        INSERT temp1 INTO TABLE temp19.
         content->label( text = scrtext
           )->multi_input(
                    tokens           = client->_bind_local( lr_tab->t_token )
                    showclearicon    = abap_true
                    id               = lr_tab->field
-                   valuehelprequest = client->_event( val = 'CALL_POPUP_FILTER' t_arg = VALUE #( ( CONV #( lr_tab->field ) ) ) )
+                   valuehelprequest = client->_event( val = 'CALL_POPUP_FILTER' t_arg = temp19 )
                )->item(
                        key  = `{KEY}`
                        text = `{TEXT}`
@@ -447,24 +652,31 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD render_popup_filter.
 
-    DATA(lo_popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA lo_popup TYPE REF TO z2ui5_cl_xml_view.
+    lo_popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     lo_popup = lo_popup->dialog(
       contentheight = `50%`
       contentwidth  = `50%`
       title         = get_txt_l( '/SCWM/DE_TW_COND_CHECK_COND' ) ).
 
-    DATA(vbox) = lo_popup->vbox( height         = `100%`
+    DATA vbox TYPE REF TO z2ui5_cl_xml_view.
+    vbox = lo_popup->vbox( height         = `100%`
                                  justifycontent = 'SpaceBetween' ).
 
-    DATA(item) = vbox->list(
+    DATA item TYPE REF TO z2ui5_cl_xml_view.
+    item = vbox->list(
       nodata          = get_txt( '/SCWM/DE_IND_BIN_EMPTY' )
       items           = client->_bind_edit( mt_filter )
       selectionchange = client->_event( 'SELCHANGE' )
                         )->custom_list_item( ).
 
-    DATA(grid) = item->grid( ).
+    DATA grid TYPE REF TO z2ui5_cl_xml_view.
+    grid = item->grid( ).
 
+    DATA temp21 TYPE string_table.
+    CLEAR temp21.
+    INSERT `${KEY}` INTO TABLE temp21.
     grid->combobox(
                  selectedkey = `{OPTION}`
                  items       = client->_bind_edit( mt_mapping )
@@ -478,7 +690,7 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
              )->button( icon = 'sap-icon://decline'
              type            = `Transparent`
              press           = client->_event( val = `POPUP_FILTER_DELETE`
-             t_arg                                 = VALUE #( ( `${KEY}` ) ) ) ).
+             t_arg                                 = temp21 ) ).
 
     lo_popup->footer( )->overflow_toolbar(
         )->button( text = get_txt( 'FC_DELALL' )
@@ -501,7 +713,8 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD render_popup_varaint.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA popup TYPE REF TO z2ui5_cl_xml_view.
+    popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     popup->dialog( title        = get_txt( '/SCWM/WB_VARIANT' )
                    contentwidth = '30%'
@@ -534,7 +747,8 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD render_pop_copy.
 
-    DATA(lo_popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA lo_popup TYPE REF TO z2ui5_cl_xml_view.
+    lo_popup = z2ui5_cl_xml_view=>factory_popup( ).
 
     lo_popup = lo_popup->dialog(
       contentheight = `50%`
@@ -572,13 +786,30 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
   METHOD set_token.
 
-    LOOP AT field->t_filter REFERENCE INTO DATA(lr_filter).
+    DATA temp23 LIKE LINE OF field->t_filter.
+    DATA lr_filter LIKE REF TO temp23.
+    LOOP AT field->t_filter REFERENCE INTO lr_filter.
 
-      DATA(lv_value) = mt_mapping[ n = lr_filter->option ]-v.
+      DATA lv_value TYPE z2ui5_if_types=>ty_s_name_value-v.
+      DATA temp2 LIKE LINE OF mt_mapping.
+      DATA temp3 LIKE sy-tabix.
+      temp3 = sy-tabix.
+      READ TABLE mt_mapping WITH KEY n = lr_filter->option INTO temp2.
+      sy-tabix = temp3.
+      IF sy-subrc <> 0.
+        ASSERT 1 = 0.
+      ENDIF.
+      lv_value = temp2-v.
       REPLACE `{LOW}`  IN lv_value WITH lr_filter->low.
       REPLACE `{HIGH}` IN lv_value WITH lr_filter->high.
 
-      INSERT VALUE #( key = lv_value text = lv_value visible = abap_true editable = abap_false ) INTO TABLE field->t_token.
+      DATA temp24 TYPE z2ui5_cl_demo_app_130=>ty_s_token.
+      CLEAR temp24.
+      temp24-key = lv_value.
+      temp24-text = lv_value.
+      temp24-visible = abap_true.
+      temp24-editable = abap_false.
+      INSERT temp24 INTO TABLE field->t_token.
 
     ENDLOOP.
 
@@ -592,7 +823,14 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
       WHEN `INPUT_SCREEN_CHANGE`.
 
-        mv_screen_descr = VALUE #( mt_screens[ screen_name = mv_screen ]-descr OPTIONAL ).
+        DATA temp25 TYPE string.
+        CLEAR temp25.
+        DATA temp26 TYPE z2ui5_cl_demo_app_130=>ty_s_screens.
+        READ TABLE mt_screens INTO temp26 WITH KEY screen_name = mv_screen.
+        IF sy-subrc = 0.
+          temp25 = temp26-descr.
+        ENDIF.
+        mv_screen_descr = temp25.
 
         get_fields( ).
 
@@ -615,30 +853,53 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
       WHEN `POPUP_FILTER_ADD`.
 
-        INSERT VALUE #( key = z2ui5_cl_util=>uuid_get_c32( ) ) INTO TABLE mt_filter.
+        DATA temp27 TYPE z2ui5_cl_demo_app_130=>ty_s_filter_pop.
+        CLEAR temp27.
+        temp27-key = z2ui5_cl_util=>uuid_get_c32( ).
+        INSERT temp27 INTO TABLE mt_filter.
 
         client->popup_model_update( ).
 
       WHEN `POPUP_FILTER_DELETE`.
 
-        DATA(lt_item) = client->get( )-t_event_arg.
+        DATA lt_item TYPE string_table.
+        lt_item = client->get( )-t_event_arg.
 
-        DELETE mt_filter WHERE key = lt_item[ 1 ].
+        DATA temp28 LIKE LINE OF lt_item.
+        DATA temp29 LIKE sy-tabix.
+        temp29 = sy-tabix.
+        READ TABLE lt_item INDEX 1 INTO temp28.
+        sy-tabix = temp29.
+        IF sy-subrc <> 0.
+          ASSERT 1 = 0.
+        ENDIF.
+        DELETE mt_filter WHERE key = temp28.
 
         client->popup_model_update( ).
 
       WHEN `POPUP_FILTER_DELETE_ALL`.
 
-        mt_filter = VALUE #( ).
+        DATA temp30 LIKE mt_filter.
+        CLEAR temp30.
+        mt_filter = temp30.
 
         client->popup_model_update( ).
 
       WHEN `CALL_POPUP_FILTER`.
 
-        DATA(arg) = client->get( )-t_event_arg.
-        mv_activ_elemnt = VALUE #( arg[ 1 ] OPTIONAL ).
+        DATA arg TYPE string_table.
+        arg = client->get( )-t_event_arg.
+        DATA temp31 TYPE string.
+        CLEAR temp31.
+        DATA temp32 TYPE string.
+        READ TABLE arg INTO temp32 INDEX 1.
+        IF sy-subrc = 0.
+          temp31 = temp32.
+        ENDIF.
+        mv_activ_elemnt = temp31.
 
-        READ TABLE mt_fields REFERENCE INTO DATA(lr_field)
+        DATA lr_field TYPE REF TO z2ui5_cl_demo_app_130=>ty_s_fields.
+        READ TABLE mt_fields REFERENCE INTO lr_field
           WITH KEY field = mv_activ_elemnt.
 
         " vorhanden werte übertragen
@@ -648,16 +909,26 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
       WHEN 'CALL_POPUP_VARIANT'.
 
-        LOOP AT mt_variants REFERENCE INTO DATA(lr_fields).
-          APPEND INITIAL LINE TO mt_variants_pop REFERENCE INTO DATA(field).
-          field->* = CORRESPONDING #( lr_fields->* ).
+        DATA temp33 LIKE LINE OF mt_variants.
+        DATA lr_fields LIKE REF TO temp33.
+        LOOP AT mt_variants REFERENCE INTO lr_fields.
+          DATA field TYPE REF TO z2ui5_cl_demo_app_130=>ty_s_var_pop.
+          APPEND INITIAL LINE TO mt_variants_pop REFERENCE INTO field.
+          MOVE-CORRESPONDING lr_fields->* TO field->*.
         ENDLOOP.
 
         render_popup_varaint( client ).
 
       WHEN 'POPUP_VARIANT_CLOSE'.
 
-        mv_variant = VALUE #( mt_variants_pop[ selkz = abap_true ]-var OPTIONAL ).
+        DATA temp34 TYPE string.
+        CLEAR temp34.
+        DATA temp35 TYPE z2ui5_cl_demo_app_130=>ty_s_var_pop.
+        READ TABLE mt_variants_pop INTO temp35 WITH KEY selkz = abap_true.
+        IF sy-subrc = 0.
+          temp34 = temp35-var.
+        ENDIF.
+        mv_variant = temp34.
 
         client->popup_destroy( ).
 
@@ -712,7 +983,9 @@ CLASS z2ui5_cl_demo_app_130 IMPLEMENTATION.
 
     on_event( ).
 
-    mv_button_active = xsdbool( mv_screen IS NOT INITIAL AND mv_variant IS NOT INITIAL ).
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( mv_screen IS NOT INITIAL AND mv_variant IS NOT INITIAL ).
+    mv_button_active = temp1.
 
     client->view_model_update( ).
 

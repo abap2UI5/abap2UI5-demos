@@ -13,7 +13,8 @@ CLASS z2ui5_cl_demo_app_049 DEFINITION PUBLIC.
         info     TYPE string,
         checkbox TYPE abap_bool,
       END OF ty_row.
-    DATA t_tab TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
+    TYPES temp1_d12931deb0 TYPE STANDARD TABLE OF ty_row WITH DEFAULT KEY.
+DATA t_tab TYPE temp1_d12931deb0.
     DATA mv_counter TYPE i.
     DATA mv_key TYPE string.
 
@@ -63,7 +64,13 @@ CLASS Z2UI5_CL_DEMO_APP_049 IMPLEMENTATION.
 
         DO 5 TIMES.
           mv_counter = mv_counter + 1.
-          INSERT VALUE #( title = 'entry' && mv_counter   info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' )
+          DATA temp1 TYPE z2ui5_cl_demo_app_049=>ty_row.
+          CLEAR temp1.
+          temp1-title = 'entry' && mv_counter.
+          temp1-info = 'completed'.
+          temp1-descr = 'this is a description'.
+          temp1-icon = 'sap-icon://account'.
+          INSERT temp1
             INTO TABLE t_tab.
 
 
@@ -83,22 +90,33 @@ CLASS Z2UI5_CL_DEMO_APP_049 IMPLEMENTATION.
 
     mv_counter = 1.
     mv_key = 'VIEW_REFRESH'.
-    t_tab = VALUE #(
-            ( title = 'entry' && mv_counter  info = 'completed'   descr = 'this is a description' icon = 'sap-icon://account' ) ).
+    DATA temp2 LIKE t_tab.
+    CLEAR temp2.
+    DATA temp3 LIKE LINE OF temp2.
+    temp3-title = 'entry' && mv_counter.
+    temp3-info = 'completed'.
+    temp3-descr = 'this is a description'.
+    temp3-icon = 'sap-icon://account'.
+    INSERT temp3 INTO TABLE temp2.
+    t_tab = temp2.
 
   ENDMETHOD.
 
 
   METHOD z2ui5_view_display.
 
-    DATA(lo_view) = z2ui5_cl_xml_view=>factory( ).
+    DATA lo_view TYPE REF TO z2ui5_cl_xml_view.
+    lo_view = z2ui5_cl_xml_view=>factory( ).
     lo_view->_z2ui5( )->timer( finished    = client->_event( `TIMER_FINISHED` )
                                delayms     = `2000`
                                checkrepeat = abap_true ).
-    DATA(page) = lo_view->shell( )->page(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = lo_view->shell( )->page(
              title          = 'abap2UI5 - CL_GUI_TIMER - Monitor'
              navbuttonpress = client->_event( 'BACK' )
-             shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+             shownavbutton  = temp1 ).
 
 
     page->segmented_button( selected_key = client->_bind_edit( mv_key )

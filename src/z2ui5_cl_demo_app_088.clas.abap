@@ -58,15 +58,23 @@ CLASS z2ui5_cl_demo_app_088 IMPLEMENTATION.
 
   METHOD z2ui5_view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell( )->page(
+    DATA view TYPE REF TO z2ui5_cl_xml_view.
+    view = z2ui5_cl_xml_view=>factory( ).
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp2 TYPE xsdboolean.
+    temp2 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell( )->page(
         navbuttonpress = client->_event( val = 'BACK' )
-        shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+        shownavbutton  = temp2
         title          = `abap2UI5 - Sample: Nav Container`
        )->content( ).
 
+    DATA temp1 TYPE string_table.
+    CLEAR temp1.
+    INSERT `NavCon` INTO TABLE temp1.
+    INSERT `${$parameters>/selectedKey}` INTO TABLE temp1.
     page->icon_tab_header( selectedkey                   = client->_bind_edit( mv_selected_key )
-                                                  select = client->_event_client( val = client->cs_event-nav_container_to t_arg  = VALUE #( ( `NavCon` ) ( `${$parameters>/selectedKey}` ) ) )
+                                                  select = client->_event_client( val = client->cs_event-nav_container_to t_arg  = temp1 )
                                                   mode   = `Inline`
                                   )->items(
                                     )->icon_tab_filter( key  = `page1`

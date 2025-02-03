@@ -23,11 +23,13 @@ CLASS z2ui5_cl_demo_app_270 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
+      DATA temp1 TYPE xsdboolean.
+      temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
       client->view_display( z2ui5_cl_xml_view=>factory(
         )->shell(
         )->page(
             title          = 'abap2UI5 - Hello World App'
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL )
+            shownavbutton  = temp1
             navbuttonpress = client->_event( 'BACK' )
         )->simple_form( editable = abap_true
              )->content( ns = `form`

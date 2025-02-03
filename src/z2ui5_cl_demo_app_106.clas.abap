@@ -23,13 +23,17 @@ CLASS z2ui5_cl_demo_app_106 IMPLEMENTATION.
     IF check_initialized = abap_false.
       check_initialized = abap_true.
 
-      DATA(view) = z2ui5_cl_xml_view=>factory( ).
+      DATA view TYPE REF TO z2ui5_cl_xml_view.
+      view = z2ui5_cl_xml_view=>factory( ).
 
-      DATA(lo_p) = view->shell(
+      DATA lo_p TYPE REF TO z2ui5_cl_xml_view.
+      DATA temp1 TYPE xsdboolean.
+      temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+      lo_p = view->shell(
                   )->page(
                           title          = 'abap2UI5 - Rich Text Editor'
                           navbuttonpress = client->_event( val = 'BACK' )
-                          shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+                          shownavbutton  = temp1 ).
 
 
       lo_p->rich_text_editor( width            = `100%`

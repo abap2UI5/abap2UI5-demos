@@ -11,7 +11,7 @@ CLASS z2ui5_cl_demo_app_187 IMPLEMENTATION.
     DATA ls_msg TYPE bapiret2.
 
 
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
 
       client->view_display( z2ui5_cl_xml_view=>factory( )->shell(
         )->page(
@@ -35,20 +35,25 @@ CLASS z2ui5_cl_demo_app_187 IMPLEMENTATION.
     CASE client->get( )-event.
 
       WHEN 'SY'.
-        MESSAGE ID 'NET' TYPE 'E' NUMBER '001' INTO DATA(lv_dummy).
+        DATA lv_dummy TYPE string.
+        MESSAGE ID 'NET' TYPE 'E' NUMBER '001' INTO lv_dummy.
         client->message_box_display( sy ).
 
       WHEN 'BAPIRET'.
 
 
 
-        ls_msg = VALUE #( id = 'NET' number = '001' ).
+        CLEAR ls_msg.
+        ls_msg-id = 'NET'.
+        ls_msg-number = '001'.
         client->message_box_display( ls_msg ).
 
       WHEN 'CX_ROOT'.
         TRY.
-            DATA(lv_val) = 1 / 0.
-          CATCH cx_root INTO DATA(lx).
+            DATA lv_val TYPE i.
+            lv_val = 1 / 0.
+            DATA lx TYPE REF TO cx_root.
+          CATCH cx_root INTO lx.
             client->message_box_display( lx ).
         ENDTRY.
 

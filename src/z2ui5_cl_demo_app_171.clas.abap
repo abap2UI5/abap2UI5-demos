@@ -10,7 +10,7 @@ CLASS z2ui5_cl_demo_app_171 IMPLEMENTATION.
     TRY.
 
         "first app start,
-        IF client->check_on_init( ).
+        IF client->check_on_init( ) IS NOT INITIAL.
 
           "init values here..
           RETURN.
@@ -18,9 +18,10 @@ CLASS z2ui5_cl_demo_app_171 IMPLEMENTATION.
 
 
         "callback after previous app.
-        IF client->check_on_navigated( ).
+        IF client->check_on_navigated( ) IS NOT INITIAL.
 
-          DATA(lo_app_prev) = client->get_app_prev( ).
+          DATA lo_app_prev TYPE REF TO z2ui5_if_app.
+          lo_app_prev = client->get_app_prev( ).
           "read attributes of previous app here...
           RETURN.
         ENDIF.
@@ -29,7 +30,8 @@ CLASS z2ui5_cl_demo_app_171 IMPLEMENTATION.
         "handle events..
         CASE client->get( )-event.
           WHEN 'OK'.
-            DATA(lt_arg) = client->get_event_arg( ).
+            DATA lt_arg TYPE string.
+            lt_arg = client->get_event_arg( ).
             "...
 
           WHEN 'CANCEL'.
@@ -38,7 +40,8 @@ CLASS z2ui5_cl_demo_app_171 IMPLEMENTATION.
         ENDCASE.
 
         "error handling here..
-      CATCH cx_root INTO DATA(lx).
+        DATA lx TYPE REF TO cx_root.
+      CATCH cx_root INTO lx.
         client->message_box_display( lx ).
     ENDTRY.
   ENDMETHOD.

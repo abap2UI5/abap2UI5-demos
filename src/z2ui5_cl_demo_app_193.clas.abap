@@ -10,7 +10,7 @@ CLASS z2ui5_cl_demo_app_193 DEFINITION PUBLIC.
         tabname TYPE char30,
         comp    TYPE abap_componentdescr,
       END OF ty_s_key_value,
-      ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH EMPTY KEY.
+      ty_t_key_values TYPE STANDARD TABLE OF ty_s_key_value WITH DEFAULT KEY.
 
     DATA mt_kopf  TYPE REF TO data.
     DATA mt_pos   TYPE REF TO data.
@@ -48,13 +48,15 @@ CLASS z2ui5_cl_demo_app_193 IMPLEMENTATION.
 
   METHOD xml_stringify.
 
-    ASSIGN mt_kopf->* TO FIELD-SYMBOL(<head>).
+    FIELD-SYMBOLS <head> TYPE data.
+    ASSIGN mt_kopf->* TO <head>.
     IF sy-subrc = 0.
       mt_kopf_xml = z2ui5_cl_util=>xml_srtti_stringify( <head> ).
       CLEAR mt_kopf.
     ENDIF.
 
-    ASSIGN mt_pos->* TO FIELD-SYMBOL(<pos>).
+    FIELD-SYMBOLS <pos> TYPE data.
+    ASSIGN mt_pos->* TO <pos>.
     IF sy-subrc = 0.
       mt_pos_xml = z2ui5_cl_util=>xml_srtti_stringify( <pos> ).
       CLEAR mt_pos.

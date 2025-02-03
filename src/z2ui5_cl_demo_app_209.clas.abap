@@ -26,13 +26,17 @@ CLASS Z2UI5_CL_DEMO_APP_209 IMPLEMENTATION.
 
   METHOD display_view.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell(
+    DATA page TYPE REF TO z2ui5_cl_xml_view.
+    DATA temp1 TYPE xsdboolean.
+    temp1 = boolc( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ).
+    page = z2ui5_cl_xml_view=>factory( )->shell(
          )->page(
             title          = 'abap2UI5 - Sample: InfoLabel'
             navbuttonpress = client->_event( 'BACK' )
-            shownavbutton  = xsdbool( client->get( )-s_draft-id_prev_app_stack IS NOT INITIAL ) ).
+            shownavbutton  = temp1 ).
 
-    DATA(layout) = page->scroll_container( vertical = abap_true
+    DATA layout TYPE REF TO z2ui5_cl_xml_view.
+    layout = page->scroll_container( vertical = abap_true
                                            height   = `100%`
                    )->flex_box( direction  = `Column`
                                 alignitems = `Start`
